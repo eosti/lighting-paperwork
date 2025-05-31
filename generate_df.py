@@ -86,6 +86,31 @@ def format_address_slash(df: pd.DataFrame) -> pd.DataFrame:
     return slashed_df
 
 
+def repeated_channels(hookup: pd.DataFrame):
+    prev_row = None
+    for index, data in hookup.iterrows():
+        if prev_row is None:
+            prev_row = data
+            continue
+
+        if data["Chan"] == prev_row["Chan"]:
+            # Repeated channel!
+            data["Chan"] = "&nbsp;"
+            for idx, val in data.items():
+                if idx == "U#":
+                    # Do repeat U# to avoid confusion
+                    continue
+                elif val == "":
+                    # Don't "-ify empty fields
+                    continue
+                elif data[idx] == prev_row[idx]:
+                    data[idx] = '"'
+        else:
+            prev_row = data
+
+    return hookup
+
+
 def channel_hookup(vw_export: pd.DataFrame) -> pd.DataFrame:
     # Format data
     filter_fields = [
@@ -111,8 +136,19 @@ def channel_hookup(vw_export: pd.DataFrame) -> pd.DataFrame:
     chan_fields = chan_fields.sort_values(
         by=["Chan", "Addr", "Position", "U#"], key=natsort_keygen()
     )
+    chan_fields = chan_fields[
+        [
+            "Chan",
+            "Addr",
+            "Position",
+            "U#",
+            "Purpose",
+            "Instr Type & Load",
+            "Color & Gobo",
+        ]
+    ]
 
-    chan_fields = chan_fields[["Chan", "Addr", "Position", "U#", "Purpose", "Instr Type & Load", "Color & Gobo"]]
+    chan_fields = repeated_channels(chan_fields)
     return chan_fields
 
 
@@ -137,7 +173,17 @@ def instrument_schedule(vw_export: pd.DataFrame) -> pd.DataFrame:
     chan_fields = combine_instrtype(chan_fields)
     chan_fields = format_address_slash(chan_fields)
     chan_fields = combine_gelgobo(chan_fields)
-    chan_fields = chan_fields[["Position", "Unit Number", "Purpose", "Instr Type & Load", "Color & Gobo", "Channel", "Addr"]]
+    chan_fields = chan_fields[
+        [
+            "Position",
+            "Unit Number",
+            "Purpose",
+            "Instr Type & Load",
+            "Color & Gobo",
+            "Channel",
+            "Addr",
+        ]
+    ]
 
     return chan_fields
 

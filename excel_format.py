@@ -62,6 +62,7 @@ def add_title(ws: Worksheet, name: str, show_info: ShowData) -> None:
 def set_col_widths(ws: Worksheet, width: List[int]) -> None:
     # Validate width (assuming 96ppi)
     # TODO: This check doesn't work
+    # experimentally this should be around 590
     max_width = (8.5 - 2 * X_PADDING) * 96
     for i in width:
         max_width -= i
