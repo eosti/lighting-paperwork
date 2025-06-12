@@ -1,7 +1,7 @@
-from dataclasses import dataclass
-import re
-from typing import Optional
 import datetime
+import re
+from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass

@@ -1,5 +1,6 @@
-from helpers import FontStyle
 from abc import ABC
+
+from helpers import FontStyle
 
 
 class BaseStyle(ABC):

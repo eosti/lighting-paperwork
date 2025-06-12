@@ -1,14 +1,11 @@
-import pandas as pd
-import numpy as np
 import re
-from natsort import natsort_keygen, natsorted
 from typing import List, Optional, Tuple
 
+import numpy as np
+import pandas as pd
+from natsort import natsort_keygen, natsorted
+
 from helpers import parse_gel
-
-
-
-
 
 
 def instrument_schedule(vw_export: pd.DataFrame) -> pd.DataFrame:

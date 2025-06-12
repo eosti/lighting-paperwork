@@ -1,12 +1,14 @@
-from paperwork import PaperworkGenerator
-import pandas as pd
-import numpy as np
 import logging
+from typing import List, Self
+
+import numpy as np
+import pandas as pd
 from natsort import natsort_keygen
-from typing import Self, List
-from helpers import FontStyle
-from style import default_chan_style
 from pandas.io.formats.style import Styler
+
+from helpers import FontStyle
+from paperwork import PaperworkGenerator
+from style import default_chan_style
 
 logger = logging.getLogger(__name__)
 
@@ -56,28 +58,29 @@ class ChannelHookup(PaperworkGenerator):
         return self
 
     @staticmethod
-    def style_data(
-        df: pd.DataFrame, chan_style: FontStyle, body_style: FontStyle
-    ):
-        border_style = "1px solid black"
+    def style_data(df: pd.DataFrame, chan_style: FontStyle, body_style: FontStyle, border_weight: float):
+        border_style = f"{border_weight}px solid black"
         style_df = df.copy()
         # Set borders based on channel data
         prev_row = (None, None)
         for index, data in df.iterrows():
             style_df.loc[index, :] = ""
             if prev_row == (None, None):
+                style_df.loc[
+                    index, :
+                ] += f"border-bottom: {border_style}; "
                 prev_row = (index, data)
                 continue
 
             if data["Chan"] == "&nbsp;":
-                style_df.loc[
-                    prev_row[0], :
-                ] += "border-bottom: none; "
+                style_df.loc[prev_row[0], :] += "border-bottom: none; "
                 style_df.loc[
                     index, :
-                ] += f"border-bottom: {border_style}; border-top: none; "
+                ] += f"border-bottom: {border_style}; "
             else:
-                style_df.loc[index, :] += f"border-bottom: {border_style}; border-top: {border_style}; "
+                style_df.loc[
+                    index, :
+                ] += f"border-bottom: {border_style}; "
 
             prev_row = (index, data)
 
@@ -96,10 +99,12 @@ class ChannelHookup(PaperworkGenerator):
         return style_df
 
     @staticmethod
-    def style_fields(index: pd.Series, header_style: FontStyle, col_width: List[int]) -> List[str]:
+    def style_fields(
+        index: pd.Series, header_style: FontStyle, col_width: List[int], border_weight: float
+    ) -> List[str]:
         PaperworkGenerator.verify_width(col_width)
         style = [
-            f"{header_style.to_css()}; border-top: 1px solid black; border-bottom: 1px solid black; "
+            f"{header_style.to_css()}; border-top: {border_weight}px solid black; border-bottom: {border_weight}px solid black; "
             for _ in index
         ]
 
@@ -129,38 +134,53 @@ class ChannelHookup(PaperworkGenerator):
         style_list = []
 
         for i in selector_list:
-            style_list.append({'selector': i, 'props': [('break-after', 'avoid-page')]})
+            style_list.append({"selector": i, "props": [("break-after", "avoid-page")]})
 
         return style_list
-
 
     def make(self) -> str:
         self.generate_df()
 
         styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
         styled = styled.apply(
-            type(self).style_data, axis=None, chan_style=self.chan_style, body_style=self.style.body
+            type(self).style_data,
+            axis=None,
+            chan_style=self.chan_style,
+            body_style=self.style.body,
+            border_weight=self.border_weight,
         )
         styled = styled.hide()
         styled = styled.apply_index(
             type(self).style_fields,
             header_style=self.style.field,
             col_width=[10, 5, 13, 5, 13, 32, 22],
+            border_weight=self.border_weight,
             axis=1,
         )
         styled = styled.set_table_attributes('class="paperwork-table"')
         styled = styled.set_table_styles(self.default_table_style, overwrite=False)
         styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
 
+        header_html = self.generate_header(
+            styled.uuid,
+            content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
+            content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
+            content_center="Channel Hookup",
+            style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+            style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+            style_center=f"{self.style.title.to_css()}",
+        )
+        footer_html = self.generate_footer(
+            styled.uuid,
+            style_left=self.style.marginals.to_css(),
+            content_left="Channel Hookup",
+        )
+        page_style = self.generate_page_style(
+            "bottom-right", self.style.marginals.to_css()
+        )
+
         return styled.to_html(
-            style_footer_right=self.style.marginals.to_css(),
-            style_footer_left=self.style.marginals.to_css(),
-            style_header_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_header_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_header_center=f"{self.style.title.to_css()}",
-            content_footer_left="Channel Hookup",
-            content_header_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
-            content_header_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
-            content_header_center="Channel Hookup",
-            pagenum_bottom_right=True,
+            generated_header=header_html,
+            generated_footer=footer_html,
+            generated_page_style=page_style,
         )

@@ -1,21 +1,23 @@
-
-from paperwork import PaperworkGenerator
-import pandas as pd
-import numpy as np
 import logging
-from natsort import natsort_keygen
-from typing import Self, List, Tuple
-from helpers import FontStyle
-from style import default_position_style
-from pandas.io.formats.style import Styler
 import re
-from natsort import natsorted
+from typing import List, Self, Tuple
+
+import numpy as np
+import pandas as pd
+from natsort import natsort_keygen, natsorted
+from pandas.io.formats.style import Styler
+
+from helpers import FontStyle
+from paperwork import PaperworkGenerator
+from style import default_position_style
 
 logger = logging.getLogger(__name__)
 
 
 class InstrumentSchedule(PaperworkGenerator):
-    def __init__(self, *args, position_style: FontStyle = default_position_style, **kwargs):
+    def __init__(
+        self, *args, position_style: FontStyle = default_position_style, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.position_style = position_style
 
@@ -66,7 +68,14 @@ class InstrumentSchedule(PaperworkGenerator):
         cat_list = natsorted(
             [x for x in unique_vals if re.match(r"^Cat\s\d", x)], reverse=True
         )
-        foh_list = natsorted([x for x in unique_vals if re.match(r"^FOH\s\d", x) or re.match(r"^FOH$", x)])
+        # TODO: might be nice to force a linebreak between categories
+        foh_list = natsorted(
+            [
+                x
+                for x in unique_vals
+                if re.match(r"^FOH\s\d", x) or re.match(r"^FOH$", x)
+            ]
+        )
 
         # This will need to be tweaked per venue
         box_booms_ds = natsorted(
@@ -104,38 +113,37 @@ class InstrumentSchedule(PaperworkGenerator):
             sorted_dfs.append((pos_df, i))
 
         return sorted_dfs
-    
-
 
     @staticmethod
-    def style_data(
-        df: pd.DataFrame, position_style: FontStyle, body_style: FontStyle
-    ):
-        chan_border_style = "1px dashed black"
+    def style_data(df: pd.DataFrame, position_style: FontStyle, body_style: FontStyle, border_weight: float):
+        chan_border_style = f"{border_weight}px dashed black"
         style_df = df.copy()
         # Set borders based on channel data
         prev_row = (None, None)
         for index, data in df.iterrows():
             style_df.loc[index, :] = ""
             if prev_row == (None, None):
+                style_df.loc[
+                    index, :
+                ] += f"border-bottom: {chan_border_style}; "
                 prev_row = (index, data)
                 continue
 
             if data["U#"] == prev_row[1]["U#"]:
                 # Same U#, remove dashed line
-                style_df.loc[
-                    prev_row[0], :
-                ] += "border-bottom: none; "
+                style_df.loc[prev_row[0], :] += "border-bottom: none; "
                 style_df.loc[
                     index, :
-                ] += f"border-bottom: {chan_border_style}; border-top: none; "
+                ] += f"border-bottom: {chan_border_style}; "
             else:
-                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; border-top: {chan_border_style}; "
+                style_df.loc[
+                    index, :
+                ] += f"border-bottom: {chan_border_style}; "
 
             prev_row = (index, data)
 
         # Last row gets a solid bottom border
-        style_df.loc[prev_row[0], :] += "border-bottom: 1px solid black; "
+        style_df.loc[prev_row[0], :] += f"border-bottom: {border_weight}px solid black; "
 
         # Set font based on column
         for col_name, col in style_df.items():
@@ -149,10 +157,12 @@ class InstrumentSchedule(PaperworkGenerator):
         return style_df
 
     @staticmethod
-    def style_fields(index: pd.Series, header_style: FontStyle, col_width: List[int]) -> List[str]:
+    def style_fields(
+        index: pd.Series, header_style: FontStyle, col_width: List[int], border_weight: float
+    ) -> List[str]:
         PaperworkGenerator.verify_width(col_width)
         style = [
-            f"{header_style.to_css()}; border-top: 1px solid black; border-bottom: 1px solid black; "
+            f"{header_style.to_css()}; border-top: {border_weight}px solid black; border-bottom: {border_weight}px solid black; "
             for _ in index
         ]
 
@@ -178,21 +188,33 @@ class InstrumentSchedule(PaperworkGenerator):
         for df, position in positions:
             styled = Styler.from_custom_template(".", "header_footer.tpl")(df)
             styled = styled.apply(
-                type(self).style_data, axis=None, position_style=self.position_style, body_style=self.style.body
+                type(self).style_data,
+                axis=None,
+                position_style=self.position_style,
+                body_style=self.style.body,
+                border_weight=self.border_weight,
             )
             styled = styled.hide()
             styled = styled.apply_index(
                 type(self).style_fields,
                 header_style=self.style.field,
                 col_width=[5, 17, 36, 28, 7, 7],
+                border_weight=self.border_weight,
                 axis=1,
             )
             styled = styled.set_table_attributes('class="paperwork-table"')
             styled = styled.set_table_styles(self.default_table_style, overwrite=False)
             styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
-            styled = styled.set_table_styles([{'selector': '', 'props': 'break-inside: avoid; margin-bottom: 1vh;'}], overwrite=False)
+            styled = styled.set_table_styles(
+                [{"selector": "", "props": "break-inside: avoid; margin-bottom: 5mm;"}],
+                overwrite=False,
+            )
 
-            header_html = self.generate_header(styled.uuid, content_left=position, style_left=self.position_style.to_css())
+            header_html = self.generate_header(
+                styled.uuid,
+                content_left=position,
+                style_left=self.position_style.to_css(),
+            )
 
             output_html += styled.to_html(
                 generated_header=header_html,

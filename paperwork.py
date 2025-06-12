@@ -1,23 +1,35 @@
-from abc import ABC, abstractmethod
-import pandas as pd
 import logging
 import re
-from typing import List, Self, Optional
-from helpers import ShowData, FontStyle
-from style import DefaultStyle, BaseStyle
+from abc import ABC, abstractmethod
+from typing import List, Optional, Self
+
+import pandas as pd
+
+from helpers import FontStyle, ShowData
+from style import BaseStyle, DefaultStyle
 
 logger = logging.getLogger(__name__)
 
 
 class PaperworkGenerator(ABC):
-    def __init__(self, vw_export: pd.DataFrame, show_data: Optional[ShowData] = None, style: BaseStyle = DefaultStyle) -> None:
+    def __init__(
+        self,
+        vw_export: pd.DataFrame,
+        show_data: Optional[ShowData] = None,
+        style: BaseStyle = DefaultStyle,
+        border_weight: float = 1,
+    ) -> None:
         self.vw_export = vw_export
         self.df = self.vw_export.copy()
         self.show_data = show_data
         self.style = style
+        # 1px doesn't render right on Firefox, use 1.5px min to workaround.
+        self.border_weight = border_weight
 
     def set_show_data(self, show_name: str, ld_name: str, revision: str) -> None:
-        self.show_data = ShowData(show_name=show_name, ld_name=ld_name, revision=revision)
+        self.show_data = ShowData(
+            show_name=show_name, ld_name=ld_name, revision=revision
+        )
 
     @abstractmethod
     def generate_df(self) -> pd.DataFrame:
@@ -30,9 +42,11 @@ class PaperworkGenerator(ABC):
 
     @staticmethod
     @abstractmethod
-    def style_fields(index: pd.Series, header_style: FontStyle, col_width: List[int]) -> List[str]:
+    def style_fields(
+        index: pd.Series, header_style: FontStyle, col_width: List[int]
+    ) -> List[str]:
         pass
-    
+
     @staticmethod
     def verify_width(width: List[int]) -> bool:
         if sum(width) > 100:
@@ -99,7 +113,7 @@ class PaperworkGenerator(ABC):
         new_df = self.df.drop(["Color", "Gobo 1"], axis=1)
         new_df["Color & Gobo"] = gelgobo
         self.df = new_df
-        
+
         return self
 
     def format_address_slash(self) -> Self:
@@ -147,13 +161,31 @@ class PaperworkGenerator(ABC):
         return self
 
     def abbreviate_col_names(self) -> Self:
-        self.df = self.df.rename(columns={"Channel": "Chan", "Unit Number": "U#", "Address": "Addr"})
+        self.df = self.df.rename(
+            columns={"Channel": "Chan", "Unit Number": "U#", "Address": "Addr"}
+        )
         return self
 
-    default_table_style = [{'selector': '', 'props': 'border-spacing: 0px; border-collapse: collapse; line-height: 1.2; break-inside: auto; width: 100%;'}, {'selector': 'tr', 'props': 'break-inside: avoid; break-after: auto; '}, {'selector': 'td', 'props': 'padding: 1px;'}]
+    # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse
+    default_table_style = [
+        {
+            "selector": "",
+            "props": "border-spacing: 0px; border-collapse: initial; line-height: 1.2; break-inside: auto; width: 100%;",
+        },
+        {"selector": "tr", "props": "break-inside: avoid; break-after: auto; "},
+        {"selector": "td", "props": "padding: 1px;"},
+    ]
 
     @staticmethod
-    def generate_header(uuid: str, content_left: str = "", content_center: str = "", content_right: str = "", style_left: str = "", style_center: str = "", style_right: str = "") -> str:
+    def generate_header(
+        uuid: str,
+        content_left: str = "",
+        content_center: str = "",
+        content_right: str = "",
+        style_left: str = "",
+        style_center: str = "",
+        style_right: str = "",
+    ) -> str:
         return f"""
         <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
             <div class="top-left" id="header_left_{uuid}" style="text-align:left;{style_left}">{content_left}</div>
@@ -163,7 +195,15 @@ class PaperworkGenerator(ABC):
         """
 
     @staticmethod
-    def generate_footer(uuid: str, content_left: str = "", content_center: str = "", content_right: str = "", style_left: str = "", style_center: str = "", style_right: str = "") -> str:
+    def generate_footer(
+        uuid: str,
+        content_left: str = "",
+        content_center: str = "",
+        content_right: str = "",
+        style_left: str = "",
+        style_center: str = "",
+        style_right: str = "",
+    ) -> str:
         return f"""
         <div id="footer_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
             <div class="bottom-left" id="bottom_left_{uuid}" style="text-align:left;{style_left}">{content_left}</div>
@@ -173,7 +213,9 @@ class PaperworkGenerator(ABC):
         """
 
     @staticmethod
-    def generate_page_style(pagenum_pos: Optional[str] = None, pagenum_style: str = "") -> str:
+    def generate_page_style(
+        pagenum_pos: Optional[str] = None, pagenum_style: str = ""
+    ) -> str:
         html = """
         <style>
         @page {
