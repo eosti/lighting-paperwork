@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import re
 from typing import Optional
+import datetime
 
 
 @dataclass
@@ -8,6 +9,11 @@ class ShowData:
     show_name: str
     ld_name: str
     revision: str
+    date: datetime = datetime.datetime.now()
+
+    def print_date(self) -> str:
+        """Returns a string in YYYY/MM/DD form"""
+        return self.date.strftime("%Y/%m/%d")
 
 
 @dataclass
