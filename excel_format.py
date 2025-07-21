@@ -11,57 +11,6 @@ from openpyxl.worksheet.worksheet import Worksheet
 from helpers import ShowData
 
 
-def instrschedule_cols(ws: Worksheet, start_row: int) -> None:
-    # Format the header
-    ws.merge_cells(
-        start_row=start_row, start_column=1, end_row=start_row, end_column=ws.max_column
-    )
-    header_cell = ws.cell(start_row, 1)
-    header_cell.font = Font(size=18, bold=True)
-    header_cell.alignment = Alignment(horizontal="left", vertical="center")
-
-    # Format the column labels
-    side = Side(border_style="thin", color="FF000000")
-    for i, cell in enumerate(ws[f"{start_row + 1}:{start_row + 1}"]):
-        if i == 0:
-            # Center the U# column
-            cell.alignment = Alignment(horizontal="center", vertical="center")
-        else:
-            cell.alignment = Alignment(horizontal="left", vertical="center")
-
-        cell.font = Font(size=12, bold=True)
-        cell.border = Border(bottom=side, top=side)
-
-    # Format data
-    for row in ws.iter_rows(min_row=start_row + 2, max_row=ws.max_row):
-        # Add dashed line if next row isn't the same U#
-        side = Side(border_style="dashed", color="FF000000")
-        if row[0].value != ws.cell(row[0].row + 1, 1).value:
-            add_line = True
-        else:
-            add_line = False
-
-        for idx, cell in enumerate(row):
-            if idx == 0:
-                # Center the U# column
-                cell.alignment = Alignment(horizontal="center", vertical="center")
-            elif idx == 4:
-                # Channel formatting
-                cell.number_format = "(0)"
-                cell.alignment = Alignment(horizontal="center", vertical="center")
-            elif idx == 5:
-                # Address formatting
-                cell.alignment = Alignment(horizontal="center", vertical="center")
-            else:
-                cell.alignment = Alignment(
-                    horizontal="left", vertical="center", wrap_text=True
-                )
-
-            cell.font = Font(size=11)
-            if add_line:
-                cell.border = Border(bottom=side)
-
-
 def colorcut_cols(ws: Worksheet) -> None:
     side = Side(border_style="thin", color="FF000000")
     for i, cell in enumerate(ws["1:1"]):

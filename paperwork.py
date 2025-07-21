@@ -167,14 +167,23 @@ class PaperworkGenerator(ABC):
         return self
 
     # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse
-    default_table_style = [
-        {
-            "selector": "",
-            "props": "border-spacing: 0px; border-collapse: initial; line-height: 1.2; break-inside: auto; width: 100%;",
-        },
-        {"selector": "tr", "props": "break-inside: avoid; break-after: auto; "},
-        {"selector": "td", "props": "padding: 1px;"},
-    ]
+    def default_table_style(self, width=100):
+        return [
+            {
+                "selector": "",
+                "props": "border-spacing: 0px; border-collapse: initial; line-height: 1.2; break-inside: auto; width: 100%;",
+            },
+            {"selector": "tr", "props": "break-inside: avoid; break-after: auto; "},
+            {"selector": "td", "props": "padding: 1px;"},
+            {
+                "selector": "tbody",
+                "props": f"display: table; width: {width}%; margin: 0 auto;",
+            },
+            {
+                "selector": "thead tr:not(.generatedMarginals)",
+                "props": f"display: table; width: {width}%; margin: 0 auto;",
+            },
+        ]
 
     @staticmethod
     def generate_header(
@@ -186,11 +195,17 @@ class PaperworkGenerator(ABC):
         style_center: str = "",
         style_right: str = "",
     ) -> str:
+        """
+        Generates the HTML for the table header.
+        The generated style :func:`generate_page_style` will hook each `span` into a running element for printing
+            to become the page header/footer elements.
+        The `span`s should semantically be divs probably but those break weasyprint.
+        """
         return f"""
         <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
-            <div class="top-left" id="header_left_{uuid}" style="text-align:left;{style_left}">{content_left}</div>
-            <div class="top-center" id="header_center_{uuid}" style="text-align:center;{style_center}">{content_center}</div>
-            <div class="top-right" id="header_right_{uuid}" style="text-align:right;{style_right}">{content_right}</div>
+            <span class="top-left-{uuid}" id="header_left_{uuid}" style="text-align:left;{style_left}">{content_left}</span>
+            <span class="top-center-{uuid}" id="header_center_{uuid}" style="text-align:center;{style_center}">{content_center}</span>
+            <span class="top-right-{uuid}" id="header_right_{uuid}" style="text-align:right;{style_right}">{content_right}</span>
         </div>
         """
 
@@ -204,46 +219,56 @@ class PaperworkGenerator(ABC):
         style_center: str = "",
         style_right: str = "",
     ) -> str:
+        """
+        Generates the HTML for the table footer.
+        The generated style :func:`generate_page_style` will hook each `span` into a running element for printing
+            to become the page header/footer elements.
+        The `span`s should semantically be divs probably but those break weasyprint.
+        """
         return f"""
         <div id="footer_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
-            <div class="bottom-left" id="bottom_left_{uuid}" style="text-align:left;{style_left}">{content_left}</div>
-            <div class="bottom-center" id="bottom_center_{uuid}" style="text-align:center;{style_center}">{content_center}</div>
-            <div class="bottom-right" id="bottom_right_{uuid}" style="text-align:right;{style_right}">{content_right}</div>
+            <span class="bottom-left-{uuid}" id="bottom_left_{uuid}" style="text-align:left;{style_left}">{content_left}</span>
+            <span class="bottom-center-{uuid}" id="bottom_center_{uuid}" style="text-align:center;{style_center}">{content_center}</span>
+            <span class="bottom-right-{uuid}" id="bottom_right_{uuid}" style="text-align:right;{style_right}">{content_right}</span>
         </div>
         """
 
     @staticmethod
     def generate_page_style(
-        pagenum_pos: Optional[str] = None, pagenum_style: str = ""
+        uuid: str, pagenum_pos: Optional[str] = None, pagenum_style: str = ""
     ) -> str:
-        html = """
-        <style>
-        @page {
-        """
+        style = ""
+        page_style = ""
         for side in ["left", "center", "right"]:
             for pos in ["top", "bottom"]:
-                class_name = f"{pos}-{side}"
+                location_name = f"{pos}-{side}"
                 var_name = f"{pos}{side.capitalize()}"
 
-                if pagenum_pos == class_name:
-                    html += f"""
-                        @{class_name} {{
+                if pagenum_pos == location_name:
+                    page_style += f"""
+                        @{location_name} {{
                             content: "Page " counter(page) " of " counter(pages);
                             {pagenum_style}
                         }}
                     """
                 else:
-                    html += f"""
-                        @{class_name} {{
-                            content: element({var_name});
+                    style += f"""
+                        .{location_name}-{uuid} {{
+                            position: running({var_name}-{uuid});
                         }}
-                        .{class_name} {{
-                            position: running({var_name})
+                        """
+                    page_style += f"""
+                        @{location_name} {{
+                            content: element({var_name}-{uuid});
                         }}
-                """
+                    """
 
-        html += """
-        }
+        html = f"""
+        <style>
+        {style}
+        @page {{
+            {page_style}
+        }}
         </style>
         """
 

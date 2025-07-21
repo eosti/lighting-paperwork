@@ -115,7 +115,12 @@ class InstrumentSchedule(PaperworkGenerator):
         return sorted_dfs
 
     @staticmethod
-    def style_data(df: pd.DataFrame, position_style: FontStyle, body_style: FontStyle, border_weight: float):
+    def style_data(
+        df: pd.DataFrame,
+        position_style: FontStyle,
+        body_style: FontStyle,
+        border_weight: float,
+    ):
         chan_border_style = f"{border_weight}px dashed black"
         style_df = df.copy()
         # Set borders based on channel data
@@ -123,27 +128,23 @@ class InstrumentSchedule(PaperworkGenerator):
         for index, data in df.iterrows():
             style_df.loc[index, :] = ""
             if prev_row == (None, None):
-                style_df.loc[
-                    index, :
-                ] += f"border-bottom: {chan_border_style}; "
+                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
                 prev_row = (index, data)
                 continue
 
             if data["U#"] == prev_row[1]["U#"]:
                 # Same U#, remove dashed line
                 style_df.loc[prev_row[0], :] += "border-bottom: none; "
-                style_df.loc[
-                    index, :
-                ] += f"border-bottom: {chan_border_style}; "
+                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
             else:
-                style_df.loc[
-                    index, :
-                ] += f"border-bottom: {chan_border_style}; "
+                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
 
             prev_row = (index, data)
 
         # Last row gets a solid bottom border
-        style_df.loc[prev_row[0], :] += f"border-bottom: {border_weight}px solid black; "
+        style_df.loc[
+            prev_row[0], :
+        ] += f"border-bottom: {border_weight}px solid black; "
 
         # Set font based on column
         for col_name, col in style_df.items():
@@ -158,7 +159,10 @@ class InstrumentSchedule(PaperworkGenerator):
 
     @staticmethod
     def style_fields(
-        index: pd.Series, header_style: FontStyle, col_width: List[int], border_weight: float
+        index: pd.Series,
+        header_style: FontStyle,
+        col_width: List[int],
+        border_weight: float,
     ) -> List[str]:
         PaperworkGenerator.verify_width(col_width)
         style = [
@@ -203,7 +207,9 @@ class InstrumentSchedule(PaperworkGenerator):
                 axis=1,
             )
             styled = styled.set_table_attributes('class="paperwork-table"')
-            styled = styled.set_table_styles(self.default_table_style, overwrite=False)
+            styled = styled.set_table_styles(
+                self.default_table_style(), overwrite=False
+            )
             styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
             styled = styled.set_table_styles(
                 [{"selector": "", "props": "break-inside: avoid; margin-bottom: 5mm;"}],

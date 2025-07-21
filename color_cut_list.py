@@ -6,68 +6,83 @@ import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from helpers import FontStyle
+from helpers import FontStyle, parse_gel
 from paperwork import PaperworkGenerator
-from style import default_chan_style
 
 logger = logging.getLogger(__name__)
 
 
-class ChannelHookup(PaperworkGenerator):
-    def __init__(self, *args, chan_style: FontStyle = default_chan_style, **kwargs):
+class ColorCutList(PaperworkGenerator):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.chan_style = chan_style
 
     def generate_df(self) -> Self:
-        # Format data
-        filter_fields = [
-            "Channel",
-            "Absolute Address",
-            "Position",
-            "Unit Number",
-            "Purpose",
-            "Instrument Type",
-            "Wattage",
-            "Color",
-            "Gobo 1",
-        ]
+        filter_fields = ["Color", "Frame Size"]
+
         self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
-        # Need to have a channel to show up in the channel hookup
-        self.df["Channel"] = self.df["Channel"].replace("", np.nan)
-        self.df = self.df.dropna(subset=["Channel"])
+        # Seperate colors and diffusion into dict list
+        color_dict = []
+        for index, row in self.df.iterrows():
+            if row["Frame Size"] != "" and not pd.isnull(row["Frame Size"]):
+                framesize = row["Frame Size"]
+            else:
+                framesize = "Unknown"
+            if (
+                row["Color"].strip() != ""
+                and row["Color"] != "N/C"
+                and not pd.isnull(row["Color"])
+            ):
+                for i in row["Color"].strip().split("+"):
+                    # Works for single gels too
+                    if len(i.split("x")) > 1:
+                        # Repeat gel situation (i.e. L201x2)
+                        for j in range(0, int(i.split("x")[1])):
+                            gel = parse_gel(i.split("x")[0])
+                            color_dict.append(
+                                {
+                                    "Color": gel.name,
+                                    "Frame Size": framesize,
+                                    "Company": gel.company,
+                                    "Sort": gel.name_sort,
+                                }
+                            )
+                    else:
+                        # Normal single gel
+                        gel = parse_gel(i)
+                        color_dict.append(
+                            {
+                                "Color": gel.name,
+                                "Frame Size": framesize,
+                                "Company": gel.company,
+                                "Sort": gel.name_sort,
+                            }
+                        )
 
-        self.combine_instrtype().format_address_slash().combine_gelgobo()
-
-        self.df = self.df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
-        self.df = self.df.sort_values(
-            by=["Chan", "Addr", "Position", "U#"], key=natsort_keygen()
+        colors = pd.DataFrame.from_dict(color_dict)
+        colors = (
+            colors.groupby(["Color", "Frame Size", "Sort"])["Color"]
+            .count()
+            .reset_index(name="Count")
         )
-        self.df = self.df[
-            [
-                "Chan",
-                "Addr",
-                "Position",
-                "U#",
-                "Purpose",
-                "Instr Type & Load",
-                "Color & Gobo",
-            ]
-        ]
+        # Hack for that silly Rosco company: 3xx values become xx.3
+        colors = colors.sort_values(by=["Sort", "Frame Size"], key=natsort_keygen())
+        colors = colors.drop(["Sort"], axis=1)
 
-        self.repeated_channels()
+        self.df = colors
         return self
 
     @staticmethod
     def style_data(
         df: pd.DataFrame,
-        chan_style: FontStyle,
         body_style: FontStyle,
+        col_width: List[int],
         border_weight: float,
     ):
         border_style = f"{border_weight}px solid black"
         style_df = df.copy()
-        # Set borders based on channel data
+        # Set borders based on color data
         prev_row = (None, None)
+        style_df = style_df.astype(str)
         for index, data in df.iterrows():
             style_df.loc[index, :] = ""
             if prev_row == (None, None):
@@ -75,8 +90,9 @@ class ChannelHookup(PaperworkGenerator):
                 prev_row = (index, data)
                 continue
 
-            if data["Chan"] == "&nbsp;":
-                style_df.loc[prev_row[0], :] += "border-bottom: none; "
+            if data["Color"] == prev_row[1]["Color"]:
+                style_df.loc[prev_row[0], "Color"] += "border-bottom: none; "
+                style_df.loc[index, "Color"] += "color: transparent; "
                 style_df.loc[index, :] += f"border-bottom: {border_style}; "
             else:
                 style_df.loc[index, :] += f"border-bottom: {border_style}; "
@@ -85,12 +101,11 @@ class ChannelHookup(PaperworkGenerator):
 
         # Set font based on column
         for col_name, col in style_df.items():
-            if col_name == "Chan":
-                style_df[col_name] += f"{chan_style.to_css()}; vertical-align: middle; "
-            else:
-                style_df[col_name] += f"{body_style.to_css()}; vertical-align: middle; "
+            style_df[
+                col_name
+            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%; "
 
-            if col_name in ["Chan", "U#", "Addr"]:
+            if col_name in ["Color"]:
                 style_df[col_name] += "text-align: center; "
             else:
                 style_df[col_name] += "text-align: left; "
@@ -106,12 +121,12 @@ class ChannelHookup(PaperworkGenerator):
     ) -> List[str]:
         PaperworkGenerator.verify_width(col_width)
         style = [
-            f"{header_style.to_css()}; border-top: {border_weight}px solid black; border-bottom: {border_weight}px solid black; "
+            f"{header_style.to_css()}; border-bottom: {border_weight}px solid black; "
             for _ in index
         ]
 
         for idx, val in enumerate(index):
-            if val in ["Chan", "U#", "Addr"]:
+            if val in ["Color"]:
                 style[idx] += "text-align: center; "
             else:
                 style[idx] += "text-align: left; "
@@ -121,25 +136,6 @@ class ChannelHookup(PaperworkGenerator):
 
         return style
 
-    def pagebreak_style(self) -> List[dict]:
-        # TODO: this doesn't actually do much
-        # https://stackoverflow.com/questions/20481039/applying-page-break-before-to-a-table-row-tr
-        idxs = np.where(self.df["Chan"] == "&nbsp;")
-
-        selector_list = []
-
-        for i in np.transpose(*idxs):
-            # We want to select the row before a repeated channel,
-            # but CSS selectors index from 1. These cancel out.
-            selector_list.append(f"tr:nth-child({i - 1 + 1})")
-
-        style_list = []
-
-        for i in selector_list:
-            style_list.append({"selector": i, "props": [("break-after", "avoid-page")]})
-
-        return style_list
-
     def make(self) -> str:
         self.generate_df()
 
@@ -147,27 +143,28 @@ class ChannelHookup(PaperworkGenerator):
         styled = styled.apply(
             type(self).style_data,
             axis=None,
-            chan_style=self.chan_style,
             body_style=self.style.body,
+            col_width=[35, 43, 22],
             border_weight=self.border_weight,
         )
         styled = styled.hide()
         styled = styled.apply_index(
             type(self).style_fields,
             header_style=self.style.field,
-            col_width=[10, 5, 13, 5, 13, 32, 22],
+            col_width=[35, 43, 22],
             border_weight=self.border_weight,
             axis=1,
         )
         styled = styled.set_table_attributes('class="paperwork-table"')
-        styled = styled.set_table_styles(self.default_table_style(), overwrite=False)
-        styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
+        styled = styled.set_table_styles(
+            self.default_table_style(width=30), overwrite=False
+        )
 
         header_html = self.generate_header(
             styled.uuid,
             content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
             content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
-            content_center="Channel Hookup",
+            content_center="Color Cut List",
             style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
             style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
             style_center=f"{self.style.title.to_css()}",
@@ -175,10 +172,10 @@ class ChannelHookup(PaperworkGenerator):
         footer_html = self.generate_footer(
             styled.uuid,
             style_left=self.style.marginals.to_css(),
-            content_left="Channel Hookup",
+            content_left="Color Cut List",
         )
         page_style = self.generate_page_style(
-            "bottom-right", self.style.marginals.to_css()
+            styled.uuid, "bottom-right", self.style.marginals.to_css()
         )
 
         return styled.to_html(

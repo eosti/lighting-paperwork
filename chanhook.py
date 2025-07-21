@@ -26,6 +26,7 @@ from pandas.io.formats.style import Styler
 import excel_format
 import generate_df
 from channel_hookup import ChannelHookup
+from color_cut_list import ColorCutList
 from helpers import FontStyle, ShowData
 from instrument_schedule import InstrumentSchedule
 from vectorworks_xml import VWExport
@@ -71,7 +72,7 @@ def add_gobos(wb: Workbook, vw_export: pd.DataFrame, show_info: ShowData) -> Non
 
 
 def add_channel_hookup_html(vw_export, show_info):
-    chans = InstrumentSchedule(vw_export, show_info)
+    chans = ColorCutList(vw_export, show_info)
     html = chans.make()
     with open("chans.html", "w") as f:
         f.write(html)

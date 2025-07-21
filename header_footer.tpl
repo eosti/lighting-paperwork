@@ -5,7 +5,7 @@
 {% endblock before_table %}
 
 {% block before_head_rows %}
-<tr>
+<tr class="generatedMarginals">
     <th colspan=42>
         {{ generated_header | default('') }}
     </th>
@@ -17,7 +17,7 @@
 {{ super() }}
 {% block tfoot %}
 <tfoot>
-    <tr>
+    <tr class="generatedMarginals">
         <th colspan=42>
             {{ generated_footer | default('') }}
         </th>
