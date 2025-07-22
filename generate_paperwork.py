@@ -1,17 +1,17 @@
+import argparse
 import logging
 import os
-import argparse
+import re
 
 import pandas as pd
 from weasyprint import HTML
-import re
 
 from channel_hookup import ChannelHookup
-from instrument_schedule import InstrumentSchedule
 from color_cut_list import ColorCutList
 from gobo_pull import GoboPullList
-from vectorworks_xml import VWExport
 from helpers import ShowData
+from instrument_schedule import InstrumentSchedule
+from vectorworks_xml import VWExport
 
 
 def is_file(path: str) -> str:

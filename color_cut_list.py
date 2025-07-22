@@ -1,7 +1,8 @@
+"""Generator for a color cut list"""
+
 import logging
 from typing import List, Self
 
-import numpy as np
 import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
@@ -13,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class ColorCutList(PaperworkGenerator):
+    """
+    Generates a color pull list with color, size, and quantity.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -24,7 +29,7 @@ class ColorCutList(PaperworkGenerator):
         self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
         # Seperate colors and diffusion into dict list
         color_dict = []
-        for index, row in self.df.iterrows():
+        for _, row in self.df.iterrows():
             if row["Frame Size"] != "" and not pd.isnull(row["Frame Size"]):
                 framesize = row["Frame Size"]
             else:
@@ -38,7 +43,7 @@ class ColorCutList(PaperworkGenerator):
                     # Works for single gels too
                     if len(i.split("x")) > 1:
                         # Repeat gel situation (i.e. L201x2)
-                        for j in range(0, int(i.split("x")[1])):
+                        for _ in range(0, int(i.split("x")[1])):
                             gel = Gel.parse_name(i.split("x")[0])
                             color_dict.append(
                                 {
@@ -102,10 +107,11 @@ class ColorCutList(PaperworkGenerator):
             prev_row = (index, data)
 
         # Set font based on column
-        for col_name, col in style_df.items():
-            style_df[
-                col_name
-            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%; "
+        for col_name, _ in style_df.items():
+            width_idx = style_df.columns.get_loc(col_name)
+            style_df[col_name] += (
+                f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
+            )
 
             if col_name in ["Color"]:
                 style_df[col_name] += "text-align: center; "

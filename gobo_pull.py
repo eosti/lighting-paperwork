@@ -1,3 +1,5 @@
+"""Generator for a gobo pull list"""
+
 import logging
 from typing import List, Self
 
@@ -12,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class GoboPullList(PaperworkGenerator):
+    """
+    Generates a gobo pull list with gobo name and quantity.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -22,7 +28,7 @@ class GoboPullList(PaperworkGenerator):
         chan_fields = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
         gobo_list = []
 
-        for index, row in chan_fields.iterrows():
+        for _, row in chan_fields.iterrows():
             if row["Gobo 1"].strip() != "":
                 gobo_list.append(row["Gobo 1"])
             if row["Gobo 2"].strip() != "":
@@ -45,15 +51,16 @@ class GoboPullList(PaperworkGenerator):
         style_df = df.copy()
 
         style_df = style_df.astype(str)
-        for index, data in df.iterrows():
+        for index, _ in df.iterrows():
             style_df.loc[index, :] = ""
             style_df.loc[index, :] += f"border-bottom: {border_style}; "
 
         # Set font based on column
-        for col_name, col in style_df.items():
-            style_df[
-                col_name
-            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%; "
+        for col_name, _ in style_df.items():
+            width_idx = style_df.columns.get_loc(col_name)
+            style_df[col_name] += (
+                f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
+            )
 
             style_df[col_name] += "text-align: left; "
 

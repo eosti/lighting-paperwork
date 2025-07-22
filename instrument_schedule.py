@@ -1,3 +1,5 @@
+"""Generator for an instrument hookup"""
+
 import logging
 import re
 from typing import List, Self, Tuple
@@ -15,6 +17,12 @@ logger = logging.getLogger(__name__)
 
 
 class InstrumentSchedule(PaperworkGenerator):
+    """
+    Generates an instrument schedules with U#, instrument type, color,
+        channel, address, etc per position.
+    TODO: Accessories don't show up.
+    """
+
     def __init__(
         self, *args, position_style: FontStyle = default_position_style, **kwargs
     ):
@@ -61,6 +69,9 @@ class InstrumentSchedule(PaperworkGenerator):
         return self
 
     def split_by_position(self) -> List[Tuple[pd.DataFrame, str]]:
+        """
+        Split dataframe into multiple dataframes, one per position.
+        """
         # Step one: sort position names
         unique_vals = self.df["Position"].unique()
 
@@ -119,7 +130,6 @@ class InstrumentSchedule(PaperworkGenerator):
     @staticmethod
     def style_data(
         df: pd.DataFrame,
-        position_style: FontStyle,
         body_style: FontStyle,
         col_width: List[int],
         border_weight: float,
@@ -145,13 +155,16 @@ class InstrumentSchedule(PaperworkGenerator):
             prev_row = (index, data)
 
         # Last row gets a solid bottom border
-        style_df.loc[
-            prev_row[0], :
-        ] += f"border-bottom: {border_weight}px solid black; "
+        style_df.loc[prev_row[0], :] += (
+            f"border-bottom: {border_weight}px solid black; "
+        )
 
         # Set font based on column
-        for col_name, col in style_df.items():
-            style_df[col_name] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%; "
+        for col_name, _ in style_df.items():
+            style_df[col_name] += (
+                f"{body_style.to_css()}; vertical-align: middle; "
+                f"width: {col_width[style_df.columns.get_loc(col_name)]}%; "
+            )
 
             if col_name in ["Chan", "U#", "Addr"]:
                 style_df[col_name] += "text-align: center; "
@@ -169,7 +182,8 @@ class InstrumentSchedule(PaperworkGenerator):
     ) -> List[str]:
         PaperworkGenerator.verify_width(col_width)
         style = [
-            f"{header_style.to_css()}; border-top: {border_weight}px solid black; border-bottom: {border_weight}px solid black; "
+            f"{header_style.to_css()}; border-top: {border_weight}px solid black; "
+            f"border-bottom: {border_weight}px solid black; "
             for _ in index
         ]
 
@@ -184,9 +198,6 @@ class InstrumentSchedule(PaperworkGenerator):
 
         return style
 
-    def pagebreak_style(self) -> List[dict]:
-        return []
-
     def make_html(self) -> str:
         self.generate_df()
         positions = self.split_by_position()
@@ -197,7 +208,6 @@ class InstrumentSchedule(PaperworkGenerator):
             styled = styled.apply(
                 type(self).style_data,
                 axis=None,
-                position_style=self.position_style,
                 body_style=self.style.body,
                 col_width=self.col_widths,
                 border_weight=self.border_weight,
@@ -214,7 +224,6 @@ class InstrumentSchedule(PaperworkGenerator):
             styled = styled.set_table_styles(
                 self.default_table_style(), overwrite=False
             )
-            styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
             styled = styled.set_table_styles(
                 [{"selector": "", "props": "break-inside: avoid; margin-bottom: 5mm;"}],
                 overwrite=False,

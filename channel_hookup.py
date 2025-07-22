@@ -1,3 +1,5 @@
+"""Generator for a channel hookup"""
+
 import logging
 from typing import List, Self
 
@@ -14,6 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 class ChannelHookup(PaperworkGenerator):
+    """
+    Generates a channel hookup with channel, address,
+        position, type, gobo, color, etc.
+    TODO: Accessories don't show up
+    """
+
     def __init__(self, *args, chan_style: FontStyle = default_chan_style, **kwargs):
         super().__init__(*args, **kwargs)
         self.chan_style = chan_style
@@ -62,10 +70,10 @@ class ChannelHookup(PaperworkGenerator):
     @staticmethod
     def style_data(
         df: pd.DataFrame,
-        chan_style: FontStyle,
         body_style: FontStyle,
         col_width: List[int],
         border_weight: float,
+        chan_style: FontStyle = default_chan_style,
     ):
         border_style = f"{border_weight}px solid black"
         style_df = df.copy()
@@ -87,8 +95,10 @@ class ChannelHookup(PaperworkGenerator):
             prev_row = (index, data)
 
         # Set font based on column
-        for col_name, col in style_df.items():
-            style_df[col_name] += f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
+        for col_name, _ in style_df.items():
+            style_df[col_name] += (
+                f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
+            )
             if col_name == "Chan":
                 style_df[col_name] += f"{chan_style.to_css()}; "
             else:
@@ -110,7 +120,8 @@ class ChannelHookup(PaperworkGenerator):
     ) -> List[str]:
         PaperworkGenerator.verify_width(col_width)
         style = [
-            f"{header_style.to_css()}; border-top: {border_weight}px solid black; border-bottom: {border_weight}px solid black; "
+            f"{header_style.to_css()}; border-top: {border_weight}px solid black;"
+            f"border-bottom: {border_weight}px solid black; "
             for _ in index
         ]
 
@@ -126,8 +137,11 @@ class ChannelHookup(PaperworkGenerator):
         return style
 
     def pagebreak_style(self) -> List[dict]:
-        # TODO: this doesn't actually do much
-        # https://stackoverflow.com/questions/20481039/applying-page-break-before-to-a-table-row-tr
+        """
+        Disallow pagebreaks between channels with the same number.
+        TODO: this doesn't actually do much
+        https://stackoverflow.com/questions/20481039/applying-page-break-before-to-a-table-row-tr
+        """
         idxs = np.where(self.df["Chan"] == "&nbsp;")
 
         selector_list = []

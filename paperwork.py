@@ -1,3 +1,5 @@
+"""Base paperwork generation class"""
+
 import logging
 import re
 from abc import ABC, abstractmethod
@@ -12,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class PaperworkGenerator(ABC):
+    """Base paperwork generation class"""
+
     def __init__(
         self,
         vw_export: pd.DataFrame,
@@ -27,30 +31,46 @@ class PaperworkGenerator(ABC):
         self.border_weight = border_weight
 
     def set_show_data(self, show_name: str, ld_name: str, revision: str) -> None:
+        """Save show data for later use"""
         self.show_data = ShowData(
             show_name=show_name, ld_name=ld_name, revision=revision
         )
 
     @abstractmethod
     def generate_df(self) -> pd.DataFrame:
-        pass
+        """
+        Using `self.vw_export`, generate a DataFrame that contains the
+            necessary sorted information for the paperwork type.
+        """
 
     @staticmethod
     @abstractmethod
-    def style_data(df: pd.DataFrame, body_style: FontStyle) -> pd.DataFrame:
-        pass
+    def style_data(
+        df: pd.DataFrame,
+        body_style: FontStyle,
+        col_width: List[int],
+        border_weight: float,
+    ) -> pd.DataFrame:
+        """Styles the data for a table"""
 
     @staticmethod
     @abstractmethod
     def style_fields(
-        index: pd.Series, header_style: FontStyle, col_width: List[int]
+        index: pd.Series,
+        header_style: FontStyle,
+        col_width: List[int],
+        border_weight: float,
     ) -> List[str]:
-        pass
+        """Styles the fields (i.e. headers) for a table"""
+
+    def make_html(self) -> str:
+        """Generates a formatted HTML table from the generated DataFrame"""
 
     @staticmethod
     def verify_width(width: List[int]) -> bool:
+        """Verifies that the col widths remain less than 100%"""
         if sum(width) > 100:
-            logger.warn(f"Col widths too long: used {sum(width)}%!")
+            logger.warning("Col widths too long: used %i%%!", sum(width))
             return False
 
         return True
@@ -60,7 +80,7 @@ class PaperworkGenerator(ABC):
         Combines the Instrument Type and Power fields into one
         """
         instload = []
-        for index, row in self.df.iterrows():
+        for _, row in self.df.iterrows():
             # Consistently format power
             if row["Wattage"] != "":
                 # we want it to be [number]W
@@ -94,9 +114,12 @@ class PaperworkGenerator(ABC):
         return self
 
     def combine_gelgobo(self) -> Self:
-        # Only operates on Gobo 1
+        """
+        Combines the Gel and Gobo fields into one.
+        Only operates on Gobo 1 field, not Gobo 2.
+        """
         gelgobo = []
-        for index, row in self.df.iterrows():
+        for _, row in self.df.iterrows():
             # If no gel replace with N/C
             if row["Color"] == "":
                 tmp = "N/C"
@@ -117,6 +140,9 @@ class PaperworkGenerator(ABC):
         return self
 
     def format_address_slash(self) -> Self:
+        """
+        Formats an absolute address into a Universe/Address string.
+        """
         for row in self.df.itertuples():
             absaddr = int(self.df.at[row.Index, "Absolute Address"])
             if absaddr == 0:
@@ -137,8 +163,11 @@ class PaperworkGenerator(ABC):
         return self
 
     def repeated_channels(self) -> Self:
+        """
+        Formats repeated channel numbers to use `"` to represent repeated data.
+        """
         prev_row = None
-        for index, data in self.df.iterrows():
+        for _, data in self.df.iterrows():
             if prev_row is None:
                 prev_row = data
                 continue
@@ -150,10 +179,10 @@ class PaperworkGenerator(ABC):
                     if idx == "U#":
                         # Do repeat U# to avoid confusion
                         continue
-                    elif val == "":
+                    if val == "":
                         # Don't "-ify empty fields
                         continue
-                    elif data[idx] == prev_row[idx]:
+                    if data[idx] == prev_row[idx]:
                         data[idx] = '"'
             else:
                 prev_row = data
@@ -161,6 +190,9 @@ class PaperworkGenerator(ABC):
         return self
 
     def abbreviate_col_names(self) -> Self:
+        """
+        Abbreviates common column names.
+        """
         self.df = self.df.rename(
             columns={"Channel": "Chan", "Unit Number": "U#", "Address": "Addr"}
         )
@@ -168,10 +200,14 @@ class PaperworkGenerator(ABC):
 
     # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse
     def default_table_style(self, width=100):
+        """
+        Returns a Style dict with default table styling.
+        """
         return [
             {
                 "selector": "",
-                "props": "border-spacing: 0px; border-collapse: initial; line-height: 1.2; break-inside: auto; width: 100%;",
+                "props": "border-spacing: 0px; border-collapse: initial; "
+                "line-height: 1.2; break-inside: auto; width: 100%;",
             },
             {"selector": "tr", "props": "break-inside: avoid; break-after: auto; "},
             {"selector": "td", "props": "padding: 1px;"},
@@ -186,6 +222,7 @@ class PaperworkGenerator(ABC):
         ]
 
     @staticmethod
+    # pylint: disable-next=too-many-arguments, too-many-positional-arguments
     def generate_header(
         uuid: str,
         content_left: str = "",
@@ -197,19 +234,23 @@ class PaperworkGenerator(ABC):
     ) -> str:
         """
         Generates the HTML for the table header.
-        The generated style :func:`generate_page_style` will hook each `span` into a running element for printing
-            to become the page header/footer elements.
+        The generated style :func:`generate_page_style` will hook each `span` into
+            a running element for printing to become the page marginal elements.
         The `span`s should semantically be divs probably but those break weasyprint.
         """
         return f"""
         <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
-            <span class="top-left-{uuid}" id="header_left_{uuid}" style="text-align:left;{style_left}">{content_left}</span>
-            <span class="top-center-{uuid}" id="header_center_{uuid}" style="text-align:center;{style_center}">{content_center}</span>
-            <span class="top-right-{uuid}" id="header_right_{uuid}" style="text-align:right;{style_right}">{content_right}</span>
+            <span class="top-left-{uuid}" id="header_left_{uuid}"
+            style="text-align:left;{style_left}">{content_left}</span>
+            <span class="top-center-{uuid}" id="header_center_{uuid}"
+            style="text-align:center;{style_center}">{content_center}</span>
+            <span class="top-right-{uuid}" id="header_right_{uuid}"
+            style="text-align:right;{style_right}">{content_right}</span>
         </div>
         """
 
     @staticmethod
+    # pylint: disable-next=too-many-arguments, too-many-positional-arguments
     def generate_footer(
         uuid: str,
         content_left: str = "",
@@ -221,15 +262,18 @@ class PaperworkGenerator(ABC):
     ) -> str:
         """
         Generates the HTML for the table footer.
-        The generated style :func:`generate_page_style` will hook each `span` into a running element for printing
-            to become the page header/footer elements.
+        The generated style :func:`generate_page_style` will hook each `span` into
+            a running element for printing to become the page marginal elements.
         The `span`s should semantically be divs probably but those break weasyprint.
         """
         return f"""
         <div id="footer_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
-            <span class="bottom-left-{uuid}" id="bottom_left_{uuid}" style="text-align:left;{style_left}">{content_left}</span>
-            <span class="bottom-center-{uuid}" id="bottom_center_{uuid}" style="text-align:center;{style_center}">{content_center}</span>
-            <span class="bottom-right-{uuid}" id="bottom_right_{uuid}" style="text-align:right;{style_right}">{content_right}</span>
+            <span class="bottom-left-{uuid}" id="bottom_left_{uuid}"
+            style="text-align:left;{style_left}">{content_left}</span>
+            <span class="bottom-center-{uuid}" id="bottom_center_{uuid}"
+            style="text-align:center;{style_center}">{content_center}</span>
+            <span class="bottom-right-{uuid}" id="bottom_right_{uuid}"
+            style="text-align:right;{style_right}">{content_right}</span>
         </div>
         """
 
@@ -237,6 +281,11 @@ class PaperworkGenerator(ABC):
     def generate_page_style(
         uuid: str, pagenum_pos: Optional[str] = None, pagenum_style: str = ""
     ) -> str:
+        """
+        Generates a <style> for the table header and footer.
+        This establishes the header and footer elements as running, and will insert them
+            in the page marginals during printing instead of embedded in the table.
+        """
         style = ""
         page_style = ""
         for side in ["left", "center", "right"]:
