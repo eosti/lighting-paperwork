@@ -21,6 +21,8 @@ class InstrumentSchedule(PaperworkGenerator):
         super().__init__(*args, **kwargs)
         self.position_style = position_style
 
+    col_widths = [5, 17, 36, 28, 7, 7]
+
     def generate_df(self) -> Self:
         filter_fields = [
             "Position",
@@ -119,6 +121,7 @@ class InstrumentSchedule(PaperworkGenerator):
         df: pd.DataFrame,
         position_style: FontStyle,
         body_style: FontStyle,
+        col_width: List[int],
         border_weight: float,
     ):
         chan_border_style = f"{border_weight}px dashed black"
@@ -148,7 +151,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
         # Set font based on column
         for col_name, col in style_df.items():
-            style_df[col_name] += f"{body_style.to_css()}; vertical-align: middle; "
+            style_df[col_name] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%; "
 
             if col_name in ["Chan", "U#", "Addr"]:
                 style_df[col_name] += "text-align: center; "
@@ -184,7 +187,7 @@ class InstrumentSchedule(PaperworkGenerator):
     def pagebreak_style(self) -> List[dict]:
         return []
 
-    def make(self) -> str:
+    def make_html(self) -> str:
         self.generate_df()
         positions = self.split_by_position()
 
@@ -196,13 +199,14 @@ class InstrumentSchedule(PaperworkGenerator):
                 axis=None,
                 position_style=self.position_style,
                 body_style=self.style.body,
+                col_width=self.col_widths,
                 border_weight=self.border_weight,
             )
             styled = styled.hide()
             styled = styled.apply_index(
                 type(self).style_fields,
                 header_style=self.style.field,
-                col_width=[5, 17, 36, 28, 7, 7],
+                col_width=self.col_widths,
                 border_weight=self.border_weight,
                 axis=1,
             )

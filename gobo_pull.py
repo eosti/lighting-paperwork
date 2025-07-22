@@ -1,0 +1,132 @@
+import logging
+from typing import List, Self
+
+import numpy as np
+import pandas as pd
+from pandas.io.formats.style import Styler
+
+from helpers import FontStyle
+from paperwork import PaperworkGenerator
+
+logger = logging.getLogger(__name__)
+
+
+class GoboPullList(PaperworkGenerator):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    col_widths = [80, 20]
+
+    def generate_df(self) -> Self:
+        filter_fields = ["Gobo 1", "Gobo 2"]
+        chan_fields = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
+        gobo_list = []
+
+        for index, row in chan_fields.iterrows():
+            if row["Gobo 1"].strip() != "":
+                gobo_list.append(row["Gobo 1"])
+            if row["Gobo 2"].strip() != "":
+                gobo_list.append(row["Gobo 2"])
+
+        gobo_name, gobo_count = np.unique(gobo_list, return_counts=True)
+
+        self.df = pd.DataFrame(zip(gobo_name, gobo_count), columns=["Gobo Name", "Qty"])
+
+        return self
+
+    @staticmethod
+    def style_data(
+        df: pd.DataFrame,
+        body_style: FontStyle,
+        col_width: List[int],
+        border_weight: float,
+    ):
+        border_style = f"{border_weight}px solid black"
+        style_df = df.copy()
+
+        style_df = style_df.astype(str)
+        for index, data in df.iterrows():
+            style_df.loc[index, :] = ""
+            style_df.loc[index, :] += f"border-bottom: {border_style}; "
+
+        # Set font based on column
+        for col_name, col in style_df.items():
+            style_df[
+                col_name
+            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%; "
+
+            style_df[col_name] += "text-align: left; "
+
+        return style_df
+
+    @staticmethod
+    def style_fields(
+        index: pd.Series,
+        header_style: FontStyle,
+        col_width: List[int],
+        border_weight: float,
+    ) -> List[str]:
+        PaperworkGenerator.verify_width(col_width)
+        style = [
+            f"{header_style.to_css()}; border-bottom: {border_weight}px solid black; "
+            for _ in index
+        ]
+
+        for idx, val in enumerate(index):
+            if val in ["Gobo Name"]:
+                style[idx] += "text-align: center; "
+            else:
+                style[idx] += "text-align: left; "
+
+        for idx, _ in enumerate(index):
+            style[idx] += f"width: {col_width[idx]}%; "
+
+        return style
+
+    def make_html(self) -> str:
+        self.generate_df()
+
+        styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
+        styled = styled.apply(
+            type(self).style_data,
+            axis=None,
+            body_style=self.style.body,
+            col_width=self.col_widths,
+            border_weight=self.border_weight,
+        )
+        styled = styled.hide()
+        styled = styled.apply_index(
+            type(self).style_fields,
+            header_style=self.style.field,
+            col_width=self.col_widths,
+            border_weight=self.border_weight,
+            axis=1,
+        )
+        styled = styled.set_table_attributes('class="paperwork-table"')
+        styled = styled.set_table_styles(
+            self.default_table_style(width=40), overwrite=False
+        )
+
+        header_html = self.generate_header(
+            styled.uuid,
+            content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
+            content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
+            content_center="Gobo Pull List",
+            style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+            style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+            style_center=f"{self.style.title.to_css()}",
+        )
+        footer_html = self.generate_footer(
+            styled.uuid,
+            style_left=self.style.marginals.to_css(),
+            content_left="Gobo Pull List",
+        )
+        page_style = self.generate_page_style(
+            styled.uuid, "bottom-right", self.style.marginals.to_css()
+        )
+
+        return styled.to_html(
+            generated_header=header_html,
+            generated_footer=footer_html,
+            generated_page_style=page_style,
+        )

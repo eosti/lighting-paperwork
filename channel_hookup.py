@@ -18,6 +18,8 @@ class ChannelHookup(PaperworkGenerator):
         super().__init__(*args, **kwargs)
         self.chan_style = chan_style
 
+    col_widths = [10, 5, 13, 5, 13, 32, 22]
+
     def generate_df(self) -> Self:
         # Format data
         filter_fields = [
@@ -62,6 +64,7 @@ class ChannelHookup(PaperworkGenerator):
         df: pd.DataFrame,
         chan_style: FontStyle,
         body_style: FontStyle,
+        col_width: List[int],
         border_weight: float,
     ):
         border_style = f"{border_weight}px solid black"
@@ -85,10 +88,11 @@ class ChannelHookup(PaperworkGenerator):
 
         # Set font based on column
         for col_name, col in style_df.items():
+            style_df[col_name] += f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
             if col_name == "Chan":
-                style_df[col_name] += f"{chan_style.to_css()}; vertical-align: middle; "
+                style_df[col_name] += f"{chan_style.to_css()}; "
             else:
-                style_df[col_name] += f"{body_style.to_css()}; vertical-align: middle; "
+                style_df[col_name] += f"{body_style.to_css()}; "
 
             if col_name in ["Chan", "U#", "Addr"]:
                 style_df[col_name] += "text-align: center; "
@@ -140,7 +144,7 @@ class ChannelHookup(PaperworkGenerator):
 
         return style_list
 
-    def make(self) -> str:
+    def make_html(self) -> str:
         self.generate_df()
 
         styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
@@ -149,13 +153,14 @@ class ChannelHookup(PaperworkGenerator):
             axis=None,
             chan_style=self.chan_style,
             body_style=self.style.body,
+            col_width=self.col_widths,
             border_weight=self.border_weight,
         )
         styled = styled.hide()
         styled = styled.apply_index(
             type(self).style_fields,
             header_style=self.style.field,
-            col_width=[10, 5, 13, 5, 13, 32, 22],
+            col_width=self.col_widths,
             border_weight=self.border_weight,
             axis=1,
         )

@@ -6,7 +6,7 @@ import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from helpers import FontStyle, parse_gel
+from helpers import FontStyle, Gel
 from paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 class ColorCutList(PaperworkGenerator):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    col_widths = [35, 43, 22]
 
     def generate_df(self) -> Self:
         filter_fields = ["Color", "Frame Size"]
@@ -37,7 +39,7 @@ class ColorCutList(PaperworkGenerator):
                     if len(i.split("x")) > 1:
                         # Repeat gel situation (i.e. L201x2)
                         for j in range(0, int(i.split("x")[1])):
-                            gel = parse_gel(i.split("x")[0])
+                            gel = Gel.parse_name(i.split("x")[0])
                             color_dict.append(
                                 {
                                     "Color": gel.name,
@@ -48,7 +50,7 @@ class ColorCutList(PaperworkGenerator):
                             )
                     else:
                         # Normal single gel
-                        gel = parse_gel(i)
+                        gel = Gel.parse_name(i)
                         color_dict.append(
                             {
                                 "Color": gel.name,
@@ -136,7 +138,7 @@ class ColorCutList(PaperworkGenerator):
 
         return style
 
-    def make(self) -> str:
+    def make_html(self) -> str:
         self.generate_df()
 
         styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
@@ -144,14 +146,14 @@ class ColorCutList(PaperworkGenerator):
             type(self).style_data,
             axis=None,
             body_style=self.style.body,
-            col_width=[35, 43, 22],
+            col_width=self.col_widths,
             border_weight=self.border_weight,
         )
         styled = styled.hide()
         styled = styled.apply_index(
             type(self).style_fields,
             header_style=self.style.field,
-            col_width=[35, 43, 22],
+            col_width=self.col_widths,
             border_weight=self.border_weight,
             axis=1,
         )

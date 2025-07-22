@@ -22,6 +22,25 @@ class Gel:
     name_sort: str
     company: str
 
+    @classmethod
+    def parse_name(cls, gel: str):
+        if gel.startswith("AP"):
+            company = "Apollo"
+        elif gel.startswith("G"):
+            company = "GAM"
+        elif gel.startswith("L"):
+            company = "Lee"
+        elif gel.startswith("R"):
+            company = "Rosco"
+
+        gelsort = gel
+        if company == "Rosco":
+            if re.match(r"^R3\d\d$", gel):
+                # Rosco extended gel, this is basically a .5 gel
+                gelsort = "R" + gel[2:] + ".3"
+
+        return cls(gel, gelsort, company)
+
 
 @dataclass
 class FontStyle:
@@ -39,20 +58,3 @@ class FontStyle:
         return f"<p style='{self.to_css()}{style}'>{body}</p>"
 
 
-def parse_gel(gel: str) -> Gel:
-    if gel.startswith("AP"):
-        company = "Apollo"
-    elif gel.startswith("G"):
-        company = "GAM"
-    elif gel.startswith("L"):
-        company = "Lee"
-    elif gel.startswith("R"):
-        company = "Rosco"
-
-    gelsort = gel
-    if company == "Rosco":
-        if re.match(r"^R3\d\d$", gel):
-            # Rosco extended gel, this is basically a .5 gel
-            gelsort = "R" + gel[2:] + ".3"
-
-    return Gel(gel, gelsort, company)
