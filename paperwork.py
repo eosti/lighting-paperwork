@@ -238,6 +238,7 @@ class PaperworkGenerator(ABC):
             a running element for printing to become the page marginal elements.
         The `span`s should semantically be divs probably but those break weasyprint.
         """
+        # TODO: set grid-auto-columns to allow for long titles
         return f"""
         <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
             <span class="top-left-{uuid}" id="header_left_{uuid}"

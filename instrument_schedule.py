@@ -30,6 +30,7 @@ class InstrumentSchedule(PaperworkGenerator):
         self.position_style = position_style
 
     col_widths = [5, 17, 36, 28, 7, 7]
+    display_name = "Instrument Schedule"
 
     def generate_df(self) -> Self:
         filter_fields = [
@@ -202,7 +203,27 @@ class InstrumentSchedule(PaperworkGenerator):
         self.generate_df()
         positions = self.split_by_position()
 
-        output_html = "<div id='paperwork-container' style='width: 670px;'>\n"
+        header_html = self.generate_header(
+            "instr",
+            content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
+            content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
+            content_center=self.display_name,
+            style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+            style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+            style_center=f"{self.style.title.to_css()}",
+        )
+        footer_html = self.generate_footer(
+            "instr",
+            style_left=self.style.marginals.to_css(),
+            content_left=self.display_name,
+        )
+        page_style = self.generate_page_style(
+            "instr", "bottom-right", self.style.marginals.to_css()
+        )
+
+        output_html = page_style
+        output_html += header_html
+        output_html += "<div id='inst-schedule-container'>\n"
         for df, position in positions:
             styled = Styler.from_custom_template(".", "header_footer.tpl")(df)
             styled = styled.apply(
@@ -240,4 +261,5 @@ class InstrumentSchedule(PaperworkGenerator):
             )
 
         output_html += "\n</div>"
+        output_html += footer_html
         return output_html

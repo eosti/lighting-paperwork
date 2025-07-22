@@ -29,6 +29,7 @@ def main() -> None:
     parser.add_argument("--show", help="Show name")
     parser.add_argument("--ld", help="Lighting designer initials")
     parser.add_argument("--rev", help="Revision string (ex. 'Rev. A')")
+    parser.add_argument("--html", action='store_true', help="Export a raw HTML file instead of PDF")
 
     args = parser.parse_args()
 
@@ -53,19 +54,26 @@ def main() -> None:
     html.append(ColorCutList(vw_export, show_info).make_html())
     html.append(GoboPullList(vw_export, show_info).make_html())
 
-    # Generate paperwork PDF
-    documents = []
-    for h in html:
-        documents.append(HTML(string=h).render())
-
-    all_pages = [page for document in documents for page in document.pages]
-    output_filename = (
+    output_slug = (
         f"{show_info.show_name.replace(' ', '')}_Paperwork_"
         + re.sub(r"\W+", "", show_info.revision)
-        + ".pdf"
     )
 
-    documents[0].copy(all_pages).write_pdf(output_filename)
+    if args.html:
+        with open(output_slug + ".html", 'w') as f:
+            for h in html:
+                f.write("<div class='report-container' style='break-after: page'>")
+                f.write(h)
+                f.write("</div>")
+    else:
+        # Generate paperwork PDF
+        documents = []
+        for h in html:
+            documents.append(HTML(string=h).render())
+
+        all_pages = [page for document in documents for page in document.pages]
+
+        documents[0].copy(all_pages).write_pdf(output_slug + ".pdf")
 
 
 if __name__ == "__main__":

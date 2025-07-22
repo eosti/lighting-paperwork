@@ -22,6 +22,7 @@ class GoboPullList(PaperworkGenerator):
         super().__init__(*args, **kwargs)
 
     col_widths = [80, 20]
+    display_name = "Gobo Pull List"
 
     def generate_df(self) -> Self:
         filter_fields = ["Gobo 1", "Gobo 2"]
@@ -118,7 +119,7 @@ class GoboPullList(PaperworkGenerator):
             styled.uuid,
             content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
             content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
-            content_center="Gobo Pull List",
+            content_center=self.display_name,
             style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
             style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
             style_center=f"{self.style.title.to_css()}",
@@ -126,7 +127,7 @@ class GoboPullList(PaperworkGenerator):
         footer_html = self.generate_footer(
             styled.uuid,
             style_left=self.style.marginals.to_css(),
-            content_left="Gobo Pull List",
+            content_left=self.display_name,
         )
         page_style = self.generate_page_style(
             styled.uuid, "bottom-right", self.style.marginals.to_css()

@@ -27,6 +27,7 @@ class ChannelHookup(PaperworkGenerator):
         self.chan_style = chan_style
 
     col_widths = [10, 5, 13, 5, 13, 32, 22]
+    display_name = "Channel Hookup"
 
     def generate_df(self) -> Self:
         # Format data
@@ -186,7 +187,7 @@ class ChannelHookup(PaperworkGenerator):
             styled.uuid,
             content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
             content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
-            content_center="Channel Hookup",
+            content_center=self.display_name,
             style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
             style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
             style_center=f"{self.style.title.to_css()}",
@@ -194,10 +195,10 @@ class ChannelHookup(PaperworkGenerator):
         footer_html = self.generate_footer(
             styled.uuid,
             style_left=self.style.marginals.to_css(),
-            content_left="Channel Hookup",
+            content_left=self.display_name,
         )
         page_style = self.generate_page_style(
-            "bottom-right", self.style.marginals.to_css()
+            styled.uuid, "bottom-right", self.style.marginals.to_css()
         )
 
         return styled.to_html(
