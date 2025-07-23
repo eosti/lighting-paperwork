@@ -13,6 +13,8 @@ from helpers import ShowData
 from instrument_schedule import InstrumentSchedule
 from vectorworks_xml import VWExport
 
+logger = logging.getLogger(__name__)
+
 
 def is_file(path: str) -> str:
     if not os.path.isfile(path):
@@ -29,7 +31,9 @@ def main() -> None:
     parser.add_argument("--show", help="Show name")
     parser.add_argument("--ld", help="Lighting designer initials")
     parser.add_argument("--rev", help="Revision string (ex. 'Rev. A')")
-    parser.add_argument("--html", action='store_true', help="Export a raw HTML file instead of PDF")
+    parser.add_argument(
+        "--html", action="store_true", help="Export a raw HTML file instead of PDF"
+    )
 
     args = parser.parse_args()
 
@@ -54,26 +58,34 @@ def main() -> None:
     html.append(ColorCutList(vw_export, show_info).make_html())
     html.append(GoboPullList(vw_export, show_info).make_html())
 
-    output_slug = (
-        f"{show_info.show_name.replace(' ', '')}_Paperwork_"
-        + re.sub(r"\W+", "", show_info.revision)
+    output_slug = f"{show_info.show_name.replace(' ', '')}_Paperwork_" + re.sub(
+        r"\W+", "", show_info.revision
     )
 
     if args.html:
-        with open(output_slug + ".html", 'w') as f:
+        with open(output_slug + ".html", "w") as f:
+            f.write("<!DOCTYPE html>")
+            f.write("<html>")
+
             for h in html:
-                f.write("<div class='report-container' style='break-after: page'>")
                 f.write(h)
-                f.write("</div>")
+
+            f.write("</html>")
+
+            logger.info("HTML published to %s", output_slug + ".html")
     else:
         # Generate paperwork PDF
+        logger.info("Generating PDF...")
         documents = []
         for h in html:
             documents.append(HTML(string=h).render())
 
+        # this method generates each report individually and collates them -> page numbers reset per report
         all_pages = [page for document in documents for page in document.pages]
 
         documents[0].copy(all_pages).write_pdf(output_slug + ".pdf")
+
+        logger.info("PDF published to %s", output_slug + ".pdf")
 
 
 if __name__ == "__main__":

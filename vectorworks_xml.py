@@ -95,8 +95,6 @@ class VWExport:
         for _, v in self.field_mapping.items():
             header.append(v)
 
-        logger.debug(header)
-
         all_instr = []
         for instr in self.instruments:
             if instr.props["Action"] == "Delete":

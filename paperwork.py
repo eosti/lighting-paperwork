@@ -36,6 +36,9 @@ class PaperworkGenerator(ABC):
             show_name=show_name, ld_name=ld_name, revision=revision
         )
 
+    display_name: str
+    col_widths: list[int]
+
     @abstractmethod
     def generate_df(self) -> pd.DataFrame:
         """
@@ -221,6 +224,27 @@ class PaperworkGenerator(ABC):
             },
         ]
 
+    def generate_metadata(self) -> str:
+        """Generates HTML metadata from show data"""
+        return f"""
+        <head>
+            <meta charset="utf-8">
+            <title>{self.display_name}</title>
+            <meta name="description" content="{self.display_name}">
+            <meta name="author" content="{self.show_data.ld_name}">
+            <meta name="generator" content="Lighting Paperwork">
+            <meta name="dcterms.created" content="{self.show_data.print_date()}"
+        </head>
+        """
+
+    def wrap_table(self, html: str) -> str:
+        """Wraps a generated HTML table with bookmarks and anchors"""
+        return f"""
+        <div id="{self.display_name.replace(" ", "")}" class="report-container" style="break-after: page; bookmark-level: 1; bookmark-label: '{self.display_name}'; bookmark-state: open;">
+            {html}
+        </div>
+        """
+
     @staticmethod
     # pylint: disable-next=too-many-arguments, too-many-positional-arguments
     def generate_header(
@@ -238,9 +262,8 @@ class PaperworkGenerator(ABC):
             a running element for printing to become the page marginal elements.
         The `span`s should semantically be divs probably but those break weasyprint.
         """
-        # TODO: set grid-auto-columns to allow for long titles
         return f"""
-        <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
+        <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:auto;">
             <span class="top-left-{uuid}" id="header_left_{uuid}"
             style="text-align:left;{style_left}">{content_left}</span>
             <span class="top-center-{uuid}" id="header_center_{uuid}"

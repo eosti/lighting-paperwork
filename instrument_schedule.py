@@ -262,4 +262,8 @@ class InstrumentSchedule(PaperworkGenerator):
 
         output_html += "\n</div>"
         output_html += footer_html
+        output_html = self.wrap_table(output_html)
+
+        logger.info("Generated instrument schedule.")
+
         return output_html

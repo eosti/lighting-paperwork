@@ -133,8 +133,13 @@ class GoboPullList(PaperworkGenerator):
             styled.uuid, "bottom-right", self.style.marginals.to_css()
         )
 
-        return styled.to_html(
+        logger.info("Generated gobo pull list.")
+
+        html = styled.to_html(
             generated_header=header_html,
             generated_footer=footer_html,
             generated_page_style=page_style,
         )
+        html = self.wrap_table(html)
+
+        return html
