@@ -22,6 +22,7 @@ class GoboPullList(PaperworkGenerator):
         super().__init__(*args, **kwargs)
 
     col_widths = [80, 20]
+    page_width = 40
     display_name = "Gobo Pull List"
 
     def generate_df(self) -> Self:
@@ -91,7 +92,7 @@ class GoboPullList(PaperworkGenerator):
 
         return style
 
-    def make_html(self) -> str:
+    def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
         styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
@@ -110,9 +111,15 @@ class GoboPullList(PaperworkGenerator):
             border_weight=self.border_weight,
             axis=1,
         )
+
+        return styled
+
+    def make_html(self) -> str:
+        styled = self._make_common()
+
         styled = styled.set_table_attributes('class="paperwork-table"')
         styled = styled.set_table_styles(
-            self.default_table_style(width=40), overwrite=False
+            self.default_table_style(width=self.page_width), overwrite=False
         )
 
         header_html = self.generate_header(

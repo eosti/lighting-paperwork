@@ -6,9 +6,11 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Self
 
 import pandas as pd
+import openpyxl
 
 from helpers import FontStyle, ShowData
 from style import BaseStyle, DefaultStyle
+import excel_formatter
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +40,7 @@ class PaperworkGenerator(ABC):
 
     display_name: str
     col_widths: list[int]
+    page_width: int = 100
 
     @abstractmethod
     def generate_df(self) -> pd.DataFrame:
@@ -66,8 +69,31 @@ class PaperworkGenerator(ABC):
     ) -> List[str]:
         """Styles the fields (i.e. headers) for a table"""
 
+    def _make_common(self) -> pd.io.formats.style.Styler:
+        """Runs common make tasks for html and excel"""
+
     def make_html(self) -> str:
         """Generates a formatted HTML table from the generated DataFrame"""
+
+    def make_excel(self, excel_path: str) -> None:
+        """Adds a sheet to an Excel file with the formatted DataFrame"""
+        styled = self._make_common()
+
+        with pd.ExcelWriter(excel_path, engine="openpyxl", mode="a") as writer:
+            styled.to_excel(writer, sheet_name=self.display_name)
+
+        wb = openpyxl.load_workbook(excel_path)
+        ws = wb[self.display_name]
+
+        # Remove index column
+        ws.delete_cols(idx=1)
+
+        # Standard formatting
+        excel_formatter.add_title(ws, self.display_name, self.show_data)
+        excel_formatter.page_setup(ws, 1)
+        excel_formatter.set_col_widths(ws, self.col_widths, self.page_width)
+        excel_formatter.wrap_all_cells(ws)
+        wb.save(excel_path)
 
     @staticmethod
     def verify_width(width: List[int]) -> bool:

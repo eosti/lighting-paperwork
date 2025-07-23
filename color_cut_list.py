@@ -3,12 +3,14 @@
 import logging
 from typing import List, Self
 
+import openpyxl
 import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
 from helpers import FontStyle, Gel
 from paperwork import PaperworkGenerator
+import excel_formatter
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +24,7 @@ class ColorCutList(PaperworkGenerator):
         super().__init__(*args, **kwargs)
 
     col_widths = [35, 43, 22]
+    page_width = 30
     display_name = "Color Cut List"
 
     def generate_df(self) -> Self:
@@ -145,7 +148,7 @@ class ColorCutList(PaperworkGenerator):
 
         return style
 
-    def make_html(self) -> str:
+    def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
         styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
@@ -164,9 +167,15 @@ class ColorCutList(PaperworkGenerator):
             border_weight=self.border_weight,
             axis=1,
         )
+
+        return styled
+
+    def make_html(self) -> str:
+        styled = self._make_common()
+
         styled = styled.set_table_attributes('class="paperwork-table"')
         styled = styled.set_table_styles(
-            self.default_table_style(width=30), overwrite=False
+            self.default_table_style(width=self.page_width), overwrite=False
         )
 
         header_html = self.generate_header(

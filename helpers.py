@@ -18,6 +18,11 @@ class ShowData:
         """Returns the date in YYYY/MM/DD form"""
         return self.date.strftime("%Y/%m/%d")
 
+    def generate_slug(self, title="Paperwork") -> str:
+        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
+            r"\W+", "", self.revision
+        )
+
 
 @dataclass
 class Gel:
