@@ -134,14 +134,14 @@ class InstrumentSchedule(PaperworkGenerator):
         body_style: FontStyle,
         col_width: List[int],
         border_weight: float,
-    ):
+    ) -> pd.DataFrame:
         chan_border_style = f"{border_weight}px dashed black"
         style_df = df.copy()
         # Set borders based on channel data
-        prev_row = (None, None)
+        prev_row = ("", "")
         for index, data in df.iterrows():
             style_df.loc[index, :] = ""
-            if prev_row == (None, None):
+            if prev_row[0] == "" and prev_row[1] == "":
                 style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
                 prev_row = (index, data)
                 continue
@@ -203,20 +203,7 @@ class InstrumentSchedule(PaperworkGenerator):
         self.generate_df()
         positions = self.split_by_position()
 
-        header_html = self.generate_header(
-            "instr",
-            content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
-            content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
-            content_center=self.display_name,
-            style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_center=f"{self.style.title.to_css()}",
-        )
-        footer_html = self.generate_footer(
-            "instr",
-            style_left=self.style.marginals.to_css(),
-            content_left=self.display_name,
-        )
+        header_html, footer_html = self.generate_header_footer("instr")
         page_style = self.generate_page_style(
             "instr", "bottom-right", self.style.marginals.to_css()
         )

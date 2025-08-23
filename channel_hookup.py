@@ -1,7 +1,7 @@
 """Generator for a channel hookup"""
 
 import logging
-from typing import List, Self
+from typing import List, Self, Callable, Optional
 
 import numpy as np
 import pandas as pd
@@ -13,7 +13,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.workbook import Workbook
 import excel_formatter
 
-from helpers import FontStyle
+from helpers import FontStyle, FormattingQuirks
 from paperwork import PaperworkGenerator
 from style import default_chan_style
 
@@ -31,7 +31,7 @@ class ChannelHookup(PaperworkGenerator):
         super().__init__(*args, **kwargs)
         self.chan_style = chan_style
 
-    col_widths = [10, 5, 13, 5, 13, 32, 22]
+    col_widths = [10, 6, 13, 5, 13, 32, 21]
     display_name = "Channel Hookup"
 
     def generate_df(self) -> Self:
@@ -79,6 +79,7 @@ class ChannelHookup(PaperworkGenerator):
         body_style: FontStyle,
         col_width: List[int],
         border_weight: float,
+        quirks: FormattingQuirks,
         chan_style: FontStyle = default_chan_style,
     ):
         border_style = f"{border_weight}px solid black"
@@ -92,7 +93,7 @@ class ChannelHookup(PaperworkGenerator):
                 prev_row = (index, data)
                 continue
 
-            if data["Chan"] == "&nbsp;":
+            if data["Chan"] == quirks.empty_str:
                 style_df.loc[prev_row[0], :] += "border-bottom: none; "
                 style_df.loc[index, :] += f"border-bottom: {border_style}; "
             else:
@@ -148,7 +149,7 @@ class ChannelHookup(PaperworkGenerator):
         TODO: this doesn't actually do much
         https://stackoverflow.com/questions/20481039/applying-page-break-before-to-a-table-row-tr
         """
-        idxs = np.where(self.df["Chan"] == "&nbsp;")
+        idxs = np.where(self.df["Chan"] == self.formatting_quirks.empty_str)
 
         selector_list = []
 
@@ -174,6 +175,7 @@ class ChannelHookup(PaperworkGenerator):
             chan_style=self.chan_style,
             body_style=self.style.body,
             col_width=self.col_widths,
+            quirks=self.formatting_quirks,
             border_weight=self.border_weight,
         )
         styled = styled.hide()
@@ -194,20 +196,7 @@ class ChannelHookup(PaperworkGenerator):
         styled = styled.set_table_styles(self.default_table_style(), overwrite=False)
         styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
 
-        header_html = self.generate_header(
-            styled.uuid,
-            content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
-            content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
-            content_center=self.display_name,
-            style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_center=f"{self.style.title.to_css()}",
-        )
-        footer_html = self.generate_footer(
-            styled.uuid,
-            style_left=self.style.marginals.to_css(),
-            content_left=self.display_name,
-        )
+        header_html, footer_html = self.generate_header_footer(styled.uuid)
         page_style = self.generate_page_style(
             styled.uuid, "bottom-right", self.style.marginals.to_css()
         )

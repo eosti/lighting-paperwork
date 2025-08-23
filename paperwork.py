@@ -8,8 +8,8 @@ from typing import List, Optional, Self
 import pandas as pd
 import openpyxl
 
-from helpers import FontStyle, ShowData
-from style import BaseStyle, DefaultStyle
+from helpers import FontStyle, ShowData, FormattingQuirks, excel_quirks, html_quirks
+from style import BaseStyle, default_style
 import excel_formatter
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class PaperworkGenerator(ABC):
         self,
         vw_export: pd.DataFrame,
         show_data: Optional[ShowData] = None,
-        style: BaseStyle = DefaultStyle,
+        style: BaseStyle = default_style,
         border_weight: float = 1,
     ) -> None:
         self.vw_export = vw_export
@@ -41,9 +41,10 @@ class PaperworkGenerator(ABC):
     display_name: str
     col_widths: list[int]
     page_width: int = 100
+    formatting_quirks = html_quirks
 
     @abstractmethod
-    def generate_df(self) -> pd.DataFrame:
+    def generate_df(self) -> Self:
         """
         Using `self.vw_export`, generate a DataFrame that contains the
             necessary sorted information for the paperwork type.
@@ -56,6 +57,7 @@ class PaperworkGenerator(ABC):
         body_style: FontStyle,
         col_width: List[int],
         border_weight: float,
+        quirks: FormattingQuirks,
     ) -> pd.DataFrame:
         """Styles the data for a table"""
 
@@ -69,14 +71,17 @@ class PaperworkGenerator(ABC):
     ) -> List[str]:
         """Styles the fields (i.e. headers) for a table"""
 
+    @abstractmethod
     def _make_common(self) -> pd.io.formats.style.Styler:
         """Runs common make tasks for html and excel"""
 
+    @abstractmethod
     def make_html(self) -> str:
         """Generates a formatted HTML table from the generated DataFrame"""
 
     def make_excel(self, excel_path: str) -> None:
         """Adds a sheet to an Excel file with the formatted DataFrame"""
+        self.formatting_quirks = excel_quirks
         styled = self._make_common()
 
         with pd.ExcelWriter(excel_path, engine="openpyxl", mode="a") as writer:
@@ -176,7 +181,7 @@ class PaperworkGenerator(ABC):
             absaddr = int(self.df.at[row.Index, "Absolute Address"])
             if absaddr == 0:
                 # If no address set, replace it with a blank
-                self.df.at[row.Index, "Absolute Address"] = ""
+                self.df.at[row.Index, "Absolute Address"] = self.formatting_quirks.empty_str
             else:
                 universe = int((absaddr - 1) / 512) + 1
 
@@ -203,7 +208,7 @@ class PaperworkGenerator(ABC):
 
             if data["Chan"] == prev_row["Chan"]:
                 # Repeated channel!
-                data["Chan"] = "&nbsp;"
+                data["Chan"] = self.formatting_quirks.empty_str
                 for idx, val in data.items():
                     if idx == "U#":
                         # Do repeat U# to avoid confusion
@@ -252,6 +257,16 @@ class PaperworkGenerator(ABC):
 
     def generate_metadata(self) -> str:
         """Generates HTML metadata from show data"""
+        if self.show_data is None:
+            return f"""
+            <head>
+                <meta charset="utf-8">
+                <title>{self.display_name}</title>
+                <meta name="description" content="{self.display_name}">
+                <meta name="generator" content="Lighting Paperwork">
+            </head>
+            """
+
         return f"""
         <head>
             <meta charset="utf-8">
@@ -270,6 +285,37 @@ class PaperworkGenerator(ABC):
             {html}
         </div>
         """
+
+    def generate_header_footer(self, uuid: str) -> tuple[str, str]:
+        """Generates a header and footer from show data"""
+        if self.show_data is None:
+            header_html = self.generate_header(
+                uuid,
+                content_center=self.display_name,
+                style_center=f"{self.style.title.to_css()}",
+            )
+            footer_html = self.generate_footer(
+                uuid,
+                style_left=self.style.marginals.to_css(),
+                content_left=self.display_name,
+            )
+        else:
+            header_html = self.generate_header(
+                uuid,
+                content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
+                content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
+                content_center=self.display_name,
+                style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+                style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
+                style_center=f"{self.style.title.to_css()}",
+            )
+            footer_html = self.generate_footer(
+                uuid,
+                style_left=self.style.marginals.to_css(),
+                content_left=self.display_name,
+            )
+
+        return (header_html, footer_html)
 
     @staticmethod
     # pylint: disable-next=too-many-arguments, too-many-positional-arguments

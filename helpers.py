@@ -3,6 +3,7 @@
 import datetime
 import re
 from dataclasses import dataclass
+from typing import Self
 
 
 @dataclass
@@ -12,13 +13,14 @@ class ShowData:
     show_name: str
     ld_name: str
     revision: str
-    date: datetime = datetime.datetime.now()
+    date: datetime.datetime = datetime.datetime.now()
 
     def print_date(self) -> str:
         """Returns the date in YYYY/MM/DD form"""
         return self.date.strftime("%Y/%m/%d")
 
-    def generate_slug(self, title="Paperwork") -> str:
+    def generate_slug(self, title: str = "Paperwork") -> str:
+        """Generate a filename slug from the show information"""
         return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
             r"\W+", "", self.revision
         )
@@ -33,7 +35,7 @@ class Gel:
     company: str
 
     @classmethod
-    def parse_name(cls, gel: str):
+    def parse_name(cls, gel: str) -> Self:
         """Returns a Gel from a common name (ex. R355 or L201)."""
         if gel.startswith("AP"):
             company = "Apollo"
@@ -77,3 +79,20 @@ class FontStyle:
     def p(self, body: str, style: str = "") -> str:
         """Returns a `p` element formatted with the font information."""
         return f"<p style='{self.to_css()}{style}'>{body}</p>"
+
+
+@dataclass
+class FormattingQuirks:
+    """
+    Collection of formatting differences between the
+    various export formats.
+    """
+
+    """What string to represent an empty cell"""
+    empty_str: str
+    """What argument to CSS `color:` to hide text"""
+    hidden_fmt: str
+
+
+html_quirks = FormattingQuirks("&nbsp;", "transparent")
+excel_quirks = FormattingQuirks("", "#FFFFFF")

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from pandas.io.formats.style import Styler
 
-from helpers import FontStyle
+from helpers import FontStyle, FormattingQuirks
 from paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
@@ -48,6 +48,7 @@ class GoboPullList(PaperworkGenerator):
         body_style: FontStyle,
         col_width: List[int],
         border_weight: float,
+        quirks: FormattingQuirks,
     ):
         border_style = f"{border_weight}px solid black"
         style_df = df.copy()
@@ -102,6 +103,7 @@ class GoboPullList(PaperworkGenerator):
             body_style=self.style.body,
             col_width=self.col_widths,
             border_weight=self.border_weight,
+            quirks=self.formatting_quirks
         )
         styled = styled.hide()
         styled = styled.apply_index(
@@ -122,20 +124,7 @@ class GoboPullList(PaperworkGenerator):
             self.default_table_style(width=self.page_width), overwrite=False
         )
 
-        header_html = self.generate_header(
-            styled.uuid,
-            content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
-            content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
-            content_center=self.display_name,
-            style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-            style_center=f"{self.style.title.to_css()}",
-        )
-        footer_html = self.generate_footer(
-            styled.uuid,
-            style_left=self.style.marginals.to_css(),
-            content_left=self.display_name,
-        )
+        header_html, footer_html = self.generate_header_footer(styled.uuid)
         page_style = self.generate_page_style(
             styled.uuid, "bottom-right", self.style.marginals.to_css()
         )

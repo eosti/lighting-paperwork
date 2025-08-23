@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 def is_file(path: str) -> str:
+    """Determines if a path is a file or not"""
     if not os.path.isfile(path):
         raise argparse.ArgumentTypeError("Path is not a valid file")
 
@@ -26,9 +27,11 @@ def is_file(path: str) -> str:
 
 
 def main() -> None:
+    """Main CLI function"""
     logging.basicConfig(level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
+    # TODO add dtale support for editing
     # TODO add options for only outputting certain types of reports
     parser.add_argument("raw", help="Raw instrument from Vectorworks", type=is_file)
     parser.add_argument("--show", help="Show name")
@@ -107,7 +110,8 @@ def main() -> None:
             for h in html:
                 documents.append(HTML(string=h).render())
 
-            # this method generates each report individually and collates them -> page numbers reset per report
+            # this method generates each report individually and collates them
+            #   -> page numbers reset per report
             all_pages = [page for document in documents for page in document.pages]
 
             documents[0].copy(all_pages).write_pdf(show_info.generate_slug() + ".pdf")

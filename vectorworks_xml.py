@@ -53,18 +53,22 @@ class VWExport:
     """
 
     def __init__(self, filename: str):
-        self.instruments = []
+        self.instruments: list[VWInstrument] = []
         self.field_mapping = {}
         tree = ET.parse(filename)
         root = tree.getroot()
 
         mapping_data = root.find("ExportFieldList")
+        if mapping_data is None:
+            raise RuntimeError("Unable to find ExportFieldList")
         for field in mapping_data:
             if field.tag in ("AppStamp", "TimeStamp"):
                 continue
             self.field_mapping[field.tag] = field.text
 
         instrument_data = root.find("InstrumentData")
+        if instrument_data is None:
+            raise RuntimeError("Unable to find InstrumentData")
         for instr in instrument_data:
             if "VWVersion" in instr.tag:
                 self.vw_version = instr.text
@@ -93,7 +97,7 @@ class VWExport:
         """Converts ingested data into a DataFrame compatible with CSV imports"""
         header = ["__UID"]
         for _, v in self.field_mapping.items():
-            header.append(v)
+            header.append(str(v))
 
         all_instr = []
         for instr in self.instruments:
