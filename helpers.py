@@ -5,6 +5,8 @@ import re
 from dataclasses import dataclass
 from typing import Self
 
+import openpyxl
+
 
 @dataclass
 class ShowData:
@@ -79,6 +81,19 @@ class FontStyle:
     def p(self, body: str, style: str = "") -> str:
         """Returns a `p` element formatted with the font information."""
         return f"<p style='{self.to_css()}{style}'>{body}</p>"
+
+    def excel(self) -> openpyxl.styles.Font:
+        if self.font_weight == "bold":
+            return openpyxl.styles.Font(
+                name=self.font_family, size=self.font_size, bold=True
+            )
+
+        if self.font_weight == "normal":
+            return openpyxl.styles.Font(
+                name=self.font_family, size=self.font_size, bold=False
+            )
+
+        raise ValueError(f"Unsupported weight {self.font_weight}")
 
 
 @dataclass

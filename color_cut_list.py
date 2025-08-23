@@ -86,7 +86,7 @@ class ColorCutList(PaperworkGenerator):
         body_style: FontStyle,
         col_width: List[int],
         border_weight: float,
-        quirks: FormattingQuirks
+        quirks: FormattingQuirks,
     ):
         border_style = f"{border_weight}px solid black"
         style_df = df.copy()
@@ -157,7 +157,7 @@ class ColorCutList(PaperworkGenerator):
             body_style=self.style.body,
             col_width=self.col_widths,
             border_weight=self.border_weight,
-            quirks=self.formatting_quirks
+            quirks=self.formatting_quirks,
         )
         styled = styled.hide()
         styled = styled.apply_index(

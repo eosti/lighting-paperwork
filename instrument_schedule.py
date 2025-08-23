@@ -2,8 +2,10 @@
 
 import logging
 import re
+from copy import copy
 from typing import List, Self, Tuple
 
+import openpyxl
 import numpy as np
 import pandas as pd
 from natsort import natsort_keygen, natsorted
@@ -12,6 +14,7 @@ from pandas.io.formats.style import Styler
 from helpers import FontStyle
 from paperwork import PaperworkGenerator
 from style import default_position_style
+import excel_formatter
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +72,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
         return self
 
-    def split_by_position(self) -> List[Tuple[pd.DataFrame, str]]:
+    def split_by_position(self) -> List[Tuple[str, pd.DataFrame]]:
         """
         Split dataframe into multiple dataframes, one per position.
         """
@@ -124,7 +127,7 @@ class InstrumentSchedule(PaperworkGenerator):
             pos_df = pos_df.drop(["Position"], axis=1)
             pos_df = pos_df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
             pos_df = pos_df.sort_values(by=["U#"], key=natsort_keygen())
-            sorted_dfs.append((pos_df, i))
+            sorted_dfs.append((i, pos_df))
 
         return sorted_dfs
 
@@ -199,6 +202,80 @@ class InstrumentSchedule(PaperworkGenerator):
 
         return style
 
+    def _make_common(self):
+        raise NotImplementedError("Use _style_position for instrument schedule")
+
+    def _style_position(
+        self, position: tuple[str, pd.DataFrame]
+    ) -> tuple[str, pd.io.formats.style.Styler]:
+        styled = Styler.from_custom_template(".", "header_footer.tpl")(position[1])
+        styled = styled.apply(
+            type(self).style_data,
+            axis=None,
+            body_style=self.style.body,
+            col_width=self.col_widths,
+            border_weight=self.border_weight,
+        )
+        styled = styled.hide()
+        styled = styled.apply_index(
+            type(self).style_fields,
+            header_style=self.style.field,
+            col_width=self.col_widths,
+            border_weight=self.border_weight,
+            axis=1,
+        )
+        return (position[0], styled)
+
+    def make_excel(self, excel_path: str) -> None:
+        self.formatting_quirks = excel_quirks
+
+        self.generate_df()
+        positions = self.split_by_position()
+        sheet_names = []
+
+        for idx, pos in enumerate(positions):
+            _, styled = self._style_position(pos)
+            sheet_names.append(f"inst_sch_tmp_{idx}")
+            with pd.ExcelWriter(excel_path, engine="openpyxl", mode="a") as writer:
+                styled.to_excel(writer, sheet_name=sheet_names[-1])
+
+        wb = openpyxl.load_workbook(excel_path)
+        ws = wb.create_sheet(title=self.display_name, index=-1)
+
+        for idx, sht_name in enumerate(sheet_names):
+            excel_formatter.add_section_header(
+                ws, positions[idx][0], self.position_style, len(self.df.columns) - 1
+            )
+            sht = wb[sht_name]
+            cur_max = ws.max_row
+
+            # remove index column
+            sht.delete_cols(idx=1)
+
+            # Copy cells over with formatting
+            for i in range(1, sht.max_row + 1):
+                for j in range(1, sht.max_column + 1):
+                    dest_cell = ws.cell(row=cur_max + i, column=j)
+                    dest_cell.value = sht.cell(row=i, column=j).value
+                    if sht.cell(row=i, column=j).has_style:
+                        dest_cell._style = copy(sht.cell(row=i, column=j)._style)
+
+                    # Wrap text here to avoid messing with the headers
+                    alignment = copy(dest_cell.alignment)
+                    alignment.wrapText = True
+                    dest_cell.alignment = alignment
+
+            # Add an empty row at bottom
+            ws.cell(ws.max_row + 1, 1).value = None
+
+            del wb[sht_name]
+
+        excel_formatter.add_title(ws, self.display_name, self.show_data)
+        excel_formatter.page_setup(ws, 0)
+        excel_formatter.set_col_widths(ws, self.col_widths, self.page_width)
+        excel_formatter.instr_schedule_pagebreaks(ws)
+        wb.save(excel_path)
+
     def make_html(self) -> str:
         self.generate_df()
         positions = self.split_by_position()
@@ -211,23 +288,8 @@ class InstrumentSchedule(PaperworkGenerator):
         output_html = page_style
         output_html += header_html
         output_html += "<div id='inst-schedule-container'>\n"
-        for df, position in positions:
-            styled = Styler.from_custom_template(".", "header_footer.tpl")(df)
-            styled = styled.apply(
-                type(self).style_data,
-                axis=None,
-                body_style=self.style.body,
-                col_width=self.col_widths,
-                border_weight=self.border_weight,
-            )
-            styled = styled.hide()
-            styled = styled.apply_index(
-                type(self).style_fields,
-                header_style=self.style.field,
-                col_width=self.col_widths,
-                border_weight=self.border_weight,
-                axis=1,
-            )
+        for pos in positions:
+            position_name, styled = self._style_position(pos)
             styled = styled.set_table_attributes('class="paperwork-table"')
             styled = styled.set_table_styles(
                 self.default_table_style(), overwrite=False
@@ -239,7 +301,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
             header_html = self.generate_header(
                 styled.uuid,
-                content_left=position,
+                content_left=position_name,
                 style_left=self.position_style.to_css(),
             )
 

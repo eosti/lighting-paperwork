@@ -181,7 +181,9 @@ class PaperworkGenerator(ABC):
             absaddr = int(self.df.at[row.Index, "Absolute Address"])
             if absaddr == 0:
                 # If no address set, replace it with a blank
-                self.df.at[row.Index, "Absolute Address"] = self.formatting_quirks.empty_str
+                self.df.at[row.Index, "Absolute Address"] = (
+                    self.formatting_quirks.empty_str
+                )
             else:
                 universe = int((absaddr - 1) / 512) + 1
 

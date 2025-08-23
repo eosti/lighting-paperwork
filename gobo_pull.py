@@ -103,7 +103,7 @@ class GoboPullList(PaperworkGenerator):
             body_style=self.style.body,
             col_width=self.col_widths,
             border_weight=self.border_weight,
-            quirks=self.formatting_quirks
+            quirks=self.formatting_quirks,
         )
         styled = styled.hide()
         styled = styled.apply_index(

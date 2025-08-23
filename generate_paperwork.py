@@ -128,6 +128,7 @@ def main() -> None:
         wb.save(excel_path)
 
         ChannelHookup(vw_export, show_info).make_excel(excel_path)
+        InstrumentSchedule(vw_export, show_info).make_excel(excel_path)
         ColorCutList(vw_export, show_info).make_excel(excel_path)
         GoboPullList(vw_export, show_info).make_excel(excel_path)
 
