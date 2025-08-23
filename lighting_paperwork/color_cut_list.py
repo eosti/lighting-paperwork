@@ -7,8 +7,8 @@ import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from helpers import FontStyle, Gel, FormattingQuirks
-from paperwork import PaperworkGenerator
+from .helpers import FontStyle, Gel, FormattingQuirks
+from .paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
 

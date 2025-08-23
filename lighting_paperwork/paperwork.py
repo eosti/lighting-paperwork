@@ -8,9 +8,9 @@ from typing import List, Optional, Self
 import pandas as pd
 import openpyxl
 
-from helpers import FontStyle, ShowData, FormattingQuirks, excel_quirks, html_quirks
-from style import BaseStyle, default_style
-import excel_formatter
+from .helpers import FontStyle, ShowData, FormattingQuirks, excel_quirks, html_quirks
+from .style import BaseStyle, default_style
+import lighting_paperwork.excel_formatter as excel_formatter
 
 logger = logging.getLogger(__name__)
 

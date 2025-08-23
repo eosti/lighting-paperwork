@@ -8,12 +8,12 @@ from weasyprint import HTML
 import openpyxl
 from openpyxl.workbook import Workbook
 
-from channel_hookup import ChannelHookup
-from color_cut_list import ColorCutList
-from gobo_pull import GoboPullList
-from helpers import ShowData
-from instrument_schedule import InstrumentSchedule
-from vectorworks_xml import VWExport
+from .channel_hookup import ChannelHookup
+from .color_cut_list import ColorCutList
+from .gobo_pull import GoboPullList
+from .helpers import ShowData
+from .instrument_schedule import InstrumentSchedule
+from .vectorworks_xml import VWExport
 
 logger = logging.getLogger(__name__)
 

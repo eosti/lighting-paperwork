@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from helpers import FontStyle
+from .helpers import FontStyle
 
 
 @dataclass

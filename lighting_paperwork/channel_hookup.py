@@ -11,11 +11,10 @@ from pandas.io.formats.style import Styler
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.workbook import Workbook
-import excel_formatter
 
-from helpers import FontStyle, FormattingQuirks
-from paperwork import PaperworkGenerator
-from style import default_chan_style
+from .helpers import FontStyle, FormattingQuirks
+from .paperwork import PaperworkGenerator
+from .style import default_chan_style
 
 logger = logging.getLogger(__name__)
 

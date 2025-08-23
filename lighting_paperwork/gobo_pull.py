@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 from pandas.io.formats.style import Styler
 
-from helpers import FontStyle, FormattingQuirks
-from paperwork import PaperworkGenerator
+from .helpers import FontStyle, FormattingQuirks
+from .paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
 

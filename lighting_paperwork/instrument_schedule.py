@@ -11,10 +11,10 @@ import pandas as pd
 from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
-from helpers import FontStyle
-from paperwork import PaperworkGenerator
-from style import default_position_style
-import excel_formatter
+from .helpers import FontStyle
+from .paperwork import PaperworkGenerator
+from .style import default_position_style
+import lighting_paperwork.excel_formatter as excel_formatter
 
 logger = logging.getLogger(__name__)
 
