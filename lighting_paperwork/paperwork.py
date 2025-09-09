@@ -234,6 +234,13 @@ class PaperworkGenerator(ABC):
         )
         return self
 
+    def verify_filter_fields(self, filter_fields: List[str]) -> None:
+        for field in filter_fields:
+            if field not in self.vw_export.columns:
+                logger.warning("Field `%s` not present in export", field)
+                logger.info("In Spotlight Preferences > Lightwright, add `%s` to the export fields list.", field)
+                self.vw_export[field] = ""
+
     # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse
     def default_table_style(self, width=100):
         """

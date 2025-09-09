@@ -47,6 +47,7 @@ class ChannelHookup(PaperworkGenerator):
             "Color",
             "Gobo 1",
         ]
+        self.verify_filter_fields(filter_fields)
         self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
         # Need to have a channel to show up in the channel hookup
         self.df["Channel"] = self.df["Channel"].replace("", np.nan)

@@ -27,15 +27,9 @@ class ColorCutList(PaperworkGenerator):
     display_name = "Color Cut List"
 
     def generate_df(self) -> Self:
-        if "Frame Size" in self.vw_export.columns:
-            filter_fields = ["Color", "Frame Size"]
-            self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
-        else:
-            logger.warning("Field 'Frame Size' not present in export.")
-            logger.info("In Spotlight Preferences > Lightwright, add 'Frame Size' to the export fields list.")
-            filter_fields = ["Color"]
-            self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
-            self.df["Frame Size"] = ""
+        filter_fields = ["Color", "Frame Size"]
+        self.verify_filter_fields(filter_fields)
+        self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
 
         # Seperate colors and diffusion into dict list
         color_dict = []

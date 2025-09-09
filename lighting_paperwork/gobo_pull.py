@@ -28,6 +28,7 @@ class GoboPullList(PaperworkGenerator):
 
     def generate_df(self) -> Self:
         filter_fields = ["Gobo 1", "Gobo 2"]
+        self.verify_filter_fields(filter_fields)
         chan_fields = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
         gobo_list = []
 

@@ -48,6 +48,7 @@ class InstrumentSchedule(PaperworkGenerator):
             "Channel",
             "Absolute Address",
         ]
+        self.verify_filter_fields(filter_fields)
 
         self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
         # Need to have a position to show up in the instrument schedule
