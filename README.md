@@ -13,7 +13,7 @@ Using [uv](https://docs.astral.sh/uv/): `uvx lighting-paperwork`
 `lighting-paperwork` needs a source of data from Vectorworks. 
 There are currently two options to generate this:
 
-- (preferred) Enable Vectorworks Data Exchange in Spotlight > Spotlight Settings > Spotlight Preferences > Lightwright and check "Use automatic Lightwright data exchange" and "Perform a full export to Lightwright when dialog box closes". This will create a `[filename].xml` file in the same directory as your Vectorworks file
+- (preferred) Enable Vectorworks Data Exchange in Spotlight > Spotlight Settings > Spotlight Preferences > Lightwright and check "Use automatic Lightwright data exchange" and "Perform a full export to Lightwright when dialog box closes". Additionally, move all "Available Fields" over to "Export Fields". This will create a `[filename].xml` file in the same directory as your Vectorworks file
   - This only needs to be performed once, the `.xml` file will stay updated to the Vectorworks file
   - Lightwright cannot run in the same directory or else it will consume the `.xml` file. To fix, run another full export while Lightwright is not running
 - Manual export in File > Export > Lighting Device Data. Select all entries, leave "Export field names as first record" checked, and export to a `.csv` file. 

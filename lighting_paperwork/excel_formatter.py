@@ -14,7 +14,7 @@ from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break
 from openpyxl.worksheet.worksheet import Worksheet
 
-from .helpers import ShowData, FontStyle
+from lighting_paperwork.helpers import ShowData, FontStyle
 
 logger = logging.getLogger(__name__)
 
@@ -173,8 +173,9 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
         elif ws.cell(row, 1).value is None or ws.cell(row, 1).value.isdigit():
             # Channel row
             if (
-                len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
-                or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN
+                ws.cell(row, 3).value is not None 
+                    and (len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
+                    or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN)
             ):
                 # Double height
                 cur_height += 0.44

@@ -2,13 +2,14 @@
 
 import logging
 from typing import List, Self
+from os import path
 
 import numpy as np
 import pandas as pd
 from pandas.io.formats.style import Styler
 
-from .helpers import FontStyle, FormattingQuirks
-from .paperwork import PaperworkGenerator
+from lighting_paperwork.helpers import FontStyle, FormattingQuirks
+from lighting_paperwork.paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,7 @@ class GoboPullList(PaperworkGenerator):
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
-        styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
+        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(self.df)
         styled = styled.apply(
             type(self).style_data,
             axis=None,

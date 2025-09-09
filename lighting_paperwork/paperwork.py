@@ -8,8 +8,8 @@ from typing import List, Optional, Self
 import pandas as pd
 import openpyxl
 
-from .helpers import FontStyle, ShowData, FormattingQuirks, excel_quirks, html_quirks
-from .style import BaseStyle, default_style
+from lighting_paperwork.helpers import FontStyle, ShowData, FormattingQuirks, excel_quirks, html_quirks
+from lighting_paperwork.style import BaseStyle, default_style
 import lighting_paperwork.excel_formatter as excel_formatter
 
 logger = logging.getLogger(__name__)
@@ -304,8 +304,8 @@ class PaperworkGenerator(ABC):
         else:
             header_html = self.generate_header(
                 uuid,
-                content_right=f"{self.show_data.show_name}<br>{self.show_data.ld_name}",
-                content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision}",
+                content_right=f"{self.show_data.show_name or ''}<br>{self.show_data.ld_name or ''}",
+                content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision or ''}",
                 content_center=self.display_name,
                 style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
                 style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",

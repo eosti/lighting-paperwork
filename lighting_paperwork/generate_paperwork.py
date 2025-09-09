@@ -1,19 +1,20 @@
 import argparse
+from importlib.metadata import version
 import logging
 import os
-import re
 
 import pandas as pd
 from weasyprint import HTML
 import openpyxl
 from openpyxl.workbook import Workbook
+from rich.logging import RichHandler
 
-from .channel_hookup import ChannelHookup
-from .color_cut_list import ColorCutList
-from .gobo_pull import GoboPullList
-from .helpers import ShowData
-from .instrument_schedule import InstrumentSchedule
-from .vectorworks_xml import VWExport
+from lighting_paperwork.channel_hookup import ChannelHookup
+from lighting_paperwork.color_cut_list import ColorCutList
+from lighting_paperwork.gobo_pull import GoboPullList
+from lighting_paperwork.helpers import ShowData
+from lighting_paperwork.instrument_schedule import InstrumentSchedule
+from lighting_paperwork.vectorworks_xml import VWExport
 
 logger = logging.getLogger(__name__)
 
@@ -28,15 +29,16 @@ def is_file(path: str) -> str:
 
 def main() -> None:
     """Main CLI function"""
-    logging.basicConfig(level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
     # TODO add dtale support for editing
     # TODO add options for only outputting certain types of reports
-    parser.add_argument("raw", help="Raw instrument from Vectorworks", type=is_file)
+    parser.add_argument("file", help="CSV or XML from Vectorworks", type=is_file)
     parser.add_argument("--show", help="Show name")
     parser.add_argument("--ld", help="Lighting designer initials")
     parser.add_argument("--rev", help="Revision string (ex. 'Rev. A')")
+    parser.add_argument('--version', action='version', version=version('lighting-paperwork'))
+    parser.add_argument("-log", "--loglevel", default="info", help="Change to the log level. One of debug, info (default), warning, error, critical")
     output_group = parser.add_argument_group(
         "Output style", "Select what type of output should be generated (default PDF)"
     )
@@ -66,20 +68,21 @@ def main() -> None:
     parser.set_defaults(output_type="pdf")
 
     args = parser.parse_args()
+    logging.basicConfig(level=args.loglevel.upper(), format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
 
     show_info = ShowData(args.show, args.ld, args.rev)
 
-    if "csv" in args.raw:
+    if "csv" in args.file:
         # Converter is to supress the warning when I set addr=0 to empty string
         vw_export = pd.read_csv(
-            args.raw, sep="\t", header=0, converters={"Absolute Address": str}
+            args.file, sep="\t", header=0, converters={"Absolute Address": str}
         )
 
         # Clear VW's default "None" character
         vw_export = vw_export.replace("-", "")
 
-    elif "xml" in args.raw:
-        vw_export = VWExport(args.raw).export_df()
+    elif "xml" in args.file:
+        vw_export = VWExport(args.file).export_df()
 
     if args.output_type in ("html", "pdf"):
         # Generate all paperwork HTML
@@ -93,7 +96,8 @@ def main() -> None:
         # TODO add ToC for multi-report documents
 
         if args.output_type == "html":
-            with open(show_info.generate_slug() + ".html", "w") as f:
+            filename = show_info.generate_slug() + ".html"
+            with open(filename, "w") as f:
                 f.write("<!DOCTYPE html>")
                 f.write("<html>")
 
@@ -102,10 +106,11 @@ def main() -> None:
 
                 f.write("</html>")
 
-                logger.info("HTML published to %s", show_info.generate_slug() + ".html")
+                logger.info("HTML published to %s", filename)
         elif args.output_type == "pdf":
             # Generate paperwork PDF
             logger.info("Generating PDF...")
+            filename = show_info.generate_slug() + ".pdf"
             documents = []
             for h in html:
                 documents.append(HTML(string=h).render())
@@ -114,9 +119,9 @@ def main() -> None:
             #   -> page numbers reset per report
             all_pages = [page for document in documents for page in document.pages]
 
-            documents[0].copy(all_pages).write_pdf(show_info.generate_slug() + ".pdf")
+            documents[0].copy(all_pages).write_pdf(filename)
 
-            logger.info("PDF published to %s", show_info.generate_slug() + ".pdf")
+            logger.info("PDF published to %s", filename)
     elif args.output_type == "excel":
         # Looks like our read/write buffer is the file, not anything internal to Python.
         # So each additional write/edit will dump to the file.

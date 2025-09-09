@@ -4,6 +4,7 @@ import logging
 import re
 from copy import copy
 from typing import List, Self, Tuple
+from os import path
 
 import openpyxl
 import numpy as np
@@ -11,9 +12,9 @@ import pandas as pd
 from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
-from .helpers import FontStyle
-from .paperwork import PaperworkGenerator
-from .style import default_position_style
+from lighting_paperwork.helpers import FontStyle, excel_quirks
+from lighting_paperwork.paperwork import PaperworkGenerator
+from lighting_paperwork.style import default_position_style
 import lighting_paperwork.excel_formatter as excel_formatter
 
 logger = logging.getLogger(__name__)
@@ -208,7 +209,7 @@ class InstrumentSchedule(PaperworkGenerator):
     def _style_position(
         self, position: tuple[str, pd.DataFrame]
     ) -> tuple[str, pd.io.formats.style.Styler]:
-        styled = Styler.from_custom_template(".", "header_footer.tpl")(position[1])
+        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(position[1])
         styled = styled.apply(
             type(self).style_data,
             axis=None,

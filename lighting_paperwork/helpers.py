@@ -3,18 +3,20 @@
 import datetime
 import re
 from dataclasses import dataclass
-from typing import Self
+from typing import Self, Optional
+import logging
 
 import openpyxl
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class ShowData:
     """Dataclass for storing information about the show."""
 
-    show_name: str
-    ld_name: str
-    revision: str
+    show_name: Optional[str] = None
+    ld_name: Optional[str] = None
+    revision: Optional[str] = None
     date: datetime.datetime = datetime.datetime.now()
 
     def print_date(self) -> str:
@@ -23,9 +25,13 @@ class ShowData:
 
     def generate_slug(self, title: str = "Paperwork") -> str:
         """Generate a filename slug from the show information"""
-        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
-            r"\W+", "", self.revision
-        )
+        if self.show_name is None or self.revision is None:
+            logger.info("Not enough show data to make a nice output filename, using default")
+            return title
+        else:
+            return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
+                r"\W+", "", self.revision
+            )
 
 
 @dataclass

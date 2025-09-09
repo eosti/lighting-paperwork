@@ -2,6 +2,7 @@
 
 import logging
 from typing import List, Self, Callable, Optional
+from os import path
 
 import numpy as np
 import pandas as pd
@@ -12,9 +13,9 @@ import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.workbook import Workbook
 
-from .helpers import FontStyle, FormattingQuirks
-from .paperwork import PaperworkGenerator
-from .style import default_chan_style
+from lighting_paperwork.helpers import FontStyle, FormattingQuirks
+from lighting_paperwork.paperwork import PaperworkGenerator
+from lighting_paperwork.style import default_chan_style
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +168,7 @@ class ChannelHookup(PaperworkGenerator):
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
-        styled = Styler.from_custom_template(".", "header_footer.tpl")(self.df)
+        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(self.df)
         styled = styled.apply(
             type(self).style_data,
             axis=None,
