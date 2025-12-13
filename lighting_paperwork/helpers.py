@@ -44,6 +44,7 @@ class Gel:
 
     @classmethod
     def parse_name(cls, gel: str) -> Self:
+        gel = gel.strip()
         """Returns a Gel from a common name (ex. R355 or L201)."""
         if gel.startswith("AP"):
             company = "Apollo"
@@ -54,7 +55,8 @@ class Gel:
         elif gel.startswith("R"):
             company = "Rosco"
         else:
-            raise ValueError(f"Unknown company prefix for gel {gel}")
+            logger.warning("Unknown company prefix for gel %s", gel)
+            return cls(gel, gel, "")
 
         gelsort = gel
         if company == "Rosco":
