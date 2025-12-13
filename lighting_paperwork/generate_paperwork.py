@@ -102,6 +102,9 @@ def main() -> None:
                 f.write("<html>")
 
                 for h in html:
+                    # Super hacky way to get rid of border-collapse for HTML:
+                    # TODO: don't do this here lol
+                    h = h.replace("border-collapse: collapse", "border-collapse: initial")
                     f.write(h)
 
                 f.write("</html>")

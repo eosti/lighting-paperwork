@@ -23,7 +23,7 @@ class PaperworkGenerator(ABC):
         vw_export: pd.DataFrame,
         show_data: Optional[ShowData] = None,
         style: BaseStyle = default_style,
-        border_weight: float = 1,
+        border_weight: float = 1.0,
     ) -> None:
         self.vw_export = vw_export
         self.df = self.vw_export.copy()
@@ -249,7 +249,7 @@ class PaperworkGenerator(ABC):
         return [
             {
                 "selector": "",
-                "props": "border-spacing: 0px; border-collapse: initial; "
+                "props": "border-spacing: 0px; border-collapse: collapse; "
                 "line-height: 1.2; break-inside: auto; width: 100%;",
             },
             {"selector": "tr", "props": "break-inside: avoid; break-after: auto; "},
