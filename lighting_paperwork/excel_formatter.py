@@ -2,9 +2,9 @@
 Formatters for Excel
 """
 
-from typing import List, Optional, Tuple
-from copy import copy
 import logging
+from copy import copy
+from typing import List, Optional, Tuple
 
 from openpyxl.styles import Alignment, Border, Font, Side
 from openpyxl.utils import get_column_letter
@@ -14,7 +14,7 @@ from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break
 from openpyxl.worksheet.worksheet import Worksheet
 
-from lighting_paperwork.helpers import ShowData, FontStyle
+from lighting_paperwork.helpers import FontStyle, ShowData
 
 logger = logging.getLogger(__name__)
 
@@ -172,10 +172,9 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
             logger.debug(f"Row {row} is col label ({cur_height})")
         elif ws.cell(row, 1).value is None or ws.cell(row, 1).value.isdigit():
             # Channel row
-            if (
-                ws.cell(row, 3).value is not None 
-                    and (len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
-                    or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN)
+            if ws.cell(row, 3).value is not None and (
+                len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
+                or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN
             ):
                 # Double height
                 cur_height += 0.44

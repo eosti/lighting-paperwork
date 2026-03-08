@@ -1,14 +1,14 @@
 """Generator for a color cut list"""
 
 import logging
-from typing import List, Self
 from os import path
+from typing import List, Self
 
 import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from lighting_paperwork.helpers import FontStyle, Gel, FormattingQuirks
+from lighting_paperwork.helpers import FontStyle, FormattingQuirks, Gel
 from lighting_paperwork.paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
@@ -114,9 +114,9 @@ class ColorCutList(PaperworkGenerator):
         # Set font based on column
         for col_name, _ in style_df.items():
             width_idx = style_df.columns.get_loc(col_name)
-            style_df[col_name] += (
-                f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
-            )
+            style_df[
+                col_name
+            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
 
             if col_name in ["Color"]:
                 style_df[col_name] += "text-align: center; "
@@ -152,7 +152,9 @@ class ColorCutList(PaperworkGenerator):
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
-        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(self.df)
+        styled = Styler.from_custom_template(
+            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+        )(self.df)
         styled = styled.apply(
             type(self).style_data,
             axis=None,
