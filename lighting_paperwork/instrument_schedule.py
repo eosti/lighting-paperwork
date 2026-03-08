@@ -3,19 +3,19 @@
 import logging
 import re
 from copy import copy
-from typing import List, Self, Tuple
 from os import path
+from typing import List, Self, Tuple
 
-import openpyxl
 import numpy as np
+import openpyxl
 import pandas as pd
 from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
-from lighting_paperwork.helpers import FontStyle, excel_quirks
+import lighting_paperwork.excel_formatter as excel_formatter
+from lighting_paperwork.helpers import FontStyle, FormattingQuirks, excel_quirks
 from lighting_paperwork.paperwork import PaperworkGenerator
 from lighting_paperwork.style import default_position_style
-import lighting_paperwork.excel_formatter as excel_formatter
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,8 @@ class InstrumentSchedule(PaperworkGenerator):
             "Purpose",
             "Instrument Type",
             "Wattage",
+            "Accessory String",
+            "Accessory Flag",
             "Color",
             "Gobo 1",
             "Channel",
@@ -57,7 +59,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
         self.combine_instrtype().format_address_slash().combine_gelgobo().abbreviate_col_names()
         self.df = self.df.sort_values(
-            by=["Position", "U#", "Purpose"], key=natsort_keygen()
+            by=["Position", "U#", "Accessory Flag", "Purpose"], key=natsort_keygen()
         )
 
         self.df = self.df[
@@ -65,7 +67,7 @@ class InstrumentSchedule(PaperworkGenerator):
                 "Position",
                 "U#",
                 "Purpose",
-                "Instr Type & Load",
+                "Instr Type & Load & Acc",
                 "Color & Gobo",
                 "Chan",
                 "Addr",
@@ -129,6 +131,7 @@ class InstrumentSchedule(PaperworkGenerator):
             pos_df = pos_df.drop(["Position"], axis=1)
             pos_df = pos_df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
             pos_df = pos_df.sort_values(by=["U#"], key=natsort_keygen())
+            self.repeated_index_val("U#", pos_df)
             sorted_dfs.append((i, pos_df))
 
         return sorted_dfs
@@ -138,6 +141,7 @@ class InstrumentSchedule(PaperworkGenerator):
         df: pd.DataFrame,
         body_style: FontStyle,
         col_width: List[int],
+        quirks: FormattingQuirks,
         border_weight: float,
     ) -> pd.DataFrame:
         chan_border_style = f"{border_weight}px dashed black"
@@ -151,7 +155,7 @@ class InstrumentSchedule(PaperworkGenerator):
                 prev_row = (index, data)
                 continue
 
-            if data["U#"] == prev_row[1]["U#"]:
+            if data["U#"] == quirks.empty_str:
                 # Same U#, remove dashed line
                 style_df.loc[prev_row[0], :] += "border-bottom: none; "
                 style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
@@ -161,9 +165,9 @@ class InstrumentSchedule(PaperworkGenerator):
             prev_row = (index, data)
 
         # Last row gets a solid bottom border
-        style_df.loc[prev_row[0], :] += (
-            f"border-bottom: {border_weight}px solid black; "
-        )
+        style_df.loc[
+            prev_row[0], :
+        ] += f"border-bottom: {border_weight}px solid black; "
 
         # Set font based on column
         for col_name, _ in style_df.items():
@@ -210,12 +214,15 @@ class InstrumentSchedule(PaperworkGenerator):
     def _style_position(
         self, position: tuple[str, pd.DataFrame]
     ) -> tuple[str, pd.io.formats.style.Styler]:
-        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(position[1])
+        styled = Styler.from_custom_template(
+            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+        )(position[1])
         styled = styled.apply(
             type(self).style_data,
             axis=None,
             body_style=self.style.body,
             col_width=self.col_widths,
+            quirks=self.formatting_quirks,
             border_weight=self.border_weight,
         )
         styled = styled.hide()

@@ -1,13 +1,13 @@
 import argparse
-from importlib.metadata import version
 import logging
 import os
+from importlib.metadata import version
 
-import pandas as pd
-from weasyprint import HTML
 import openpyxl
+import pandas as pd
 from openpyxl.workbook import Workbook
 from rich.logging import RichHandler
+from weasyprint import HTML
 
 from lighting_paperwork.channel_hookup import ChannelHookup
 from lighting_paperwork.color_cut_list import ColorCutList
@@ -37,8 +37,15 @@ def main() -> None:
     parser.add_argument("--show", help="Show name")
     parser.add_argument("--ld", help="Lighting designer initials")
     parser.add_argument("--rev", help="Revision string (ex. 'Rev. A')")
-    parser.add_argument('--version', action='version', version=version('lighting-paperwork'))
-    parser.add_argument("-log", "--loglevel", default="info", help="Change to the log level. One of debug, info (default), warning, error, critical")
+    parser.add_argument(
+        "--version", action="version", version=version("lighting-paperwork")
+    )
+    parser.add_argument(
+        "-log",
+        "--loglevel",
+        default="info",
+        help="Change to the log level. One of debug, info (default), warning, error, critical",
+    )
     output_group = parser.add_argument_group(
         "Output style", "Select what type of output should be generated (default PDF)"
     )
@@ -68,7 +75,12 @@ def main() -> None:
     parser.set_defaults(output_type="pdf")
 
     args = parser.parse_args()
-    logging.basicConfig(level=args.loglevel.upper(), format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
+    logging.basicConfig(
+        level=args.loglevel.upper(),
+        format="%(message)s",
+        datefmt="[%X]",
+        handlers=[RichHandler()],
+    )
 
     show_info = ShowData(args.show, args.ld, args.rev)
 
@@ -104,7 +116,9 @@ def main() -> None:
                 for h in html:
                     # Super hacky way to get rid of border-collapse for HTML:
                     # TODO: don't do this here lol
-                    h = h.replace("border-collapse: collapse", "border-collapse: initial")
+                    h = h.replace(
+                        "border-collapse: collapse", "border-collapse: initial"
+                    )
                     f.write(h)
 
                 f.write("</html>")

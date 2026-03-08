@@ -88,12 +88,64 @@ class VWExport:
                         self.instruments[-1].accs.append(VWAccessory(instr))
                     else:
                         logger.info("UID %s is an orphaned accessory", instr.tag)
+                        self.instruments.append(new_instrument)
+                else:
+                    self.instruments.append(new_instrument)
 
-                self.instruments.append(new_instrument)
-
+        self.handle_accessories()
         logger.info("Imported %s instruments", len(self.instruments))
 
-    def export_df(self, no_solo_accessories=True):
+    def handle_accessories(self, filterlist=[], fuzzyfilterlist=["C-Clamp"]):
+        """
+        Adds accessories to a AccessoryString, and if the accessory is smart, make
+            a seperate "special" instrument.
+
+        filterlist is a list of exact matches for accessories that should be omitted.
+        fuzzyfilterlist is a list of strings that if found in an accessory name,
+            will ommit that accessory.
+        """
+        self.field_mapping["AccessoryString"] = "Accessory String"
+        self.field_mapping["AccessoryFlag"] = "Accessory Flag"
+        additional_accs = []
+        for instr in self.instruments:
+            if instr.accs == []:
+                instr.props["AccessoryString"] = ""
+                instr.props["AccessoryFlag"] = "0"
+                continue
+            acc_names = []
+            for acc in instr.accs:
+                name = acc.props["Symbol_Name"]
+                name = name.replace("Light Acc", "").strip()
+                if name in filterlist:
+                    continue
+                if [1 for f in fuzzyfilterlist if (f in name)]:
+                    continue
+                acc_names.append(name)
+
+                if acc.props["Device_Type"] == "Accessory":
+                    # Accessories are typically smarter and require their own entry
+                    # Some data needs to be copied from the parent to make a new entry
+                    acc.props["AccessoryFlag"] = "1"
+                    acc.props["Unit_Number"] = instr.props["Unit_Number"]
+                    acc.props["Inst_Type"] = name
+                    # No recursive accessories
+                    acc.props["AccessoryString"] = ""
+                    additional_accs.append(acc)
+
+            namestr = ""
+            for idx, name in enumerate(acc_names):
+                if idx == len(acc_names) - 1:
+                    # Final name
+                    namestr += name
+                else:
+                    namestr += f"{name}, "
+
+            instr.props["AccessoryString"] = namestr
+
+        # do this last to prevent recursive conversion
+        self.instruments += additional_accs
+
+    def export_df(self):
         """Converts ingested data into a DataFrame compatible with CSV imports"""
         header = ["__UID"]
         for _, v in self.field_mapping.items():
@@ -103,9 +155,6 @@ class VWExport:
         for instr in self.instruments:
             if instr.props["Action"] == "Delete":
                 # Don't export deleted instruments
-                continue
-            if no_solo_accessories and "Accessory" in instr.props["Device_Type"]:
-                # Don't export solo accessories if asked
                 continue
             row = [instr.node_uid]
             for field in self.field_mapping:

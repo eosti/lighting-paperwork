@@ -1,17 +1,16 @@
 """Generator for a channel hookup"""
 
 import logging
-from typing import List, Self, Callable, Optional
 from os import path
+from typing import Callable, List, Optional, Self
 
 import numpy as np
+import openpyxl
 import pandas as pd
 from natsort import natsort_keygen
-from pandas.io.formats.style import Styler
-
-import openpyxl
-from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.workbook import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
+from pandas.io.formats.style import Styler
 
 from lighting_paperwork.helpers import FontStyle, FormattingQuirks
 from lighting_paperwork.paperwork import PaperworkGenerator
@@ -44,11 +43,14 @@ class ChannelHookup(PaperworkGenerator):
             "Purpose",
             "Instrument Type",
             "Wattage",
+            "Accessory String",
+            "Accessory Flag",
             "Color",
             "Gobo 1",
         ]
         self.verify_filter_fields(filter_fields)
         self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
+
         # Need to have a channel to show up in the channel hookup
         self.df["Channel"] = self.df["Channel"].replace("", np.nan)
         self.df = self.df.dropna(subset=["Channel"])
@@ -57,7 +59,8 @@ class ChannelHookup(PaperworkGenerator):
 
         self.df = self.df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
         self.df = self.df.sort_values(
-            by=["Chan", "Addr", "Position", "U#"], key=natsort_keygen()
+            by=["Chan", "Position", "U#", "Accessory Flag", "Addr"],
+            key=natsort_keygen(),
         )
         self.df = self.df[
             [
@@ -66,12 +69,12 @@ class ChannelHookup(PaperworkGenerator):
                 "Position",
                 "U#",
                 "Purpose",
-                "Instr Type & Load",
+                "Instr Type & Load & Acc",
                 "Color & Gobo",
             ]
         ]
 
-        self.repeated_channels()
+        self.repeated_index_val("Chan")
         return self
 
     @staticmethod
@@ -104,9 +107,9 @@ class ChannelHookup(PaperworkGenerator):
 
         # Set font based on column
         for col_name, _ in style_df.items():
-            style_df[col_name] += (
-                f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
-            )
+            style_df[
+                col_name
+            ] += f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
             if col_name == "Chan":
                 style_df[col_name] += f"{chan_style.to_css()}; "
             else:
@@ -169,7 +172,9 @@ class ChannelHookup(PaperworkGenerator):
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
-        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(self.df)
+        styled = Styler.from_custom_template(
+            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+        )(self.df)
         styled = styled.apply(
             type(self).style_data,
             axis=None,

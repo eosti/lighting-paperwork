@@ -5,12 +5,18 @@ import re
 from abc import ABC, abstractmethod
 from typing import List, Optional, Self
 
-import pandas as pd
 import openpyxl
+import pandas as pd
 
-from lighting_paperwork.helpers import FontStyle, ShowData, FormattingQuirks, excel_quirks, html_quirks
-from lighting_paperwork.style import BaseStyle, default_style
 import lighting_paperwork.excel_formatter as excel_formatter
+from lighting_paperwork.helpers import (
+    FontStyle,
+    FormattingQuirks,
+    ShowData,
+    excel_quirks,
+    html_quirks,
+)
+from lighting_paperwork.style import BaseStyle, default_style
 
 logger = logging.getLogger(__name__)
 
@@ -111,7 +117,7 @@ class PaperworkGenerator(ABC):
 
     def combine_instrtype(self) -> Self:
         """
-        Combines the Instrument Type and Power fields into one
+        Combines the Instrument Type and Power and Accessory fields into one
         """
         instload = []
         for _, row in self.df.iterrows():
@@ -120,6 +126,13 @@ class PaperworkGenerator(ABC):
                 # we want it to be [number]W
                 power = re.sub(r"[^\d\.]", "", row["Wattage"])
                 powerstr = power + "W"
+                if powerstr == "0W" and row["Accessory Flag"] != "1":
+                    logger.warning(
+                        "Instrument type %s is infinitely efficient (%s)",
+                        row["Instrument Type"],
+                        row["Wattage"],
+                    )
+                    powerstr = None
             else:
                 power = None
                 powerstr = None
@@ -129,20 +142,20 @@ class PaperworkGenerator(ABC):
                 tmp = row["Instrument Type"]
             else:
                 # Remove from instrument type (if existing)
-                instrtype = re.sub(rf"\s*{power}\w+\s*", "", row["Instrument Type"])
+                instrtype = re.sub(rf"\s+{power}\s*\w+\s*", "", row["Instrument Type"])
                 tmp = instrtype + " " + powerstr
 
             # If accessory, add that here
-            # if row["Accessory Inventory"] != "":
-            #    tmp += ", " + row["Accessory Inventory"]
+            if row["Accessory String"] != "":
+                tmp += ", " + row["Accessory String"]
 
             instload.append(tmp)
 
         # Clean up by replacing old cols with new one
-        # TODO: Get accessories in here
-        # df.drop(["Instrument Type", "Wattage", "Accessory Inventory"], axis=1, inplace=True)
-        new_df = self.df.drop(["Instrument Type", "Wattage"], axis=1)
-        new_df["Instr Type & Load"] = instload
+        new_df = self.df.drop(
+            ["Instrument Type", "Wattage", "Accessory String"], axis=1
+        )
+        new_df["Instr Type & Load & Acc"] = instload
 
         self.df = new_df
         return self
@@ -156,7 +169,10 @@ class PaperworkGenerator(ABC):
         for _, row in self.df.iterrows():
             # If no gel replace with N/C
             if row["Color"] == "":
-                tmp = "N/C"
+                if row["Accessory Flag"] == "1":
+                    tmp = ""
+                else:
+                    tmp = "N/C"
             else:
                 tmp = row["Color"]
 
@@ -198,32 +214,60 @@ class PaperworkGenerator(ABC):
         self.df = slashed_df
         return self
 
-    def repeated_channels(self) -> Self:
+    def repeated_index_val(self, index_str, df_override=None) -> Self:
         """
         Formats repeated channel numbers to use `"` to represent repeated data.
         """
+        if df_override is not None:
+            df = df_override
+        else:
+            df = self.df
+
+        repeated_idx = "-1"
+
         prev_row = None
-        for _, data in self.df.iterrows():
+        for _, data in df.iterrows():
             if prev_row is None:
+                # Initial case
                 prev_row = data
                 continue
 
-            if data["Chan"] == prev_row["Chan"]:
-                # Repeated channel!
-                data["Chan"] = self.formatting_quirks.empty_str
+            tmp_prev = None
+            if data[index_str] == repeated_idx:
+                # second and onward repeat
+                tmp_prev = data.copy()
+                data[index_str] = self.formatting_quirks.empty_str
                 for idx, val in data.items():
-                    if idx == "U#":
+                    if index_str == "Chan" and idx == "U#":
                         # Do repeat U# to avoid confusion
                         continue
-                    if val == "":
+                    if val.strip() == "" or val == self.formatting_quirks.empty_str:
+                        # Don't "-ify empty fields
+                        continue
+                    if data[idx] == prev_row[idx]:
+                        data[idx] = '"'
+
+            elif data[index_str] == prev_row[index_str]:
+                # First repeat
+                repeated_idx = data[index_str]
+                tmp_prev = data.copy()
+                data[index_str] = self.formatting_quirks.empty_str
+                for idx, val in data.items():
+                    if index_str == "Chan" and idx == "U#":
+                        # Do repeat U# to avoid confusion
+                        continue
+                    if val.strip() == "" or val == self.formatting_quirks.empty_str:
                         # Don't "-ify empty fields
                         continue
                     if data[idx] == prev_row[idx]:
                         data[idx] = '"'
             else:
-                prev_row = data
+                tmp_prev = data
+                repeated_idx = "-1"
 
-        return self
+            prev_row = tmp_prev
+
+        return Self
 
     def abbreviate_col_names(self) -> Self:
         """
@@ -238,7 +282,10 @@ class PaperworkGenerator(ABC):
         for field in filter_fields:
             if field not in self.vw_export.columns:
                 logger.warning("Field `%s` not present in export", field)
-                logger.info("In Spotlight Preferences > Lightwright, add `%s` to the export fields list.", field)
+                logger.info(
+                    "In Spotlight Preferences > Lightwright, add `%s` to the export fields list.",
+                    field,
+                )
                 self.vw_export[field] = ""
 
     # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse

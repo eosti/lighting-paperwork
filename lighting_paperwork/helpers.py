@@ -1,14 +1,15 @@
 """Useful helpers and dataclasses for paperwork generation."""
 
 import datetime
+import logging
 import re
 from dataclasses import dataclass
-from typing import Self, Optional
-import logging
+from typing import Optional, Self
 
 import openpyxl
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ShowData:
@@ -26,7 +27,9 @@ class ShowData:
     def generate_slug(self, title: str = "Paperwork") -> str:
         """Generate a filename slug from the show information"""
         if self.show_name is None or self.revision is None:
-            logger.info("Not enough show data to make a nice output filename, using default")
+            logger.info(
+                "Not enough show data to make a nice output filename, using default"
+            )
             return title
         else:
             return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(

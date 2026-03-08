@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from .helpers import FontStyle
+from lighting_paperwork.helpers import FontStyle
 
 
 @dataclass
