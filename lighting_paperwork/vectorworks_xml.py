@@ -55,6 +55,12 @@ class VWExport:
     def __init__(self, filename: str):
         self.instruments: list[VWInstrument] = []
         self.field_mapping = {}
+
+        if ".xml" not in filename:
+            raise ValueError(
+                f"Invalid filetype for VW import (got {filename}, expected *.xml)"
+            )
+
         tree = ET.parse(filename)
         root = tree.getroot()
 
@@ -62,9 +68,12 @@ class VWExport:
         if mapping_data is None:
             raise RuntimeError("Unable to find ExportFieldList")
         for field in mapping_data:
-            if field.tag in ("AppStamp", "TimeStamp"):
+            if field.tag == "TimeStamp":
+                self.export_time = field.text
+            elif field.tag == "AppStamp":
                 continue
-            self.field_mapping[field.tag] = field.text
+            else:
+                self.field_mapping[field.tag] = field.text
 
         instrument_data = root.find("InstrumentData")
         if instrument_data is None:
@@ -72,6 +81,14 @@ class VWExport:
         for instr in instrument_data:
             if "VWVersion" in instr.tag:
                 self.vw_version = instr.text
+            if "VWBuild" in instr.tag:
+                self.vw_build = instr.text
+            if "Action" in instr.tag:
+                if instr.text != "Entire Plot":
+                    logger.warning(
+                        "Export is not of entire plot, results may be incorrect (%s)",
+                        instr.text,
+                    )
             if "UID" in instr.tag:
                 new_instrument = VWInstrument(instr)
 
@@ -87,12 +104,15 @@ class VWExport:
                         # If major UID numbers match, then that's good enough lol
                         self.instruments[-1].accs.append(VWAccessory(instr))
                     else:
-                        logger.info("UID %s is an orphaned accessory", instr.tag)
+                        logger.info("%s is an orphaned accessory", instr.tag)
                         self.instruments.append(new_instrument)
                 else:
                     self.instruments.append(new_instrument)
 
-        self.handle_accessories()
+        logger.debug(f"VW export generated at {self.export_time}")
+        logger.debug(
+            f"Importing from VW version {self.vw_version} build {self.vw_build}"
+        )
         logger.info("Imported %s instruments", len(self.instruments))
 
     def handle_accessories(self, filterlist=[], fuzzyfilterlist=["C-Clamp"]):
@@ -104,6 +124,7 @@ class VWExport:
         fuzzyfilterlist is a list of strings that if found in an accessory name,
             will ommit that accessory.
         """
+        # TODO: self.instruments really shouldn't be mutable
         self.field_mapping["AccessoryString"] = "Accessory String"
         self.field_mapping["AccessoryFlag"] = "Accessory Flag"
         additional_accs = []
@@ -147,7 +168,8 @@ class VWExport:
 
     def export_df(self):
         """Converts ingested data into a DataFrame compatible with CSV imports"""
-        header = ["__UID"]
+        self.handle_accessories()
+        header = ["Node Tag"]
         for _, v in self.field_mapping.items():
             header.append(str(v))
 
@@ -163,15 +185,3 @@ class VWExport:
             all_instr.append(row)
 
         return pd.DataFrame(all_instr, columns=header)
-
-
-def main():
-    """Test XML ingest by printing exported DF"""
-    logging.basicConfig(level=logging.DEBUG)
-    export = VWExport("vw.xml")
-
-    print(export.export_df())
-
-
-if __name__ == "__main__":
-    main()

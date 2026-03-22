@@ -9,13 +9,9 @@ import openpyxl
 import pandas as pd
 
 import lighting_paperwork.excel_formatter as excel_formatter
-from lighting_paperwork.helpers import (
-    FontStyle,
-    FormattingQuirks,
-    ShowData,
-    excel_quirks,
-    html_quirks,
-)
+from lighting_paperwork.helpers import (DMXAddress, FontStyle,
+                                        FormattingQuirks, ShowData,
+                                        excel_quirks, html_quirks, InstrumentPower)
 from lighting_paperwork.style import BaseStyle, default_style
 
 logger = logging.getLogger(__name__)
@@ -48,6 +44,7 @@ class PaperworkGenerator(ABC):
     col_widths: list[int]
     page_width: int = 100
     formatting_quirks = html_quirks
+    no_color_text = "N/C"
 
     @abstractmethod
     def generate_df(self) -> Self:
@@ -121,29 +118,48 @@ class PaperworkGenerator(ABC):
         """
         instload = []
         for _, row in self.df.iterrows():
-            # Consistently format power
-            if row["Wattage"] != "":
-                # we want it to be [number]W
-                power = re.sub(r"[^\d\.]", "", row["Wattage"])
-                powerstr = power + "W"
-                if powerstr == "0W" and row["Accessory Flag"] != "1":
-                    logger.warning(
-                        "Instrument type %s is infinitely efficient (%s)",
-                        row["Instrument Type"],
-                        row["Wattage"],
-                    )
-                    powerstr = None
+            # Collect potential powers
+            wattage_field_power = InstrumentPower(row["Wattage"])
+            powerstr = re.search(InstrumentPower.POWER_REGEX, row["Instrument Type"])
+            if powerstr is None:
+                instrument_type_power = InstrumentPower(0)
             else:
-                power = None
-                powerstr = None
+                instrument_type_power = InstrumentPower(powerstr.group())
+
+            # Verify which we should use
+            if wattage_field_power.power == 0 and instrument_type_power.power == 0:
+                # No power provided
+                if row["Accessory Flag"] != "1":
+                    logger.warning(
+                        "Channel %s is infinitely efficient (%s is %s)",
+                        row["Channel"],
+                        row["Instrument Type"],
+                        wattage_field_power.format(),
+                    )
+                power = wattage_field_power
+            elif wattage_field_power.power > 0 and instrument_type_power.power == 0:
+                # There was a power in the wattage field but none parsed from instrument type
+                power = wattage_field_power
+            elif instrument_type_power.power > 0 and wattage_field_power.power == 0:
+                # There was a power in the instrument type field but none in the wattage field
+                power = instrument_type_power
+            elif wattage_field_power.power > 0 and instrument_type_power.power > 0 and wattage_field_power.power != instrument_type_power.power:
+                # Fields disagree, prefer the wattage field
+                logger.warning("Channel %s has conflicting power values (%s, %s). Using %s.", row["Channel"], wattage_field_power.format(), instrument_type_power.format(), wattage_field_power.format())
+                power = wattage_field_power
+            elif wattage_field_power.power == instrument_type_power.power:
+                # Same power found in instrument type and wattage fields
+                power = wattage_field_power
+            else:
+                raise ValueError("Shouldn't get here!")
 
             # Make sure power shows up once, after the instrument type
-            if powerstr is None:
-                tmp = row["Instrument Type"]
+            if power.power == 0:
+                tmp = row["Instrument Type"].strip()
             else:
                 # Remove from instrument type (if existing)
-                instrtype = re.sub(rf"\s+{power}\s*\w+\s*", "", row["Instrument Type"])
-                tmp = instrtype + " " + powerstr
+                instrtype = re.sub(InstrumentPower.POWER_REGEX, "", row["Instrument Type"]).strip()
+                tmp = instrtype + " " + power.format()
 
             # If accessory, add that here
             if row["Accessory String"] != "":
@@ -163,7 +179,6 @@ class PaperworkGenerator(ABC):
     def combine_gelgobo(self) -> Self:
         """
         Combines the Gel and Gobo fields into one.
-        Only operates on Gobo 1 field, not Gobo 2.
         """
         gelgobo = []
         for _, row in self.df.iterrows():
@@ -172,18 +187,22 @@ class PaperworkGenerator(ABC):
                 if row["Accessory Flag"] == "1":
                     tmp = ""
                 else:
-                    tmp = "N/C"
+                    tmp = self.no_color_text
             else:
                 tmp = row["Color"]
 
             # Append gobo if exists
-            if row["Gobo 1"] != "":
+            if row["Gobo 1"] != "" and row["Gobo 2"] != "":
+                tmp += ", T: " + row["Gobo 1"] + ", " + row["Gobo 2"]
+            elif row["Gobo 1"] != "":
                 tmp += ", T: " + row["Gobo 1"]
+            elif row["Gobo 2"] != "":
+                tmp += ", T: " + row["Gobo 2"]
 
             gelgobo.append(tmp)
 
         # Clean up by replacing old cols with new one
-        new_df = self.df.drop(["Color", "Gobo 1"], axis=1)
+        new_df = self.df.drop(["Color", "Gobo 1", "Gobo 2"], axis=1)
         new_df["Color & Gobo"] = gelgobo
         self.df = new_df
 
@@ -201,14 +220,9 @@ class PaperworkGenerator(ABC):
                     self.formatting_quirks.empty_str
                 )
             else:
-                universe = int((absaddr - 1) / 512) + 1
-
-                if universe == 1:
-                    address = absaddr
-                    self.df.at[row.Index, "Absolute Address"] = f"{address}"
-                else:
-                    address = ((absaddr - 1) % 512) + 1
-                    self.df.at[row.Index, "Absolute Address"] = f"{universe}/{address}"
+                self.df.at[row.Index, "Absolute Address"] = DMXAddress(
+                    absaddr
+                ).format_slash_conditional()
 
         slashed_df = self.df.rename(columns={"Absolute Address": "Addr"})
         self.df = slashed_df

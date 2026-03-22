@@ -40,7 +40,7 @@ class GoboPullList(PaperworkGenerator):
 
         gobo_name, gobo_count = np.unique(gobo_list, return_counts=True)
 
-        self.df = pd.DataFrame(zip(gobo_name, gobo_count), columns=["Gobo Name", "Qty"])
+        self.df = pd.DataFrame(zip(gobo_name, gobo_count), columns=["Gobo Name", "Count"])
 
         return self
 

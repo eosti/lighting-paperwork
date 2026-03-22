@@ -21,7 +21,12 @@ repository = "https://github.com/eosti/lighting-paperwork"
 
 [dependency-groups]
 dev = [
+    "black>=26.3.1",
+    "isort>=8.0.1",
+    "mypy>=1.19.1",
     "pandas-stubs>=2.3.0.250703",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
     "types-openpyxl>=3.1.5.20250602",
 ]
 
@@ -47,3 +52,7 @@ ignore = [ ".venv" ]
 # strict_equality = true
 # warn_redundant_casts = true
 # warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "--maxfail=1"
+#--cov=testing_demo"
