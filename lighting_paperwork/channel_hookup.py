@@ -47,6 +47,7 @@ class ChannelHookup(PaperworkGenerator):
             "Accessory Flag",
             "Color",
             "Gobo 1",
+            "Gobo 2",
         ]
         self.verify_filter_fields(filter_fields)
         self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
@@ -62,6 +63,7 @@ class ChannelHookup(PaperworkGenerator):
             by=["Chan", "Position", "U#", "Accessory Flag", "Addr"],
             key=natsort_keygen(),
         )
+        self.df = self.df.reset_index(drop=True)
         self.df = self.df[
             [
                 "Chan",
