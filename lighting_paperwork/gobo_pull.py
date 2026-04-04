@@ -1,8 +1,8 @@
 """Generator for a gobo pull list"""
 
 import logging
-from typing import List, Self
 from os import path
+from typing import List, Self
 
 import numpy as np
 import pandas as pd
@@ -40,7 +40,9 @@ class GoboPullList(PaperworkGenerator):
 
         gobo_name, gobo_count = np.unique(gobo_list, return_counts=True)
 
-        self.df = pd.DataFrame(zip(gobo_name, gobo_count), columns=["Gobo Name", "Qty"])
+        self.df = pd.DataFrame(
+            zip(gobo_name, gobo_count), columns=["Gobo Name", "Count"]
+        )
 
         return self
 
@@ -63,9 +65,9 @@ class GoboPullList(PaperworkGenerator):
         # Set font based on column
         for col_name, _ in style_df.items():
             width_idx = style_df.columns.get_loc(col_name)
-            style_df[col_name] += (
-                f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
-            )
+            style_df[
+                col_name
+            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
 
             style_df[col_name] += "text-align: left; "
 
@@ -98,7 +100,9 @@ class GoboPullList(PaperworkGenerator):
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
-        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(self.df)
+        styled = Styler.from_custom_template(
+            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+        )(self.df)
         styled = styled.apply(
             type(self).style_data,
             axis=None,

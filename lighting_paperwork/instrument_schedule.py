@@ -3,19 +3,20 @@
 import logging
 import re
 from copy import copy
-from typing import List, Self, Tuple
 from os import path
+from typing import List, Self, Tuple
 
-import openpyxl
 import numpy as np
+import openpyxl
 import pandas as pd
 from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
-from lighting_paperwork.helpers import FontStyle, excel_quirks
+import lighting_paperwork.excel_formatter as excel_formatter
+from lighting_paperwork.helpers import (FontStyle, FormattingQuirks,
+                                        excel_quirks)
 from lighting_paperwork.paperwork import PaperworkGenerator
 from lighting_paperwork.style import default_position_style
-import lighting_paperwork.excel_formatter as excel_formatter
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,20 @@ class InstrumentSchedule(PaperworkGenerator):
 
     col_widths = [5, 17, 36, 28, 7, 7]
     display_name = "Instrument Schedule"
+    # Order of these regexes defines the printed order
+    # TODO support appending letters like `A`
+    position_regexes = [
+        r"\d*\s?Pipe\s?\d*$",
+        r"^\d*\s?E\s?\d*$",
+        r"^\d*\s?Elec\s?\d*$",
+        r"^\d*\s?LX\s?\d*$",
+        r"^\d*\s?AP\s?\d*$",
+        r"^\d*\s?Cat\s?\d*$",
+        r"^FOH\s?\d*$",
+        r"^[DU]?S[RL]? Box Boom\s?\d*$",
+        r"^[DU]?S[RL]? Boom\s?\d*$",
+        r"^[DU]?S[RL]? Ladder\s?\d*$",
+    ]
 
     def generate_df(self) -> Self:
         filter_fields = [
@@ -43,8 +58,11 @@ class InstrumentSchedule(PaperworkGenerator):
             "Purpose",
             "Instrument Type",
             "Wattage",
+            "Accessory String",
+            "Accessory Flag",
             "Color",
             "Gobo 1",
+            "Gobo 2",
             "Channel",
             "Absolute Address",
         ]
@@ -56,16 +74,18 @@ class InstrumentSchedule(PaperworkGenerator):
         self.df = self.df.dropna(subset=["Position"])
 
         self.combine_instrtype().format_address_slash().combine_gelgobo().abbreviate_col_names()
+        self.df["Chan"] = self.df["Chan"].replace("", self.formatting_quirks.empty_str)
         self.df = self.df.sort_values(
-            by=["Position", "U#", "Purpose"], key=natsort_keygen()
+            by=["Position", "U#", "Accessory Flag", "Purpose"], key=natsort_keygen()
         )
+        self.df = self.df.reset_index(drop=True)
 
         self.df = self.df[
             [
                 "Position",
                 "U#",
                 "Purpose",
-                "Instr Type & Load",
+                "Instr Type & Load & Acc",
                 "Color & Gobo",
                 "Chan",
                 "Addr",
@@ -80,47 +100,8 @@ class InstrumentSchedule(PaperworkGenerator):
         """
         # Step one: sort position names
         unique_vals = self.df["Position"].unique()
-
-        # Sort by Cat (descending), Elec (ascending), other
-        elec_list = natsorted([x for x in unique_vals if re.match(r"^Elec\s\d", x)])
-        lx_list = natsorted([x for x in unique_vals if re.match(r"^LX\d", x)])
-        cat_list = natsorted(
-            [x for x in unique_vals if re.match(r"^Cat\s\d", x)], reverse=True
-        )
+        position_names = self.sort_positions(unique_vals, self.position_regexes)
         # TODO: might be nice to force a linebreak between categories
-        foh_list = natsorted(
-            [
-                x
-                for x in unique_vals
-                if re.match(r"^FOH\s\d", x) or re.match(r"^FOH$", x)
-            ]
-        )
-
-        # This will need to be tweaked per venue
-        box_booms_ds = natsorted(
-            [x for x in unique_vals if re.match(r"^DS[RL]\sBox Boom", x)]
-        )
-        box_booms_us = natsorted(
-            [x for x in unique_vals if re.match(r"^US[RL]\sBox Boom", x)]
-        )
-        booms = natsorted([x for x in unique_vals if re.match(r"^S[RL]\sBoom\s\d", x)])
-        ladders = natsorted([x for x in unique_vals if re.match(r"^S[RL]\sLadder", x)])
-
-        # The order of this is what'll make the order in the schedule!
-        special_positions = (
-            cat_list
-            + foh_list
-            + elec_list
-            + lx_list
-            + booms
-            + box_booms_ds
-            + box_booms_us
-            + ladders
-        )
-
-        other_list = natsorted([x for x in unique_vals if x not in (special_positions)])
-
-        position_names = special_positions + other_list
 
         # Step two: create unique dataframes by position name
         sorted_dfs = []
@@ -129,15 +110,31 @@ class InstrumentSchedule(PaperworkGenerator):
             pos_df = pos_df.drop(["Position"], axis=1)
             pos_df = pos_df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
             pos_df = pos_df.sort_values(by=["U#"], key=natsort_keygen())
+            pos_df = pos_df.reset_index(drop=True)
+            self.repeated_index_val("U#", pos_df)
             sorted_dfs.append((i, pos_df))
 
         return sorted_dfs
+
+    @staticmethod
+    def sort_positions(positions: List[str], regexes: List[str]) -> List[str]:
+        sorted_positions = []
+        for r in regexes:
+            pos = natsorted([x for x in positions if re.match(r, x)])
+            sorted_positions += pos
+
+        # Gather remaining positions
+        sorted_positions += natsorted(
+            [x for x in positions if x not in (sorted_positions)]
+        )
+        return sorted_positions
 
     @staticmethod
     def style_data(
         df: pd.DataFrame,
         body_style: FontStyle,
         col_width: List[int],
+        quirks: FormattingQuirks,
         border_weight: float,
     ) -> pd.DataFrame:
         chan_border_style = f"{border_weight}px dashed black"
@@ -151,7 +148,7 @@ class InstrumentSchedule(PaperworkGenerator):
                 prev_row = (index, data)
                 continue
 
-            if data["U#"] == prev_row[1]["U#"]:
+            if data["U#"] == quirks.empty_str:
                 # Same U#, remove dashed line
                 style_df.loc[prev_row[0], :] += "border-bottom: none; "
                 style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
@@ -161,9 +158,9 @@ class InstrumentSchedule(PaperworkGenerator):
             prev_row = (index, data)
 
         # Last row gets a solid bottom border
-        style_df.loc[prev_row[0], :] += (
-            f"border-bottom: {border_weight}px solid black; "
-        )
+        style_df.loc[
+            prev_row[0], :
+        ] += f"border-bottom: {border_weight}px solid black; "
 
         # Set font based on column
         for col_name, _ in style_df.items():
@@ -210,12 +207,15 @@ class InstrumentSchedule(PaperworkGenerator):
     def _style_position(
         self, position: tuple[str, pd.DataFrame]
     ) -> tuple[str, pd.io.formats.style.Styler]:
-        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(position[1])
+        styled = Styler.from_custom_template(
+            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+        )(position[1])
         styled = styled.apply(
             type(self).style_data,
             axis=None,
             body_style=self.style.body,
             col_width=self.col_widths,
+            quirks=self.formatting_quirks,
             border_weight=self.border_weight,
         )
         styled = styled.hide()

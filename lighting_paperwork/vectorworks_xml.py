@@ -55,6 +55,12 @@ class VWExport:
     def __init__(self, filename: str):
         self.instruments: list[VWInstrument] = []
         self.field_mapping = {}
+
+        if ".xml" not in filename:
+            raise ValueError(
+                f"Invalid filetype for VW import (got {filename}, expected *.xml)"
+            )
+
         tree = ET.parse(filename)
         root = tree.getroot()
 
@@ -62,9 +68,12 @@ class VWExport:
         if mapping_data is None:
             raise RuntimeError("Unable to find ExportFieldList")
         for field in mapping_data:
-            if field.tag in ("AppStamp", "TimeStamp"):
+            if field.tag == "TimeStamp":
+                self.export_time = field.text
+            elif field.tag == "AppStamp":
                 continue
-            self.field_mapping[field.tag] = field.text
+            else:
+                self.field_mapping[field.tag] = field.text
 
         instrument_data = root.find("InstrumentData")
         if instrument_data is None:
@@ -72,6 +81,14 @@ class VWExport:
         for instr in instrument_data:
             if "VWVersion" in instr.tag:
                 self.vw_version = instr.text
+            if "VWBuild" in instr.tag:
+                self.vw_build = instr.text
+            if "Action" in instr.tag:
+                if instr.text != "Entire Plot":
+                    logger.warning(
+                        "Export is not of entire plot, results may be incorrect (%s)",
+                        instr.text,
+                    )
             if "UID" in instr.tag:
                 new_instrument = VWInstrument(instr)
 
@@ -87,15 +104,72 @@ class VWExport:
                         # If major UID numbers match, then that's good enough lol
                         self.instruments[-1].accs.append(VWAccessory(instr))
                     else:
-                        logger.info("UID %s is an orphaned accessory", instr.tag)
+                        logger.info("%s is an orphaned accessory", instr.tag)
+                        self.instruments.append(new_instrument)
+                else:
+                    self.instruments.append(new_instrument)
 
-                self.instruments.append(new_instrument)
-
+        logger.debug("VW export generated at %s", self.export_time)
+        logger.debug(
+            "Importing from VW version %s build %s", self.vw_version, self.vw_build
+        )
         logger.info("Imported %s instruments", len(self.instruments))
 
-    def export_df(self, no_solo_accessories=True):
+    def handle_accessories(self, filterlist=[], fuzzyfilterlist=["C-Clamp"]):
+        """
+        Adds accessories to a AccessoryString, and if the accessory is smart, make
+            a seperate "special" instrument.
+
+        filterlist is a list of exact matches for accessories that should be omitted.
+        fuzzyfilterlist is a list of strings that if found in an accessory name,
+            will ommit that accessory.
+        """
+        # TODO: self.instruments really shouldn't be mutable
+        self.field_mapping["AccessoryString"] = "Accessory String"
+        self.field_mapping["AccessoryFlag"] = "Accessory Flag"
+        additional_accs = []
+        for instr in self.instruments:
+            if instr.accs == []:
+                instr.props["AccessoryString"] = ""
+                instr.props["AccessoryFlag"] = "0"
+                continue
+            acc_names = []
+            for acc in instr.accs:
+                name = acc.props["Symbol_Name"]
+                name = name.replace("Light Acc", "").strip()
+                if name in filterlist:
+                    continue
+                if [1 for f in fuzzyfilterlist if f in name]:
+                    continue
+                acc_names.append(name)
+
+                if acc.props["Device_Type"] == "Accessory":
+                    # Accessories are typically smarter and require their own entry
+                    # Some data needs to be copied from the parent to make a new entry
+                    acc.props["AccessoryFlag"] = "1"
+                    acc.props["Unit_Number"] = instr.props["Unit_Number"]
+                    acc.props["Inst_Type"] = name
+                    # No recursive accessories
+                    acc.props["AccessoryString"] = ""
+                    additional_accs.append(acc)
+
+            namestr = ""
+            for idx, name in enumerate(acc_names):
+                if idx == len(acc_names) - 1:
+                    # Final name
+                    namestr += name
+                else:
+                    namestr += f"{name}, "
+
+            instr.props["AccessoryString"] = namestr
+
+        # do this last to prevent recursive conversion
+        self.instruments += additional_accs
+
+    def export_df(self):
         """Converts ingested data into a DataFrame compatible with CSV imports"""
-        header = ["__UID"]
+        self.handle_accessories()
+        header = ["Node Tag"]
         for _, v in self.field_mapping.items():
             header.append(str(v))
 
@@ -104,9 +178,6 @@ class VWExport:
             if instr.props["Action"] == "Delete":
                 # Don't export deleted instruments
                 continue
-            if no_solo_accessories and "Accessory" in instr.props["Device_Type"]:
-                # Don't export solo accessories if asked
-                continue
             row = [instr.node_uid]
             for field in self.field_mapping:
                 row.append(instr.props.get(field, ""))
@@ -114,15 +185,3 @@ class VWExport:
             all_instr.append(row)
 
         return pd.DataFrame(all_instr, columns=header)
-
-
-def main():
-    """Test XML ingest by printing exported DF"""
-    logging.basicConfig(level=logging.DEBUG)
-    export = VWExport("vw.xml")
-
-    print(export.export_df())
-
-
-if __name__ == "__main__":
-    main()

@@ -2,9 +2,9 @@
 Formatters for Excel
 """
 
-from typing import List, Optional, Tuple
-from copy import copy
 import logging
+from copy import copy
+from typing import List, Optional
 
 from openpyxl.styles import Alignment, Border, Font, Side
 from openpyxl.utils import get_column_letter
@@ -14,7 +14,7 @@ from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break
 from openpyxl.worksheet.worksheet import Worksheet
 
-from lighting_paperwork.helpers import ShowData, FontStyle
+from lighting_paperwork.helpers import FontStyle, ShowData
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +108,7 @@ def wrap_all_cells(ws: Worksheet) -> None:
 
 
 def add_section_header(
-    ws: Worksheet, text: str, format: FontStyle, end_col: Optional[int] = None
+    ws: Worksheet, text: str, fmt: FontStyle, end_col: Optional[int] = None
 ) -> None:
     """Adds a section header to the bottom of the worksheet"""
     if ws.max_row == 1:
@@ -126,7 +126,7 @@ def add_section_header(
         start_row=section_row, end_row=section_row, start_column=1, end_column=end_col
     )
 
-    header_cell.font = format.excel()
+    header_cell.font = fmt.excel()
     header_cell.alignment = Alignment(horizontal="left", vertical="center")
 
 
@@ -160,30 +160,29 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
                 last_height = last_height + cur_height + 0.22
 
             cur_height = 0
-            logger.debug(f"Row {row} is a end-of-section ({cur_height})")
+            logger.debug("Row %s is a end-of-section (%s)", row, cur_height)
         elif ws.cell(row, 2).value is None and (not ws.cell(row, 1).value.isdigit()):
             # This is a position title -> height of 0.33"
             cur_height += 0.33
             pos_start_index = row
-            logger.debug(f"Row {row} is a position title ({cur_height})")
+            logger.debug("Row %s is a position title (%s)", row, cur_height)
         elif ws.cell(row, 1).value == "U#":
             # This is a col label row
             cur_height += 0.22
-            logger.debug(f"Row {row} is col label ({cur_height})")
+            logger.debug("Row %s is col label (%s)", row, cur_height)
         elif ws.cell(row, 1).value is None or ws.cell(row, 1).value.isdigit():
             # Channel row
-            if (
-                ws.cell(row, 3).value is not None 
-                    and (len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
-                    or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN)
+            if ws.cell(row, 3).value is not None and (
+                len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
+                or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN
             ):
                 # Double height
                 cur_height += 0.44
-                logger.debug(f"Row {row} is double height channel ({cur_height})")
+                logger.debug("Row %s is double height channel (%s)", row, cur_height)
             else:
                 cur_height += 0.22
-                logger.debug(f"Row {row} is standard height channel ({cur_height})")
+                logger.debug("Row %s is standard height channel (%s)", row, cur_height)
         else:
             # dunno, assume it's a standard row
             cur_height += 0.22
-            logger.debug(f"Row {row} unknown type ({cur_height})")
+            logger.debug("Row %s unknown type (%s)", row, cur_height)

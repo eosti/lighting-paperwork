@@ -1,14 +1,15 @@
 """Generator for a color cut list"""
 
 import logging
-from typing import List, Self
 from os import path
+from typing import List, Self
 
 import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from lighting_paperwork.helpers import FontStyle, Gel, FormattingQuirks
+from lighting_paperwork.helpers import (FontStyle, FormattingQuirks, Gel,
+                                        parse_frame_size)
 from lighting_paperwork.paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
@@ -34,40 +35,19 @@ class ColorCutList(PaperworkGenerator):
         # Seperate colors and diffusion into dict list
         color_dict = []
         for _, row in self.df.iterrows():
-            if row["Frame Size"] != "" and not pd.isnull(row["Frame Size"]):
-                framesize = row["Frame Size"]
-            else:
-                framesize = "Unknown"
-            if (
-                row["Color"].strip() != ""
-                and row["Color"] != "N/C"
-                and not pd.isnull(row["Color"])
-            ):
-                for i in row["Color"].strip().split("+"):
-                    # Works for single gels too
-                    if len(i.split("x")) > 1:
-                        # Repeat gel situation (i.e. L201x2)
-                        for _ in range(0, int(i.split("x")[1])):
-                            gel = Gel.parse_name(i.split("x")[0])
-                            color_dict.append(
-                                {
-                                    "Color": gel.name,
-                                    "Frame Size": framesize,
-                                    "Company": gel.company,
-                                    "Sort": gel.name_sort,
-                                }
-                            )
-                    else:
-                        # Normal single gel
-                        gel = Gel.parse_name(i)
-                        color_dict.append(
-                            {
-                                "Color": gel.name,
-                                "Frame Size": framesize,
-                                "Company": gel.company,
-                                "Sort": gel.name_sort,
-                            }
-                        )
+            framesize = parse_frame_size(row["Frame Size"])
+            all_gels = Gel.parse_gel_string(row["Color"])
+            for i in all_gels:
+                if i.name == "" or i.name == "N/C":
+                    continue
+                color_dict.append(
+                    {
+                        "Color": i.name,
+                        "Frame Size": framesize,
+                        "Company": i.company,
+                        "Sort": i.name_sort,
+                    }
+                )
 
         colors = pd.DataFrame.from_dict(color_dict)
         colors = (
@@ -75,7 +55,6 @@ class ColorCutList(PaperworkGenerator):
             .count()
             .reset_index(name="Count")
         )
-        # Hack for that silly Rosco company: 3xx values become xx.3
         colors = colors.sort_values(by=["Sort", "Frame Size"], key=natsort_keygen())
         colors = colors.drop(["Sort"], axis=1)
 
@@ -114,9 +93,9 @@ class ColorCutList(PaperworkGenerator):
         # Set font based on column
         for col_name, _ in style_df.items():
             width_idx = style_df.columns.get_loc(col_name)
-            style_df[col_name] += (
-                f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
-            )
+            style_df[
+                col_name
+            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
 
             if col_name in ["Color"]:
                 style_df[col_name] += "text-align: center; "
@@ -152,7 +131,9 @@ class ColorCutList(PaperworkGenerator):
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
-        styled = Styler.from_custom_template(path.join(path.dirname(__file__), "templates"), "header_footer.tpl")(self.df)
+        styled = Styler.from_custom_template(
+            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+        )(self.df)
         styled = styled.apply(
             type(self).style_data,
             axis=None,

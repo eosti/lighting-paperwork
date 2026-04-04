@@ -5,12 +5,14 @@ import re
 from abc import ABC, abstractmethod
 from typing import List, Optional, Self
 
-import pandas as pd
 import openpyxl
+import pandas as pd
 
-from lighting_paperwork.helpers import FontStyle, ShowData, FormattingQuirks, excel_quirks, html_quirks
-from lighting_paperwork.style import BaseStyle, default_style
 import lighting_paperwork.excel_formatter as excel_formatter
+from lighting_paperwork.helpers import (DMXAddress, FontStyle,
+                                        FormattingQuirks, InstrumentPower,
+                                        ShowData, excel_quirks, html_quirks)
+from lighting_paperwork.style import BaseStyle, default_style
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +44,7 @@ class PaperworkGenerator(ABC):
     col_widths: list[int]
     page_width: int = 100
     formatting_quirks = html_quirks
+    no_color_text = "N/C"
 
     @abstractmethod
     def generate_df(self) -> Self:
@@ -111,38 +114,76 @@ class PaperworkGenerator(ABC):
 
     def combine_instrtype(self) -> Self:
         """
-        Combines the Instrument Type and Power fields into one
+        Combines the Instrument Type and Power and Accessory fields into one
         """
         instload = []
         for _, row in self.df.iterrows():
-            # Consistently format power
-            if row["Wattage"] != "":
-                # we want it to be [number]W
-                power = re.sub(r"[^\d\.]", "", row["Wattage"])
-                powerstr = power + "W"
+            # Collect potential powers
+            wattage_field_power = InstrumentPower(row["Wattage"])
+            powerstr = re.search(InstrumentPower.POWER_REGEX, row["Instrument Type"])
+            if powerstr is None:
+                instrument_type_power = InstrumentPower(0)
             else:
-                power = None
-                powerstr = None
+                instrument_type_power = InstrumentPower(powerstr.group())
+
+            # Verify which we should use
+            if wattage_field_power.power == 0 and instrument_type_power.power == 0:
+                # No power provided
+                if row["Accessory Flag"] != "1":
+                    logger.warning(
+                        "Channel %s is infinitely efficient (%s is %s)",
+                        row["Channel"],
+                        row["Instrument Type"],
+                        wattage_field_power.format(),
+                    )
+                power = wattage_field_power
+            elif wattage_field_power.power > 0 and instrument_type_power.power == 0:
+                # There was a power in the wattage field but none parsed from instrument type
+                power = wattage_field_power
+            elif instrument_type_power.power > 0 and wattage_field_power.power == 0:
+                # There was a power in the instrument type field but none in the wattage field
+                power = instrument_type_power
+            elif (
+                wattage_field_power.power > 0
+                and instrument_type_power.power > 0
+                and wattage_field_power.power != instrument_type_power.power
+            ):
+                # Fields disagree, prefer the wattage field
+                logger.warning(
+                    "Channel %s has conflicting power values (%s, %s). Using %s.",
+                    row["Channel"],
+                    wattage_field_power.format(),
+                    instrument_type_power.format(),
+                    wattage_field_power.format(),
+                )
+                power = wattage_field_power
+            elif wattage_field_power.power == instrument_type_power.power:
+                # Same power found in instrument type and wattage fields
+                power = wattage_field_power
+            else:
+                raise ValueError("Shouldn't get here!")
 
             # Make sure power shows up once, after the instrument type
-            if powerstr is None:
-                tmp = row["Instrument Type"]
+            if power.power == 0:
+                tmp = row["Instrument Type"].strip()
             else:
                 # Remove from instrument type (if existing)
-                instrtype = re.sub(rf"\s*{power}\w+\s*", "", row["Instrument Type"])
-                tmp = instrtype + " " + powerstr
+                instrtype = re.sub(
+                    InstrumentPower.POWER_REGEX, "", row["Instrument Type"]
+                ).strip()
+                tmp = instrtype + " " + power.format()
 
             # If accessory, add that here
-            # if row["Accessory Inventory"] != "":
-            #    tmp += ", " + row["Accessory Inventory"]
+            if row["Accessory String"] != "":
+                tmp += ", " + row["Accessory String"]
 
             instload.append(tmp)
 
         # Clean up by replacing old cols with new one
-        # TODO: Get accessories in here
-        # df.drop(["Instrument Type", "Wattage", "Accessory Inventory"], axis=1, inplace=True)
-        new_df = self.df.drop(["Instrument Type", "Wattage"], axis=1)
-        new_df["Instr Type & Load"] = instload
+        new_df = self.df.drop(
+            ["Instrument Type", "Wattage", "Accessory String"], axis=1
+        )
+        new_df["Instr Type & Load & Acc"] = instload
 
         self.df = new_df
         return self
@@ -150,24 +191,30 @@ class PaperworkGenerator(ABC):
     def combine_gelgobo(self) -> Self:
         """
         Combines the Gel and Gobo fields into one.
-        Only operates on Gobo 1 field, not Gobo 2.
         """
         gelgobo = []
         for _, row in self.df.iterrows():
             # If no gel replace with N/C
             if row["Color"] == "":
-                tmp = "N/C"
+                if row["Accessory Flag"] == "1":
+                    tmp = ""
+                else:
+                    tmp = self.no_color_text
             else:
                 tmp = row["Color"]
 
             # Append gobo if exists
-            if row["Gobo 1"] != "":
+            if row["Gobo 1"] != "" and row["Gobo 2"] != "":
+                tmp += ", T: " + row["Gobo 1"] + ", " + row["Gobo 2"]
+            elif row["Gobo 1"] != "":
                 tmp += ", T: " + row["Gobo 1"]
+            elif row["Gobo 2"] != "":
+                tmp += ", T: " + row["Gobo 2"]
 
             gelgobo.append(tmp)
 
         # Clean up by replacing old cols with new one
-        new_df = self.df.drop(["Color", "Gobo 1"], axis=1)
+        new_df = self.df.drop(["Color", "Gobo 1", "Gobo 2"], axis=1)
         new_df["Color & Gobo"] = gelgobo
         self.df = new_df
 
@@ -185,45 +232,68 @@ class PaperworkGenerator(ABC):
                     self.formatting_quirks.empty_str
                 )
             else:
-                universe = int((absaddr - 1) / 512) + 1
-
-                if universe == 1:
-                    address = absaddr
-                    self.df.at[row.Index, "Absolute Address"] = f"{address}"
-                else:
-                    address = ((absaddr - 1) % 512) + 1
-                    self.df.at[row.Index, "Absolute Address"] = f"{universe}/{address}"
+                self.df.at[row.Index, "Absolute Address"] = DMXAddress(
+                    absaddr
+                ).format_slash_conditional()
 
         slashed_df = self.df.rename(columns={"Absolute Address": "Addr"})
         self.df = slashed_df
         return self
 
-    def repeated_channels(self) -> Self:
+    def repeated_index_val(self, index_str, df_override=None) -> Self:
         """
         Formats repeated channel numbers to use `"` to represent repeated data.
         """
+        if df_override is not None:
+            df = df_override
+        else:
+            df = self.df
+
+        repeated_idx = "-1"
+
         prev_row = None
-        for _, data in self.df.iterrows():
+        for _, data in df.iterrows():
             if prev_row is None:
+                # Initial case
                 prev_row = data
                 continue
 
-            if data["Chan"] == prev_row["Chan"]:
-                # Repeated channel!
-                data["Chan"] = self.formatting_quirks.empty_str
+            tmp_prev = None
+            if data[index_str] == repeated_idx:
+                # second and onward repeat
+                tmp_prev = data.copy()
+                data[index_str] = self.formatting_quirks.empty_str
                 for idx, val in data.items():
-                    if idx == "U#":
+                    if index_str == "Chan" and idx == "U#":
                         # Do repeat U# to avoid confusion
                         continue
-                    if val == "":
+                    if val.strip() == "" or val == self.formatting_quirks.empty_str:
+                        # Don't "-ify empty fields
+                        continue
+                    if data[idx] == prev_row[idx]:
+                        data[idx] = '"'
+
+            elif data[index_str] == prev_row[index_str]:
+                # First repeat
+                repeated_idx = data[index_str]
+                tmp_prev = data.copy()
+                data[index_str] = self.formatting_quirks.empty_str
+                for idx, val in data.items():
+                    if index_str == "Chan" and idx == "U#":
+                        # Do repeat U# to avoid confusion
+                        continue
+                    if val.strip() == "" or val == self.formatting_quirks.empty_str:
                         # Don't "-ify empty fields
                         continue
                     if data[idx] == prev_row[idx]:
                         data[idx] = '"'
             else:
-                prev_row = data
+                tmp_prev = data
+                repeated_idx = "-1"
 
-        return self
+            prev_row = tmp_prev
+
+        return Self
 
     def abbreviate_col_names(self) -> Self:
         """
@@ -238,7 +308,10 @@ class PaperworkGenerator(ABC):
         for field in filter_fields:
             if field not in self.vw_export.columns:
                 logger.warning("Field `%s` not present in export", field)
-                logger.info("In Spotlight Preferences > Lightwright, add `%s` to the export fields list.", field)
+                logger.info(
+                    "In Spotlight Preferences > Lightwright, add `%s` to the export fields list.",
+                    field,
+                )
                 self.vw_export[field] = ""
 
     # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse
