@@ -1,7 +1,9 @@
-import pytest
 import re
 
-from lighting_paperwork.helpers import DMXAddress, Gel, parse_frame_size, InstrumentPower
+import pytest
+
+from lighting_paperwork.helpers import (DMXAddress, Gel, InstrumentPower,
+                                        parse_frame_size)
 
 
 @pytest.mark.parametrize(
@@ -188,6 +190,7 @@ def test_colon_address(input_addr, output_str):
 def test_slash_conditional_address(input_addr, output_str):
     assert DMXAddress(input_addr).format_slash_conditional() == output_str
 
+
 @pytest.mark.parametrize(
     "input_power, output_str",
     [
@@ -205,7 +208,7 @@ def test_slash_conditional_address(input_addr, output_str):
         (1000, "1kW"),
         (None, "0W"),
         ("", "0W"),
-        ("0kW", "0W")
+        ("0kW", "0W"),
     ],
 )
 def test_power_formatting(input_power, output_str):
@@ -229,7 +232,7 @@ def test_power_formatting_assertion():
         ("INSTR 150 250W", "250W"),
         ("INSTR 250.4 W", "250.4 W"),
         ("INSTR 250 kW", "250 kW"),
-        ("INSTR 250 W MORE INSTR", "250 W")
+        ("INSTR 250 W MORE INSTR", "250 W"),
     ],
 )
 def test_power_regex(input_str, output_str):

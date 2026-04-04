@@ -109,9 +109,9 @@ class VWExport:
                 else:
                     self.instruments.append(new_instrument)
 
-        logger.debug(f"VW export generated at {self.export_time}")
+        logger.debug("VW export generated at %s", self.export_time)
         logger.debug(
-            f"Importing from VW version {self.vw_version} build {self.vw_build}"
+            "Importing from VW version %s build %s", self.vw_version, self.vw_build
         )
         logger.info("Imported %s instruments", len(self.instruments))
 
@@ -139,7 +139,7 @@ class VWExport:
                 name = name.replace("Light Acc", "").strip()
                 if name in filterlist:
                     continue
-                if [1 for f in fuzzyfilterlist if (f in name)]:
+                if [1 for f in fuzzyfilterlist if f in name]:
                     continue
                 acc_names.append(name)
 

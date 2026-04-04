@@ -2,6 +2,7 @@ import pytest
 
 from lighting_paperwork.gobo_pull import GoboPullList
 
+
 def test_parse_gobo_pull_list(vwx_export):
     paperwork = GoboPullList(vwx_export).generate_df()
 
@@ -10,12 +11,13 @@ def test_parse_gobo_pull_list(vwx_export):
     gobos = paperwork.df["Gobo Name"].unique()
 
     assert (
-        gobos == [
+        gobos
+        == [
             "G635-Construction A",
             "GAM 222-Small Breakup",
             "GAM 636-Construction B",
             "GAM 673-Linear Breakup 2",
-            "R77405"
+            "R77405",
         ]
     ).all()
 
