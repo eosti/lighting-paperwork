@@ -1,7 +1,9 @@
-import pytest
 import logging
 
+import pytest
+
 from lighting_paperwork.vectorworks_xml import VWExport
+
 
 def test_opening_files(vwx_export_file):
     with pytest.raises(ValueError):

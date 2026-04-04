@@ -10,8 +10,8 @@ import pandas as pd
 
 import lighting_paperwork.excel_formatter as excel_formatter
 from lighting_paperwork.helpers import (DMXAddress, FontStyle,
-                                        FormattingQuirks, ShowData,
-                                        excel_quirks, html_quirks, InstrumentPower)
+                                        FormattingQuirks, InstrumentPower,
+                                        ShowData, excel_quirks, html_quirks)
 from lighting_paperwork.style import BaseStyle, default_style
 
 logger = logging.getLogger(__name__)
@@ -143,9 +143,19 @@ class PaperworkGenerator(ABC):
             elif instrument_type_power.power > 0 and wattage_field_power.power == 0:
                 # There was a power in the instrument type field but none in the wattage field
                 power = instrument_type_power
-            elif wattage_field_power.power > 0 and instrument_type_power.power > 0 and wattage_field_power.power != instrument_type_power.power:
+            elif (
+                wattage_field_power.power > 0
+                and instrument_type_power.power > 0
+                and wattage_field_power.power != instrument_type_power.power
+            ):
                 # Fields disagree, prefer the wattage field
-                logger.warning("Channel %s has conflicting power values (%s, %s). Using %s.", row["Channel"], wattage_field_power.format(), instrument_type_power.format(), wattage_field_power.format())
+                logger.warning(
+                    "Channel %s has conflicting power values (%s, %s). Using %s.",
+                    row["Channel"],
+                    wattage_field_power.format(),
+                    instrument_type_power.format(),
+                    wattage_field_power.format(),
+                )
                 power = wattage_field_power
             elif wattage_field_power.power == instrument_type_power.power:
                 # Same power found in instrument type and wattage fields
@@ -158,7 +168,9 @@ class PaperworkGenerator(ABC):
                 tmp = row["Instrument Type"].strip()
             else:
                 # Remove from instrument type (if existing)
-                instrtype = re.sub(InstrumentPower.POWER_REGEX, "", row["Instrument Type"]).strip()
+                instrtype = re.sub(
+                    InstrumentPower.POWER_REGEX, "", row["Instrument Type"]
+                ).strip()
                 tmp = instrtype + " " + power.format()
 
             # If accessory, add that here

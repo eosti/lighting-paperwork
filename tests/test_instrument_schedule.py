@@ -1,6 +1,7 @@
-import pytest
 import logging
 import re
+
+import pytest
 
 from lighting_paperwork.instrument_schedule import InstrumentSchedule
 
@@ -56,10 +57,12 @@ def test_position_sorting():
         "US Boom 66",
         "DSR Boom 879",
         "SL Box Boom",
-        "SR Box Boom 6"
+        "SR Box Boom 6",
     ]
 
-    output = InstrumentSchedule.sort_positions(input_positions, InstrumentSchedule.position_regexes)
+    output = InstrumentSchedule.sort_positions(
+        input_positions, InstrumentSchedule.position_regexes
+    )
 
     assert output == [
         "61 Pipe",
@@ -90,7 +93,7 @@ def test_position_sorting():
         "SL Ladder 4",
         "SR Ladder 4",
         "Spot Booth",
-        "The Attic"
+        "The Attic",
     ]
 
 
@@ -105,14 +108,14 @@ def test_split_by_position(caplog, vwx_export):
     assert dfs[0][0] == "Pipe 8"
     pipe_eight = dfs[0][1]
     assert len(pipe_eight) == 7
-    assert pipe_eight.iloc[0]["U#"] == '1'
-    assert pipe_eight.iloc[2]["U#"] == '3'
-    assert pipe_eight.iloc[2]["Addr"] == '&nbsp;'
-    assert pipe_eight.iloc[3]["U#"] == '&nbsp;'
+    assert pipe_eight.iloc[0]["U#"] == "1"
+    assert pipe_eight.iloc[2]["U#"] == "3"
+    assert pipe_eight.iloc[2]["Addr"] == "&nbsp;"
+    assert pipe_eight.iloc[3]["U#"] == "&nbsp;"
     assert pipe_eight.iloc[3]["Instr Type & Load & Acc"] == '"'
     assert pipe_eight.iloc[3]["Color & Gobo"] == '"'
-    assert pipe_eight.iloc[3]["Chan"] == '204'
-    assert pipe_eight.iloc[3]["Addr"] == '&nbsp;'
+    assert pipe_eight.iloc[3]["Chan"] == "204"
+    assert pipe_eight.iloc[3]["Addr"] == "&nbsp;"
 
     assert dfs[2][0] == "3 Elec"
     third_elec = dfs[2][1]

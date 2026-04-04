@@ -48,7 +48,7 @@ class InstrumentSchedule(PaperworkGenerator):
         r"^FOH\s?\d*$",
         r"^[DU]?S[RL]? Box Boom\s?\d*$",
         r"^[DU]?S[RL]? Boom\s?\d*$",
-        r"^[DU]?S[RL]? Ladder\s?\d*$"
+        r"^[DU]?S[RL]? Ladder\s?\d*$",
     ]
 
     def generate_df(self) -> Self:
@@ -74,7 +74,7 @@ class InstrumentSchedule(PaperworkGenerator):
         self.df = self.df.dropna(subset=["Position"])
 
         self.combine_instrtype().format_address_slash().combine_gelgobo().abbreviate_col_names()
-        self.df["Chan"] = self.df["Chan"].replace('', self.formatting_quirks.empty_str)
+        self.df["Chan"] = self.df["Chan"].replace("", self.formatting_quirks.empty_str)
         self.df = self.df.sort_values(
             by=["Position", "U#", "Accessory Flag", "Purpose"], key=natsort_keygen()
         )
@@ -124,7 +124,9 @@ class InstrumentSchedule(PaperworkGenerator):
             sorted_positions += pos
 
         # Gather remaining positions
-        sorted_positions += natsorted([x for x in positions if x not in (sorted_positions)])
+        sorted_positions += natsorted(
+            [x for x in positions if x not in (sorted_positions)]
+        )
         return sorted_positions
 
     @staticmethod

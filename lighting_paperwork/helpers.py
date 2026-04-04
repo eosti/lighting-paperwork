@@ -4,8 +4,8 @@ import datetime
 import logging
 import re
 from dataclasses import dataclass
-from typing import List, Optional, Self, Union
 from decimal import Decimal
+from typing import List, Optional, Self, Union
 
 import openpyxl
 
@@ -32,17 +32,17 @@ class ShowData:
                 "Not enough show data to make a nice output filename, using default"
             )
             return title
-        else:
-            return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
-                r"\W+", "", self.revision
-            )
+        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
+            r"\W+", "", self.revision
+        )
 
 
 @dataclass
 class InstrumentPower:
     """Dataclass for instrument power and formatting"""
+
     """
-    Looks for power strings within strings. 
+    Looks for power strings within strings.
     ex. `INSTR 300W` or `INSTR 300 kW` but not `INSTR 300`
     """
     POWER_REGEX = r"\d+\.?\d*\s*[kMGm]?W"
@@ -50,7 +50,7 @@ class InstrumentPower:
     def __init__(self, input_string: Union[str | int | float | None]):
         if input_string is None:
             self.power: Decimal = Decimal(0)
-        elif isinstance(input_string, int) or isinstance(input_string, float):
+        elif isinstance(input_string, (float, int)):
             self.power: Decimal = Decimal(input_string)
         elif isinstance(input_string, str):
             if input_string.strip() == "":
@@ -58,9 +58,9 @@ class InstrumentPower:
             else:
                 # Remove non-numeric/decimal values
                 self.power: Decimal = Decimal(re.sub(r"[^\d\.\-]", "", input_string))
-                if 'k' in input_string:
+                if "k" in input_string:
                     self.power *= 1000
-                if 'M' in input_string:
+                if "M" in input_string:
                     self.power *= 1000 * 1000
 
         self.power = self.power.normalize()
@@ -69,11 +69,14 @@ class InstrumentPower:
 
     def format(self):
         # Remove sigfigs but prints more "cleanly"
-        powerval = self.power.quantize(Decimal(1)) if self.power == self.power.to_integral() else self.power.normalize()
+        powerval = (
+            self.power.quantize(Decimal(1))
+            if self.power == self.power.to_integral()
+            else self.power.normalize()
+        )
         if self.power >= 1000:
             return f"{powerval / 1000}kW"
-        else:
-            return f"{powerval}W"
+        return f"{powerval}W"
 
 
 @dataclass
@@ -136,8 +139,7 @@ class DMXAddress:
         """If first universe, don't add slash"""
         if self.absolute_address < 513:
             return f"{self.absolute_address}"
-        else:
-            return self.format_slash()
+        return self.format_slash()
 
 
 @dataclass

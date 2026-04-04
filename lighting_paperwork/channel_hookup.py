@@ -2,14 +2,11 @@
 
 import logging
 from os import path
-from typing import Callable, List, Optional, Self
+from typing import List, Self
 
 import numpy as np
-import openpyxl
 import pandas as pd
 from natsort import natsort_keygen
-from openpyxl.workbook import Workbook
-from openpyxl.worksheet.worksheet import Worksheet
 from pandas.io.formats.style import Styler
 
 from lighting_paperwork.helpers import FontStyle, FormattingQuirks
