@@ -122,9 +122,7 @@ def add_section_header(
     # No idea why, just be careful around here.
     header_cell = ws.cell(row=section_row, column=1)
     header_cell.value = text
-    ws.merge_cells(
-        start_row=section_row, end_row=section_row, start_column=1, end_column=end_col
-    )
+    ws.merge_cells(start_row=section_row, end_row=section_row, start_column=1, end_column=end_col)
 
     header_cell.font = fmt.excel()
     header_cell.alignment = Alignment(horizontal="left", vertical="center")

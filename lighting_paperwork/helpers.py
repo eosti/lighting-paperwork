@@ -28,13 +28,9 @@ class ShowData:
     def generate_slug(self, title: str = "Paperwork") -> str:
         """Generate a filename slug from the show information"""
         if self.show_name is None or self.revision is None:
-            logger.info(
-                "Not enough show data to make a nice output filename, using default"
-            )
+            logger.info("Not enough show data to make a nice output filename, using default")
             return title
-        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
-            r"\W+", "", self.revision
-        )
+        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(r"\W+", "", self.revision)
 
 
 @dataclass
@@ -87,15 +83,11 @@ class DMXAddress:
         if isinstance(input_string, int):
             # Assume absolute address
             if input_string <= 0:
-                raise ValueError(
-                    f"Absolute address cannot be less than 1 (got {input_string})"
-                )
+                raise ValueError(f"Absolute address cannot be less than 1 (got {input_string})")
             self.absolute_address: int = input_string
         elif input_string.isdigit():
             if int(input_string) <= 0:
-                raise ValueError(
-                    f"Absolute address cannot be less than 1 (got {input_string})"
-                )
+                raise ValueError(f"Absolute address cannot be less than 1 (got {input_string})")
             self.absolute_address: int = int(input_string)
         elif "/" in input_string or ":" in input_string:
             # universe : or / relative address
@@ -111,9 +103,7 @@ class DMXAddress:
             if universe_int <= 0:
                 raise ValueError(f"Universe cannot be less than 1 (got {universe_int})")
             if rel_addr_int <= 0:
-                raise ValueError(
-                    f"Relative address cannot be less than 1 (got {rel_addr_int})"
-                )
+                raise ValueError(f"Relative address cannot be less than 1 (got {rel_addr_int})")
             if rel_addr_int > 512:
                 raise ValueError(
                     f"Relative address cannot be greater than 512 (got {rel_addr_int})"
@@ -264,14 +254,10 @@ class FontStyle:
 
     def excel(self) -> openpyxl.styles.Font:
         if self.font_weight == "bold":
-            return openpyxl.styles.Font(
-                name=self.font_family, size=self.font_size, bold=True
-            )
+            return openpyxl.styles.Font(name=self.font_family, size=self.font_size, bold=True)
 
         if self.font_weight == "normal":
-            return openpyxl.styles.Font(
-                name=self.font_family, size=self.font_size, bold=False
-            )
+            return openpyxl.styles.Font(name=self.font_family, size=self.font_size, bold=False)
 
         raise ValueError(f"Unsupported weight {self.font_weight}")
 

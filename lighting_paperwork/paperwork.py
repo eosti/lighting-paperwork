@@ -9,9 +9,15 @@ import openpyxl
 import pandas as pd
 
 import lighting_paperwork.excel_formatter as excel_formatter
-from lighting_paperwork.helpers import (DMXAddress, FontStyle,
-                                        FormattingQuirks, InstrumentPower,
-                                        ShowData, excel_quirks, html_quirks)
+from lighting_paperwork.helpers import (
+    DMXAddress,
+    FontStyle,
+    FormattingQuirks,
+    InstrumentPower,
+    ShowData,
+    excel_quirks,
+    html_quirks,
+)
 from lighting_paperwork.style import BaseStyle, default_style
 
 logger = logging.getLogger(__name__)
@@ -36,9 +42,7 @@ class PaperworkGenerator(ABC):
 
     def set_show_data(self, show_name: str, ld_name: str, revision: str) -> None:
         """Save show data for later use"""
-        self.show_data = ShowData(
-            show_name=show_name, ld_name=ld_name, revision=revision
-        )
+        self.show_data = ShowData(show_name=show_name, ld_name=ld_name, revision=revision)
 
     display_name: str
     col_widths: list[int]
@@ -168,9 +172,7 @@ class PaperworkGenerator(ABC):
                 tmp = row["Instrument Type"].strip()
             else:
                 # Remove from instrument type (if existing)
-                instrtype = re.sub(
-                    InstrumentPower.POWER_REGEX, "", row["Instrument Type"]
-                ).strip()
+                instrtype = re.sub(InstrumentPower.POWER_REGEX, "", row["Instrument Type"]).strip()
                 tmp = instrtype + " " + power.format()
 
             # If accessory, add that here
@@ -180,9 +182,7 @@ class PaperworkGenerator(ABC):
             instload.append(tmp)
 
         # Clean up by replacing old cols with new one
-        new_df = self.df.drop(
-            ["Instrument Type", "Wattage", "Accessory String"], axis=1
-        )
+        new_df = self.df.drop(["Instrument Type", "Wattage", "Accessory String"], axis=1)
         new_df["Instr Type & Load & Acc"] = instload
 
         self.df = new_df
@@ -228,9 +228,7 @@ class PaperworkGenerator(ABC):
             absaddr = int(self.df.at[row.Index, "Absolute Address"])
             if absaddr == 0:
                 # If no address set, replace it with a blank
-                self.df.at[row.Index, "Absolute Address"] = (
-                    self.formatting_quirks.empty_str
-                )
+                self.df.at[row.Index, "Absolute Address"] = self.formatting_quirks.empty_str
             else:
                 self.df.at[row.Index, "Absolute Address"] = DMXAddress(
                     absaddr

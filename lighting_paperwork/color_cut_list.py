@@ -8,8 +8,12 @@ import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from lighting_paperwork.helpers import (FontStyle, FormattingQuirks, Gel,
-                                        parse_frame_size)
+from lighting_paperwork.helpers import (
+    FontStyle,
+    FormattingQuirks,
+    Gel,
+    parse_frame_size,
+)
 from lighting_paperwork.paperwork import PaperworkGenerator
 
 logger = logging.getLogger(__name__)
@@ -93,9 +97,9 @@ class ColorCutList(PaperworkGenerator):
         # Set font based on column
         for col_name, _ in style_df.items():
             width_idx = style_df.columns.get_loc(col_name)
-            style_df[
-                col_name
-            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
+            style_df[col_name] += (
+                f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
+            )
 
             if col_name in ["Color"]:
                 style_df[col_name] += "text-align: center; "

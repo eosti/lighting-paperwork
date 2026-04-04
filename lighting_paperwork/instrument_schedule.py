@@ -13,8 +13,7 @@ from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
 import lighting_paperwork.excel_formatter as excel_formatter
-from lighting_paperwork.helpers import (FontStyle, FormattingQuirks,
-                                        excel_quirks)
+from lighting_paperwork.helpers import FontStyle, FormattingQuirks, excel_quirks
 from lighting_paperwork.paperwork import PaperworkGenerator
 from lighting_paperwork.style import default_position_style
 
@@ -28,9 +27,7 @@ class InstrumentSchedule(PaperworkGenerator):
     TODO: Accessories don't show up.
     """
 
-    def __init__(
-        self, *args, position_style: FontStyle = default_position_style, **kwargs
-    ):
+    def __init__(self, *args, position_style: FontStyle = default_position_style, **kwargs):
         super().__init__(*args, **kwargs)
         self.position_style = position_style
 
@@ -124,9 +121,7 @@ class InstrumentSchedule(PaperworkGenerator):
             sorted_positions += pos
 
         # Gather remaining positions
-        sorted_positions += natsorted(
-            [x for x in positions if x not in (sorted_positions)]
-        )
+        sorted_positions += natsorted([x for x in positions if x not in (sorted_positions)])
         return sorted_positions
 
     @staticmethod
@@ -158,9 +153,7 @@ class InstrumentSchedule(PaperworkGenerator):
             prev_row = (index, data)
 
         # Last row gets a solid bottom border
-        style_df.loc[
-            prev_row[0], :
-        ] += f"border-bottom: {border_weight}px solid black; "
+        style_df.loc[prev_row[0], :] += f"border-bottom: {border_weight}px solid black; "
 
         # Set font based on column
         for col_name, _ in style_df.items():
@@ -293,9 +286,7 @@ class InstrumentSchedule(PaperworkGenerator):
         for pos in positions:
             position_name, styled = self._style_position(pos)
             styled = styled.set_table_attributes('class="paperwork-table"')
-            styled = styled.set_table_styles(
-                self.default_table_style(), overwrite=False
-            )
+            styled = styled.set_table_styles(self.default_table_style(), overwrite=False)
             styled = styled.set_table_styles(
                 [{"selector": "", "props": "break-inside: avoid; margin-bottom: 5mm;"}],
                 overwrite=False,

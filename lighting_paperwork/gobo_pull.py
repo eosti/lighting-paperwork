@@ -40,9 +40,7 @@ class GoboPullList(PaperworkGenerator):
 
         gobo_name, gobo_count = np.unique(gobo_list, return_counts=True)
 
-        self.df = pd.DataFrame(
-            zip(gobo_name, gobo_count), columns=["Gobo Name", "Count"]
-        )
+        self.df = pd.DataFrame(zip(gobo_name, gobo_count), columns=["Gobo Name", "Count"])
 
         return self
 
@@ -65,9 +63,9 @@ class GoboPullList(PaperworkGenerator):
         # Set font based on column
         for col_name, _ in style_df.items():
             width_idx = style_df.columns.get_loc(col_name)
-            style_df[
-                col_name
-            ] += f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
+            style_df[col_name] += (
+                f"{body_style.to_css()}; vertical-align: middle; width: {col_width[width_idx]}%; "
+            )
 
             style_df[col_name] += "text-align: left; "
 

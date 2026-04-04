@@ -57,9 +57,7 @@ class VWExport:
         self.field_mapping = {}
 
         if ".xml" not in filename:
-            raise ValueError(
-                f"Invalid filetype for VW import (got {filename}, expected *.xml)"
-            )
+            raise ValueError(f"Invalid filetype for VW import (got {filename}, expected *.xml)")
 
         tree = ET.parse(filename)
         root = tree.getroot()
@@ -97,10 +95,7 @@ class VWExport:
                     # more on UIDs to do this cleanly later:
                     # https://forum.vectorworks.net/index.php?/topic/
                     #   24673-why-do-my-uids-keep-changing/&do=findComment&comment=117429
-                    if (
-                        new_instrument.node_uid.split("_")[1]
-                        in self.instruments[-1].node_uid
-                    ):
+                    if new_instrument.node_uid.split("_")[1] in self.instruments[-1].node_uid:
                         # If major UID numbers match, then that's good enough lol
                         self.instruments[-1].accs.append(VWAccessory(instr))
                     else:
@@ -110,9 +105,7 @@ class VWExport:
                     self.instruments.append(new_instrument)
 
         logger.debug("VW export generated at %s", self.export_time)
-        logger.debug(
-            "Importing from VW version %s build %s", self.vw_version, self.vw_build
-        )
+        logger.debug("Importing from VW version %s build %s", self.vw_version, self.vw_build)
         logger.info("Imported %s instruments", len(self.instruments))
 
     def handle_accessories(self, filterlist=[], fuzzyfilterlist=["C-Clamp"]):
