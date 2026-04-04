@@ -106,9 +106,9 @@ class ChannelHookup(PaperworkGenerator):
 
         # Set font based on column
         for col_name, _ in style_df.items():
-            style_df[
-                col_name
-            ] += f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
+            style_df[col_name] += (
+                f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
+            )
             if col_name == "Chan":
                 style_df[col_name] += f"{chan_style.to_css()}; "
             else:

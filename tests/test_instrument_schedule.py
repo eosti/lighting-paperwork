@@ -60,9 +60,7 @@ def test_position_sorting():
         "SR Box Boom 6",
     ]
 
-    output = InstrumentSchedule.sort_positions(
-        input_positions, InstrumentSchedule.position_regexes
-    )
+    output = InstrumentSchedule.sort_positions(input_positions, InstrumentSchedule.position_regexes)
 
     assert output == [
         "61 Pipe",

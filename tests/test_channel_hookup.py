@@ -29,46 +29,31 @@ def test_parse_channel_hookup(caplog, vwx_export):
     ledbeam = paperwork.df.loc[paperwork.df["Chan"] == "201"]
     assert len(ledbeam) == 1
     assert ledbeam.iloc[0]["Instr Type & Load & Acc"] == "Robe Lighting LEDBeam 150"
-    assert (
-        "Channel 201 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)"
-        in caplog.text
-    )
+    assert "Channel 201 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)" in caplog.text
 
     # Other LEDBeam has power listed as '0W'
     ledbeam = paperwork.df.loc[paperwork.df["Chan"] == "202"]
     assert len(ledbeam) == 1
     assert ledbeam.iloc[0]["Instr Type & Load & Acc"] == "Robe Lighting LEDBeam 150"
-    assert (
-        "Channel 202 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)"
-        in caplog.text
-    )
+    assert "Channel 202 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)" in caplog.text
 
     # Other LEDBeam has power listed as '0'
     ledbeam = paperwork.df.loc[paperwork.df["Chan"] == "203"]
     assert len(ledbeam) == 1
     assert ledbeam.iloc[0]["Instr Type & Load & Acc"] == "Robe Lighting LEDBeam 150"
-    assert (
-        "Channel 203 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)"
-        in caplog.text
-    )
+    assert "Channel 203 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)" in caplog.text
 
     # Other LEDBeam has power listed as ''
     ledbeam = paperwork.df.loc[paperwork.df["Chan"] == "204"]
     assert len(ledbeam) == 1
     assert ledbeam.iloc[0]["Instr Type & Load & Acc"] == "Robe Lighting LEDBeam 150"
-    assert (
-        "Channel 204 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)"
-        in caplog.text
-    )
+    assert "Channel 204 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)" in caplog.text
 
     # Other LEDBeam has power listed as '    '
     ledbeam = paperwork.df.loc[paperwork.df["Chan"] == "205"]
     assert len(ledbeam) == 1
     assert ledbeam.iloc[0]["Instr Type & Load & Acc"] == "Robe Lighting LEDBeam 150"
-    assert (
-        "Channel 205 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)"
-        in caplog.text
-    )
+    assert "Channel 205 is infinitely efficient (Robe Lighting LEDBeam 150 is 0W)" in caplog.text
 
     # Light has power in power field and instrument type as '575 W'
     light = paperwork.df.loc[paperwork.df["Chan"] == "51"]
@@ -94,10 +79,7 @@ def test_parse_channel_hookup(caplog, vwx_export):
     light = paperwork.df.loc[paperwork.df["Chan"] == "55"]
     assert len(light) == 1
     assert light.iloc[0]["Instr Type & Load & Acc"] == "ETC Source 4 PAR NSP 575W"
-    assert (
-        "Channel 54 has conflicting power values (575W, 750W). Using 575W."
-        in caplog.text
-    )
+    assert "Channel 54 has conflicting power values (575W, 750W). Using 575W." in caplog.text
 
     # Scoop has power listed as '1.5 kW'
     scoop = paperwork.df.loc[paperwork.df["Chan"] == "41"]

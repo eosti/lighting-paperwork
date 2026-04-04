@@ -37,9 +37,7 @@ def main() -> None:
     parser.add_argument("--show", help="Show name")
     parser.add_argument("--ld", help="Lighting designer initials")
     parser.add_argument("--rev", help="Revision string (ex. 'Rev. A')")
-    parser.add_argument(
-        "--version", action="version", version=version("lighting-paperwork")
-    )
+    parser.add_argument("--version", action="version", version=version("lighting-paperwork"))
     parser.add_argument(
         "-log",
         "--loglevel",
@@ -86,9 +84,7 @@ def main() -> None:
 
     if "csv" in args.file:
         # Converter is to supress the warning when I set addr=0 to empty string
-        vw_export = pd.read_csv(
-            args.file, sep="\t", header=0, converters={"Absolute Address": str}
-        )
+        vw_export = pd.read_csv(args.file, sep="\t", header=0, converters={"Absolute Address": str})
 
         # Clear VW's default "None" character
         vw_export = vw_export.replace("-", "")
@@ -116,9 +112,7 @@ def main() -> None:
                 for h in html:
                     # Super hacky way to get rid of border-collapse for HTML:
                     # TODO: don't do this here lol
-                    h = h.replace(
-                        "border-collapse: collapse", "border-collapse: initial"
-                    )
+                    h = h.replace("border-collapse: collapse", "border-collapse: initial")
                     f.write(h)
 
                 f.write("</html>")

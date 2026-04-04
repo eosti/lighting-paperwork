@@ -2,8 +2,12 @@ import re
 
 import pytest
 
-from lighting_paperwork.helpers import (DMXAddress, Gel, InstrumentPower,
-                                        parse_frame_size)
+from lighting_paperwork.helpers import (
+    DMXAddress,
+    Gel,
+    InstrumentPower,
+    parse_frame_size,
+)
 
 
 @pytest.mark.parametrize(
