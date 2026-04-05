@@ -1,3 +1,5 @@
+"""Tests for the ChannelHookup generator."""
+
 import logging
 
 import pytest
@@ -13,7 +15,7 @@ def test_parse_channel_hookup(caplog, vwx_export):
 
     # Verify channel order strictly increments
     prev_chan_val = -1
-    for idx, row in paperwork.df.iterrows():
+    for _, row in paperwork.df.iterrows():
         channel_number = row["Chan"]
         if channel_number == "&nbsp;":
             continue

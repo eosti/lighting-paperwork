@@ -1,3 +1,5 @@
+"""Tests for all the helper functions and classes."""
+
 import re
 
 import pytest
@@ -11,7 +13,7 @@ from lighting_paperwork.helpers import (
 
 
 @pytest.mark.parametrize(
-    "gel_name, company",
+    ("gel_name", "company"),
     [
         ("L202", "Lee"),
         ("R26", "Rosco"),
@@ -96,7 +98,7 @@ def test_gel_complex():
 
 
 @pytest.mark.parametrize(
-    "frame_size, output_str",
+    ("frame_size", "output_str"),
     [
         ('6.5"', '6.5"'),
         ("6.5", '6.5"'),
@@ -112,7 +114,7 @@ def test_parse_frame_size(frame_size, output_str):
 
 
 @pytest.mark.parametrize(
-    "input_addr, absolute_address",
+    ("input_addr", "absolute_address"),
     [
         ("4", 4),
         (4, 4),
@@ -151,7 +153,7 @@ def test_invalid_address(input_addr):
 
 
 @pytest.mark.parametrize(
-    "input_addr, output_str",
+    ("input_addr", "output_str"),
     [
         ("4", "1/4"),
         (4, "1/4"),
@@ -166,7 +168,7 @@ def test_slash_address(input_addr, output_str):
 
 
 @pytest.mark.parametrize(
-    "input_addr, output_str",
+    ("input_addr", "output_str"),
     [
         ("4", "1:4"),
         (4, "1:4"),
@@ -181,7 +183,7 @@ def test_colon_address(input_addr, output_str):
 
 
 @pytest.mark.parametrize(
-    "input_addr, output_str",
+    ("input_addr", "output_str"),
     [
         ("4", "4"),
         (4, "4"),
@@ -196,7 +198,7 @@ def test_slash_conditional_address(input_addr, output_str):
 
 
 @pytest.mark.parametrize(
-    "input_power, output_str",
+    ("input_power", "output_str"),
     [
         (10, "10W"),
         ("10", "10W"),
@@ -222,13 +224,16 @@ def test_power_formatting(input_power, output_str):
 def test_power_formatting_assertion():
     with pytest.raises(ValueError):
         InstrumentPower(-1)
+    with pytest.raises(ValueError):
         InstrumentPower(-1.0)
+    with pytest.raises(ValueError):
         InstrumentPower("-1")
+    with pytest.raises(ValueError):
         InstrumentPower("-1kW")
 
 
 @pytest.mark.parametrize(
-    "input_str, output_str",
+    ("input_str", "output_str"),
     [
         ("INSTR 250W", "250W"),
         ("INSTR 250 W", "250 W"),

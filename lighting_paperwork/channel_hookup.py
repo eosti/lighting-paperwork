@@ -1,8 +1,8 @@
-"""Generator for a channel hookup"""
+"""Generator for a channel hookup."""
 
 import logging
-from os import path
-from typing import List, Self
+from pathlib import Path
+from typing import Self, override
 
 import numpy as np
 import pandas as pd
@@ -17,19 +17,21 @@ logger = logging.getLogger(__name__)
 
 
 class ChannelHookup(PaperworkGenerator):
-    """
+    """Paperwork generator for a channel hookup.
+
     Generates a channel hookup with channel, address,
-        position, type, gobo, color, etc.
-    TODO: Accessories don't show up
+    position, type, gobo, color, etc, sorted by channel.
     """
 
-    def __init__(self, *args, chan_style: FontStyle = default_chan_style, **kwargs):
+    @override
+    def __init__(self, *args, chan_style: FontStyle = default_chan_style, **kwargs) -> None:  # noqa: ANN002, ANN003
         super().__init__(*args, **kwargs)
         self.chan_style = chan_style
 
-    col_widths = [10, 6, 13, 5, 13, 32, 21]
+    col_widths = (10, 6, 13, 5, 13, 32, 21)
     display_name = "Channel Hookup"
 
+    @override
     def generate_df(self) -> Self:
         # Format data
         filter_fields = [
@@ -76,15 +78,16 @@ class ChannelHookup(PaperworkGenerator):
         self.repeated_index_val("Chan")
         return self
 
+    @override
     @staticmethod
     def style_data(
         df: pd.DataFrame,
         body_style: FontStyle,
-        col_width: List[int],
+        col_width: list[int],
         border_weight: float,
         quirks: FormattingQuirks,
         chan_style: FontStyle = default_chan_style,
-    ):
+    ) -> pd.Dataframe:
         border_style = f"{border_weight}px solid black"
         style_df = df.copy()
         # Set borders based on channel data
@@ -105,7 +108,7 @@ class ChannelHookup(PaperworkGenerator):
             prev_row = (index, data)
 
         # Set font based on column
-        for col_name, _ in style_df.items():
+        for col_name in style_df:
             style_df[col_name] += (
                 f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
             )
@@ -121,13 +124,14 @@ class ChannelHookup(PaperworkGenerator):
 
         return style_df
 
+    @override
     @staticmethod
     def style_fields(
         index: pd.Series,
         header_style: FontStyle,
-        col_width: List[int],
+        col_width: list[int],
         border_weight: float,
-    ) -> List[str]:
+    ) -> list[str]:
         PaperworkGenerator.verify_width(col_width)
         style = [
             f"{header_style.to_css()}; border-top: {border_weight}px solid black;"
@@ -146,33 +150,32 @@ class ChannelHookup(PaperworkGenerator):
 
         return style
 
-    def pagebreak_style(self) -> List[dict]:
-        """
-        Disallow pagebreaks between channels with the same number.
+    def pagebreak_style(self) -> list[dict]:
+        """Disallow pagebreaks between channels with the same number.
+
         TODO: this doesn't actually do much
         https://stackoverflow.com/questions/20481039/applying-page-break-before-to-a-table-row-tr
         """
         idxs = np.where(self.df["Chan"] == self.formatting_quirks.empty_str)
 
         selector_list = []
-
-        for i in np.transpose(*idxs):
-            # We want to select the row before a repeated channel,
-            # but CSS selectors index from 1. These cancel out.
-            selector_list.append(f"tr:nth-child({i - 1 + 1})")
+        # We want to select the row before a repeated channel,
+        # but CSS selectors index from 1. These cancel out.
+        selector_list.extend(f"tr:nth-child({i - 1 + 1})" for i in np.transpose(*idxs))
 
         style_list = []
-
-        for i in selector_list:
-            style_list.append({"selector": i, "props": [("break-after", "avoid-page")]})
+        style_list.extend(
+            {"selector": i, "props": [("break-after", "avoid-page")]} for i in selector_list
+        )
 
         return style_list
 
+    @override
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
         styled = Styler.from_custom_template(
-            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+            Path.parent(__file__) / "templates", "header_footer.tpl"
         )(self.df)
         styled = styled.apply(
             type(self).style_data,
@@ -192,28 +195,4 @@ class ChannelHookup(PaperworkGenerator):
             axis=1,
         )
 
-        return styled
-
-    def make_html(self) -> str:
-        styled = self._make_common()
-
-        styled = styled.set_table_attributes('class="paperwork-table"')
-        styled = styled.set_table_styles(self.default_table_style(), overwrite=False)
-        styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
-
-        header_html, footer_html = self.generate_header_footer(styled.uuid)
-        page_style = self.generate_page_style(
-            styled.uuid, "bottom-right", self.style.marginals.to_css()
-        )
-
-        html = styled.to_html(
-            generated_header=header_html,
-            generated_footer=footer_html,
-            generated_page_style=page_style,
-        )
-
-        html = self.wrap_table(html)
-
-        logger.info("Generated channel hookup.")
-
-        return html
+        return styled  # noqa: RET504
