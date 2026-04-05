@@ -1,15 +1,10 @@
-"""
-Formatters for Excel
-"""
+"""Formatters for Excel."""
 
 import logging
 from copy import copy
-from typing import List, Optional
 
-from openpyxl.styles import Alignment, Border, Font, Side
+from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
-from openpyxl.utils.dataframe import dataframe_to_rows
-from openpyxl.workbook import Workbook
 from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break
 from openpyxl.worksheet.worksheet import Worksheet
@@ -27,9 +22,7 @@ PAGE_HEIGHT_INCHES = 11
 
 
 def page_setup(ws: Worksheet, rows_to_repeat: int = 0) -> None:
-    """
-    Set the page size, margins, and default view.
-    """
+    """Set the page size, margins, and default view."""
     ws.page_setup.orientation = ws.ORIENTATION_PORTRAIT
     ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
     ws.print_options.horizontalCentered = True
@@ -50,10 +43,8 @@ def page_setup(ws: Worksheet, rows_to_repeat: int = 0) -> None:
         ws.print_title_rows = f"1:{rows_to_repeat}"
 
 
-def add_title(ws: Worksheet, name: str, show_info: Optional[ShowData] = None) -> None:
-    """
-    Add header and footer to worksheet
-    """
+def add_title(ws: Worksheet, name: str, show_info: ShowData | None = None) -> None:
+    """Add header and footer to worksheet."""
     if ws.oddHeader is None:
         raise RuntimeError("oddHeader is not writable!")
     if show_info is not None:
@@ -80,9 +71,8 @@ def add_title(ws: Worksheet, name: str, show_info: Optional[ShowData] = None) ->
     ws.oddFooter.right.size = 12
 
 
-def set_col_widths(ws: Worksheet, width: List[int], page_width: int) -> None:
-    """
-    Set the widths of a page in terms of % of a full page
+def set_col_widths(ws: Worksheet, width: list[int], page_width: int) -> None:
+    """Set the widths of a page in terms of % of a full page.
 
     Widths are provided in terms of percentages, but excel expects px
     Assume page width is 610px (experimentally derived)
@@ -97,9 +87,7 @@ def set_col_widths(ws: Worksheet, width: List[int], page_width: int) -> None:
 
 
 def wrap_all_cells(ws: Worksheet) -> None:
-    """
-    Force all cells to wrap text instead of overflow.
-    """
+    """Force all cells to wrap text instead of overflow."""
     for row in ws.iter_rows():
         for cell in row:
             alignment = copy(cell.alignment)
@@ -108,13 +96,10 @@ def wrap_all_cells(ws: Worksheet) -> None:
 
 
 def add_section_header(
-    ws: Worksheet, text: str, fmt: FontStyle, end_col: Optional[int] = None
+    ws: Worksheet, text: str, fmt: FontStyle, end_col: int | None = None
 ) -> None:
-    """Adds a section header to the bottom of the worksheet"""
-    if ws.max_row == 1:
-        section_row = 1
-    else:
-        section_row = ws.max_row + 1
+    """Add a section header to the bottom of the worksheet."""
+    section_row = 1 if ws.max_row == 1 else ws.max_row + 1
     if end_col is None:
         end_col = ws.max_column
 
@@ -129,7 +114,8 @@ def add_section_header(
 
 
 def instr_schedule_pagebreaks(ws: Worksheet) -> None:
-    """
+    """Generate pagebreaks to prevent linebreaks from splitting a position.
+
     Goal: each position should fit on a page (or at least take up a full page otherwise)
     Assumes that the excel sheet is using the default formatting.
     This is ridiculously janky.
@@ -140,11 +126,12 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
     cur_height = 0.0
 
     # Note: all math here done in inches. it's hacky but also excel sucks so
-    PAGE_FUDGE = 0.7  # Adjust this if you have weird overflow issues.
-    PAGE_HEIGHT = (PAGE_HEIGHT_INCHES - (Y_PADDING * 2 + Y_PADDING_HEADER)) - PAGE_FUDGE
+    # Adjust PAGE_FUDGE if you have weird overlfow issues
+    PAGE_FUDGE = 0.7  # noqa: N806
+    PAGE_HEIGHT = (PAGE_HEIGHT_INCHES - (Y_PADDING * 2 + Y_PADDING_HEADER)) - PAGE_FUDGE  # noqa: N806
 
-    TYPE_LINEBREAK_LEN = 30
-    COLOR_LINEBREAK_LEN = 25
+    TYPE_LINEBREAK_LEN = 30  # noqa: N806
+    COLOR_LINEBREAK_LEN = 25  # noqa: N806
 
     for row in range(1, ws.max_row):
         # calculate how long this position is

@@ -1,4 +1,4 @@
-import pytest
+"""Tests for the color cut list generator."""
 
 from lighting_paperwork.color_cut_list import ColorCutList
 

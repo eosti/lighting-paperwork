@@ -1,3 +1,5 @@
+"""Tests for the instrument schedule generator."""
+
 import logging
 import re
 
@@ -15,7 +17,7 @@ def test_parse_instrument_schedule(caplog, vwx_export):
     # Verify U#s increment within positions
     prev_u_val = -1
     this_position = ""
-    for idx, row in paperwork.df.iterrows():
+    for _, row in paperwork.df.iterrows():
         if row["Position"] != this_position:
             this_position = row["Position"]
             prev_u_val = -1
@@ -26,7 +28,6 @@ def test_parse_instrument_schedule(caplog, vwx_export):
         prev_u_val = int(u_num)
 
 
-# TODO: test for positions like Elec 3A
 def test_position_sorting():
     input_positions = [
         "AP7",

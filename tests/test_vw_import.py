@@ -1,3 +1,5 @@
+"""Tests for the Vectorworks ingester."""
+
 import logging
 
 import pytest
@@ -7,12 +9,12 @@ from lighting_paperwork.vectorworks_xml import VWExport
 
 def test_opening_files(vwx_export_file):
     with pytest.raises(ValueError):
-        vwx_export = VWExport("notafile.asdf")
+        VWExport("notafile.asdf")
 
     with pytest.raises(FileNotFoundError):
-        vwx_export = VWExport("notafile.xml")
+        VWExport("notafile.xml")
 
-    vwx_export = VWExport(vwx_export_file)
+    VWExport(vwx_export_file)
 
 
 def test_parsing_file(caplog, vwx_export_file):
@@ -22,8 +24,7 @@ def test_parsing_file(caplog, vwx_export_file):
     assert len(vwx_export.instruments) == pytest.NUM_INSTRUMENTS
 
     uid_list = []
-    for i in vwx_export.instruments:
-        uid_list.append(i.props["UID"])
+    uid_list.extend(i.props["UID"] for i in vwx_export.instruments)
     # All unique UIDs?
     assert len(uid_list) == len(set(uid_list))
 

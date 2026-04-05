@@ -1,20 +1,23 @@
-"""Base paperwork generation class"""
+"""Base paperwork generation class."""
 
 import logging
 import re
 from abc import ABC, abstractmethod
-from typing import List, Optional, Self
+from pathlib import Path
+from typing import Self
 
 import openpyxl
 import pandas as pd
+from pandas.io.formats.style import Styler
 
-import lighting_paperwork.excel_formatter as excel_formatter
+from lighting_paperwork import excel_formatter
 from lighting_paperwork.helpers import (
     DMXAddress,
     FontStyle,
     FormattingQuirks,
     InstrumentPower,
     ShowData,
+    StyledContent,
     excel_quirks,
     html_quirks,
 )
@@ -24,15 +27,21 @@ logger = logging.getLogger(__name__)
 
 
 class PaperworkGenerator(ABC):
-    """Base paperwork generation class"""
+    """Base paperwork generation class.
+
+    Attributes:
+        (should be wrapped up in a Config dataclass eventually)
+
+    """
 
     def __init__(
         self,
         vw_export: pd.DataFrame,
-        show_data: Optional[ShowData] = None,
+        show_data: ShowData | None = None,
         style: BaseStyle = default_style,
         border_weight: float = 1.0,
     ) -> None:
+        """Set class vars for data and style."""
         self.vw_export = vw_export
         self.df = self.vw_export.copy()
         self.show_data = show_data
@@ -41,7 +50,7 @@ class PaperworkGenerator(ABC):
         self.border_weight = border_weight
 
     def set_show_data(self, show_name: str, ld_name: str, revision: str) -> None:
-        """Save show data for later use"""
+        """Save show data for later use."""
         self.show_data = ShowData(show_name=show_name, ld_name=ld_name, revision=revision)
 
     display_name: str
@@ -52,9 +61,10 @@ class PaperworkGenerator(ABC):
 
     @abstractmethod
     def generate_df(self) -> Self:
-        """
+        """Generate a DataFrame with sorted information.
+
         Using `self.vw_export`, generate a DataFrame that contains the
-            necessary sorted information for the paperwork type.
+        necessary sorted information for the paperwork type.
         """
 
     @staticmethod
@@ -62,32 +72,75 @@ class PaperworkGenerator(ABC):
     def style_data(
         df: pd.DataFrame,
         body_style: FontStyle,
-        col_width: List[int],
+        col_width: list[int],
         border_weight: float,
         quirks: FormattingQuirks,
     ) -> pd.DataFrame:
-        """Styles the data for a table"""
+        """Styles the data for a table."""
 
     @staticmethod
     @abstractmethod
     def style_fields(
         index: pd.Series,
         header_style: FontStyle,
-        col_width: List[int],
+        col_width: list[int],
         border_weight: float,
-    ) -> List[str]:
-        """Styles the fields (i.e. headers) for a table"""
+    ) -> list[str]:
+        """Style the fields (i.e. headers) for a table."""
 
-    @abstractmethod
     def _make_common(self) -> pd.io.formats.style.Styler:
-        """Runs common make tasks for html and excel"""
+        """Run common make tasks for html and excel."""
+        self.generate_df()
 
-    @abstractmethod
+        styled = Styler.from_custom_template(
+            Path.parent(__file__) / "templates", "header_footer.tpl"
+        )(self.df)
+        styled = styled.apply(
+            type(self).style_data,
+            axis=None,
+            body_style=self.style.body,
+            col_width=self.col_widths,
+            border_weight=self.border_weight,
+            quirks=self.formatting_quirks,
+        )
+        styled = styled.hide()
+        styled = styled.apply_index(
+            type(self).style_fields,
+            header_style=self.style.field,
+            col_width=self.col_widths,
+            border_weight=self.border_weight,
+            axis=1,
+        )
+
+        return styled  # noqa: RET504
+
     def make_html(self) -> str:
-        """Generates a formatted HTML table from the generated DataFrame"""
+        """Generate a formatted HTML table from the generated DataFrame."""
+        styled = self._make_common()
+
+        styled = styled.set_table_attributes('class="paperwork-table"')
+        styled = styled.set_table_styles(
+            self.default_table_style(width=self.page_width), overwrite=False
+        )
+
+        header_html, footer_html = self.generate_header_footer(styled.uuid)
+        page_style = self.generate_page_style(
+            styled.uuid, "bottom-right", self.style.marginals.to_css()
+        )
+
+        logger.info("Generated %s.", self.display_name)
+
+        html = styled.to_html(
+            generated_header=header_html,
+            generated_footer=footer_html,
+            generated_page_style=page_style,
+        )
+        html = self.wrap_table(html)
+
+        return html  # noqa: RET504
 
     def make_excel(self, excel_path: str) -> None:
-        """Adds a sheet to an Excel file with the formatted DataFrame"""
+        """Add a sheet to an Excel file with the formatted DataFrame."""
         self.formatting_quirks = excel_quirks
         styled = self._make_common()
 
@@ -108,64 +161,80 @@ class PaperworkGenerator(ABC):
         wb.save(excel_path)
 
     @staticmethod
-    def verify_width(width: List[int]) -> bool:
-        """Verifies that the col widths remain less than 100%"""
+    def verify_width(width: list[int]) -> bool:
+        """Verify that the col widths remain less than 100%."""
         if sum(width) > 100:
             logger.warning("Col widths too long: used %i%%!", sum(width))
             return False
 
         return True
 
-    def combine_instrtype(self) -> Self:
-        """
-        Combines the Instrument Type and Power and Accessory fields into one
-        """
-        instload = []
-        for _, row in self.df.iterrows():
-            # Collect potential powers
-            wattage_field_power = InstrumentPower(row["Wattage"])
-            powerstr = re.search(InstrumentPower.POWER_REGEX, row["Instrument Type"])
-            if powerstr is None:
-                instrument_type_power = InstrumentPower(0)
-            else:
-                instrument_type_power = InstrumentPower(powerstr.group())
+    @staticmethod
+    def determine_power(row: pd.Series) -> InstrumentPower:
+        """Determine an instrument's power from the Instrument Type and Wattage fields.
 
-            # Verify which we should use
-            if wattage_field_power.power == 0 and instrument_type_power.power == 0:
-                # No power provided
-                if row["Accessory Flag"] != "1":
-                    logger.warning(
-                        "Channel %s is infinitely efficient (%s is %s)",
-                        row["Channel"],
-                        row["Instrument Type"],
-                        wattage_field_power.format(),
-                    )
-                power = wattage_field_power
-            elif wattage_field_power.power > 0 and instrument_type_power.power == 0:
-                # There was a power in the wattage field but none parsed from instrument type
-                power = wattage_field_power
-            elif instrument_type_power.power > 0 and wattage_field_power.power == 0:
-                # There was a power in the instrument type field but none in the wattage field
-                power = instrument_type_power
-            elif (
-                wattage_field_power.power > 0
-                and instrument_type_power.power > 0
-                and wattage_field_power.power != instrument_type_power.power
-            ):
-                # Fields disagree, prefer the wattage field
+        When the fields disagree, the values from the Wattage field takes priority.
+        When either field shows 0W, the other field will take priority.
+
+        Args:
+            row: Row of a dataframe that must have a "Wattage" and a "Instrument Type" column.
+
+        Returns:
+            The determined power of an instrument.
+
+        """
+        # Collect potential powers
+        wattage_field_power = InstrumentPower(row["Wattage"])
+        powerstr = re.search(InstrumentPower.POWER_REGEX, row["Instrument Type"])
+        if powerstr is None:
+            instrument_type_power = InstrumentPower(0)
+        else:
+            instrument_type_power = InstrumentPower(powerstr.group())
+
+        # Verify which we should use
+        if wattage_field_power.power == 0 and instrument_type_power.power == 0:
+            # No power provided
+            if row["Accessory Flag"] != "1":
                 logger.warning(
-                    "Channel %s has conflicting power values (%s, %s). Using %s.",
+                    "Channel %s is infinitely efficient (%s is %s)",
                     row["Channel"],
-                    wattage_field_power.format(),
-                    instrument_type_power.format(),
+                    row["Instrument Type"],
                     wattage_field_power.format(),
                 )
-                power = wattage_field_power
-            elif wattage_field_power.power == instrument_type_power.power:
-                # Same power found in instrument type and wattage fields
-                power = wattage_field_power
-            else:
-                raise ValueError("Shouldn't get here!")
+            power = wattage_field_power
+        elif wattage_field_power.power > 0 and instrument_type_power.power == 0:
+            # There was a power in the wattage field but none parsed from instrument type
+            power = wattage_field_power
+        elif instrument_type_power.power > 0 and wattage_field_power.power == 0:
+            # There was a power in the instrument type field but none in the wattage field
+            power = instrument_type_power
+        elif (
+            wattage_field_power.power > 0
+            and instrument_type_power.power > 0
+            and wattage_field_power.power != instrument_type_power.power
+        ):
+            # Fields disagree, prefer the wattage field
+            logger.warning(
+                "Channel %s has conflicting power values (%s, %s). Using %s.",
+                row["Channel"],
+                wattage_field_power.format(),
+                instrument_type_power.format(),
+                wattage_field_power.format(),
+            )
+            power = wattage_field_power
+        elif wattage_field_power.power == instrument_type_power.power:
+            # Same power found in instrument type and wattage fields
+            power = wattage_field_power
+        else:
+            raise ValueError("Shouldn't get here!")
+
+        return power
+
+    def combine_instrtype(self) -> Self:
+        """Combine the Instrument Type and Power and Accessory fields into one."""
+        instload = []
+        for _, row in self.df.iterrows():
+            power = self.determine_power(row)
 
             # Make sure power shows up once, after the instrument type
             if power.power == 0:
@@ -189,17 +258,12 @@ class PaperworkGenerator(ABC):
         return self
 
     def combine_gelgobo(self) -> Self:
-        """
-        Combines the Gel and Gobo fields into one.
-        """
+        """Combine the Gel and Gobo fields into one."""
         gelgobo = []
         for _, row in self.df.iterrows():
             # If no gel replace with N/C
             if row["Color"] == "":
-                if row["Accessory Flag"] == "1":
-                    tmp = ""
-                else:
-                    tmp = self.no_color_text
+                tmp = "" if row["Accessory Flag"] == "1" else self.no_color_text
             else:
                 tmp = row["Color"]
 
@@ -221,16 +285,14 @@ class PaperworkGenerator(ABC):
         return self
 
     def format_address_slash(self) -> Self:
-        """
-        Formats an absolute address into a Universe/Address string.
-        """
+        """Format an absolute address into a Universe/Address string."""
         for row in self.df.itertuples():
-            absaddr = int(self.df.at[row.Index, "Absolute Address"])
+            absaddr = int(self.df.loc[row.Index, "Absolute Address"])
             if absaddr == 0:
                 # If no address set, replace it with a blank
-                self.df.at[row.Index, "Absolute Address"] = self.formatting_quirks.empty_str
+                self.df.loc[row.Index, "Absolute Address"] = self.formatting_quirks.empty_str
             else:
-                self.df.at[row.Index, "Absolute Address"] = DMXAddress(
+                self.df.loc[row.Index, "Absolute Address"] = DMXAddress(
                     absaddr
                 ).format_slash_conditional()
 
@@ -238,15 +300,9 @@ class PaperworkGenerator(ABC):
         self.df = slashed_df
         return self
 
-    def repeated_index_val(self, index_str, df_override=None) -> Self:
-        """
-        Formats repeated channel numbers to use `"` to represent repeated data.
-        """
-        if df_override is not None:
-            df = df_override
-        else:
-            df = self.df
-
+    def repeated_index_val(self, index_str: str, df_override: pd.DataFrame | None = None) -> Self:  # noqa: C901, PLR0912
+        """Format repeated channel numbers to use `"` to represent repeated data."""
+        df = df_override if df_override is not None else self.df
         repeated_idx = "-1"
 
         prev_row = None
@@ -268,7 +324,7 @@ class PaperworkGenerator(ABC):
                     if val.strip() == "" or val == self.formatting_quirks.empty_str:
                         # Don't "-ify empty fields
                         continue
-                    if data[idx] == prev_row[idx]:
+                    if val == prev_row[idx]:
                         data[idx] = '"'
 
             elif data[index_str] == prev_row[index_str]:
@@ -283,7 +339,7 @@ class PaperworkGenerator(ABC):
                     if val.strip() == "" or val == self.formatting_quirks.empty_str:
                         # Don't "-ify empty fields
                         continue
-                    if data[idx] == prev_row[idx]:
+                    if val == prev_row[idx]:
                         data[idx] = '"'
             else:
                 tmp_prev = data
@@ -294,15 +350,14 @@ class PaperworkGenerator(ABC):
         return Self
 
     def abbreviate_col_names(self) -> Self:
-        """
-        Abbreviates common column names.
-        """
+        """Abbreviate common column names."""
         self.df = self.df.rename(
             columns={"Channel": "Chan", "Unit Number": "U#", "Address": "Addr"}
         )
         return self
 
-    def verify_filter_fields(self, filter_fields: List[str]) -> None:
+    def verify_filter_fields(self, filter_fields: list[str]) -> None:
+        """Verify certain fields exist in the dataframe."""
         for field in filter_fields:
             if field not in self.vw_export.columns:
                 logger.warning("Field `%s` not present in export", field)
@@ -313,10 +368,8 @@ class PaperworkGenerator(ABC):
                 self.vw_export[field] = ""
 
     # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse
-    def default_table_style(self, width=100):
-        """
-        Returns a Style dict with default table styling.
-        """
+    def default_table_style(self, width: int = 100) -> list[dict[str, str]]:
+        """Return a Style dict with default table styling."""
         return [
             {
                 "selector": "",
@@ -336,7 +389,7 @@ class PaperworkGenerator(ABC):
         ]
 
     def generate_metadata(self) -> str:
-        """Generates HTML metadata from show data"""
+        """Generate HTML metadata from show data."""
         if self.show_data is None:
             return f"""
             <head>
@@ -359,69 +412,68 @@ class PaperworkGenerator(ABC):
         """
 
     def wrap_table(self, html: str) -> str:
-        """Wraps a generated HTML table with bookmarks and anchors"""
+        """Wrap a generated HTML table with bookmarks and anchors."""
         return f"""
-        <div id="{self.display_name.replace(" ", "")}" class="report-container" style="break-after: page; bookmark-level: 1; bookmark-label: '{self.display_name}'; bookmark-state: open;">
+        <div id="{self.display_name.replace(" ", "")}" class="report-container"
+        style="break-after: page; bookmark-level: 1;
+        bookmark-label: '{self.display_name}'; bookmark-state: open;">
             {html}
         </div>
         """
 
     def generate_header_footer(self, uuid: str) -> tuple[str, str]:
-        """Generates a header and footer from show data"""
+        """Generate a header and footer from show data."""
         if self.show_data is None:
             header_html = self.generate_header(
-                uuid,
-                content_center=self.display_name,
-                style_center=f"{self.style.title.to_css()}",
+                uuid, center=StyledContent(self.display_name, f"{self.style.title.to_css()}")
             )
             footer_html = self.generate_footer(
-                uuid,
-                style_left=self.style.marginals.to_css(),
-                content_left=self.display_name,
+                uuid, left=StyledContent(self.display_name, self.style.marginals.to_css())
             )
         else:
             header_html = self.generate_header(
                 uuid,
-                content_right=f"{self.show_data.show_name or ''}<br>{self.show_data.ld_name or ''}",
-                content_left=f"{self.show_data.print_date()}<br>{self.show_data.revision or ''}",
-                content_center=self.display_name,
-                style_right=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-                style_left=self.style.marginals.to_css() + "margin-bottom: 5%; ",
-                style_center=f"{self.style.title.to_css()}",
+                right=StyledContent(
+                    f"{self.show_data.show_name or ''}<br>{self.show_data.ld_name or ''}",
+                    self.style.marginals.to_css() + "margin-bottom: 5%; ",
+                ),
+                center=StyledContent(self.display_name, f"{self.style.title.to_css()}"),
+                left=StyledContent(
+                    f"{self.show_data.print_date()}<br>{self.show_data.revision or ''}",
+                    self.style.marginals.to_css() + "margin-bottom: 5%; ",
+                ),
             )
             footer_html = self.generate_footer(
                 uuid,
-                style_left=self.style.marginals.to_css(),
-                content_left=self.display_name,
+                left=StyledContent(self.display_name, self.style.marginals.to_css()),
             )
 
         return (header_html, footer_html)
 
     @staticmethod
-    # pylint: disable-next=too-many-arguments, too-many-positional-arguments
     def generate_header(
         uuid: str,
-        content_left: str = "",
-        content_center: str = "",
-        content_right: str = "",
-        style_left: str = "",
-        style_center: str = "",
-        style_right: str = "",
+        left: StyledContent | None = None,
+        center: StyledContent | None = None,
+        right: StyledContent | None = None,
     ) -> str:
-        """
-        Generates the HTML for the table header.
+        """Generate the HTML for the table header.
+
         The generated style :func:`generate_page_style` will hook each `span` into
             a running element for printing to become the page marginal elements.
         The `span`s should semantically be divs probably but those break weasyprint.
         """
+        left = StyledContent() if left is None else left
+        center = StyledContent() if left is None else center
+        right = StyledContent() if left is None else right
         return f"""
         <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:auto;">
             <span class="top-left-{uuid}" id="header_left_{uuid}"
-            style="text-align:left;{style_left}">{content_left}</span>
+            style="text-align:left;{left.style}">{left.content}</span>
             <span class="top-center-{uuid}" id="header_center_{uuid}"
-            style="text-align:center;{style_center}">{content_center}</span>
+            style="text-align:center;{center.style}">{center.content}</span>
             <span class="top-right-{uuid}" id="header_right_{uuid}"
-            style="text-align:right;{style_right}">{content_right}</span>
+            style="text-align:right;{right.style}">{right.content}</span>
         </div>
         """
 
@@ -429,36 +481,36 @@ class PaperworkGenerator(ABC):
     # pylint: disable-next=too-many-arguments, too-many-positional-arguments
     def generate_footer(
         uuid: str,
-        content_left: str = "",
-        content_center: str = "",
-        content_right: str = "",
-        style_left: str = "",
-        style_center: str = "",
-        style_right: str = "",
+        left: StyledContent | None = None,
+        center: StyledContent | None = None,
+        right: StyledContent | None = None,
     ) -> str:
-        """
-        Generates the HTML for the table footer.
+        """Generate the HTML for the table footer.
+
         The generated style :func:`generate_page_style` will hook each `span` into
             a running element for printing to become the page marginal elements.
         The `span`s should semantically be divs probably but those break weasyprint.
         """
+        left = StyledContent() if left is None else left
+        center = StyledContent() if left is None else center
+        right = StyledContent() if left is None else right
         return f"""
         <div id="footer_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
             <span class="bottom-left-{uuid}" id="bottom_left_{uuid}"
-            style="text-align:left;{style_left}">{content_left}</span>
+            style="text-align:left;{left.style}">{left.content}</span>
             <span class="bottom-center-{uuid}" id="bottom_center_{uuid}"
-            style="text-align:center;{style_center}">{content_center}</span>
+            style="text-align:center;{center.style}">{center.content}</span>
             <span class="bottom-right-{uuid}" id="bottom_right_{uuid}"
-            style="text-align:right;{style_right}">{content_right}</span>
+            style="text-align:right;{right.style}">{right.content}</span>
         </div>
         """
 
     @staticmethod
     def generate_page_style(
-        uuid: str, pagenum_pos: Optional[str] = None, pagenum_style: str = ""
+        uuid: str, pagenum_pos: str | None = None, pagenum_style: str = ""
     ) -> str:
-        """
-        Generates a <style> for the table header and footer.
+        """Generate a <style> for the table header and footer.
+
         This establishes the header and footer elements as running, and will insert them
             in the page marginals during printing instead of embedded in the table.
         """
@@ -488,7 +540,7 @@ class PaperworkGenerator(ABC):
                         }}
                     """
 
-        html = f"""
+        return f"""
         <style>
         {style}
         @page {{
@@ -496,5 +548,3 @@ class PaperworkGenerator(ABC):
         }}
         </style>
         """
-
-        return html
