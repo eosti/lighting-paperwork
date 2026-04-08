@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Self
 
-import openpyxl
+import openpyxl.styles as openpyxl_styles
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +19,11 @@ class ShowData:
     show_name: str | None = None
     ld_name: str | None = None
     revision: str | None = None
-    date: datetime.datetime = field(default_factory=datetime.datetime.now(datetime.UTC))
+    rev_date: datetime.datetime = field(default_factory=lambda: datetime.datetime.now(datetime.UTC))
 
     def print_date(self) -> str:
         """Return the stored date in YYYY/MM/DD form."""
-        return self.date.astimezone().tzname().strftime("%Y/%m/%d")
+        return self.rev_date.astimezone().strftime("%Y/%m/%d")
 
     def generate_slug(self, title: str = "Paperwork") -> str:
         """Generate a filename slug from the show information."""
@@ -181,7 +181,7 @@ class Gel:
     # https://github.com/eosti/lighting-paperwork/issues/9
 
     @classmethod
-    def parse_name(cls, gel: str) -> Self:
+    def _parse_name(cls, gel: str) -> Self:
         """Return a Gel from a common name.
 
         Args:
@@ -213,7 +213,7 @@ class Gel:
         return cls(gel, gelsort, company)
 
     @classmethod
-    def parse_gel_string(cls, gel: str) -> list[Self]:
+    def parse_gel(cls, gel: str) -> list[Self]:
         """Parse a complex gel string into a list of gels.
 
         Args:
@@ -235,9 +235,9 @@ class Gel:
             if len(gel_name.split("x")) > 1:
                 # Repeat gel situation (ex. L201x2)
                 g = gel_name.split("x")
-                gel_list.extend(cls.parse_name(x) for x in g)
+                gel_list.extend(cls._parse_name(g[0]) for x in range(int(g[1])))
             else:
-                gel_list.append(cls.parse_name(gel_name))
+                gel_list.append(cls._parse_name(gel_name))
 
         return gel_list
 
@@ -322,16 +322,16 @@ class FontStyle:
         """Return a `p` element formatted with the font information."""
         return f"<p style='{self.to_css()}{style}'>{body}</p>"
 
-    def excel(self) -> openpyxl.styles.Font:
+    def excel(self) -> openpyxl_styles.Font:
         """Return an openpyxl Style with the selected font.
 
         Note that only `normal` and `bold` font weights are permitted.
         """
         if self.font_weight == "bold":
-            return openpyxl.styles.Font(name=self.font_family, size=self.font_size, bold=True)
+            return openpyxl_styles.Font(name=self.font_family, size=self.font_size, bold=True)
 
         if self.font_weight == "normal":
-            return openpyxl.styles.Font(name=self.font_family, size=self.font_size, bold=False)
+            return openpyxl_styles.Font(name=self.font_family, size=self.font_size, bold=False)
 
         raise ValueError(f"Unsupported weight {self.font_weight}")
 

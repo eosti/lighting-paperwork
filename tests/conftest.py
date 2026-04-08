@@ -1,3 +1,4 @@
+# type: ignore[reportAttributeAccessIssue]
 """Configure PyTest."""
 
 import pytest

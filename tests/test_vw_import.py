@@ -1,3 +1,4 @@
+# type: ignore[reportAttributeAccessIssue]
 """Tests for the Vectorworks ingester."""
 
 import logging

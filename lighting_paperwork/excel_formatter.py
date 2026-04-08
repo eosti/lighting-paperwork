@@ -3,6 +3,7 @@
 import logging
 from copy import copy
 
+from openpyxl.cell.cell import Cell
 from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.page import PageMargins
@@ -71,7 +72,7 @@ def add_title(ws: Worksheet, name: str, show_info: ShowData | None = None) -> No
     ws.oddFooter.right.size = 12
 
 
-def set_col_widths(ws: Worksheet, width: list[int], page_width: int) -> None:
+def set_col_widths(ws: Worksheet, width: tuple[int, ...], page_width: int) -> None:
     """Set the widths of a page in terms of % of a full page.
 
     Widths are provided in terms of percentages, but excel expects px
@@ -92,7 +93,7 @@ def wrap_all_cells(ws: Worksheet) -> None:
         for cell in row:
             alignment = copy(cell.alignment)
             alignment.wrapText = True
-            cell.alignment = alignment
+            cell.alignment = alignment  # type: ignore[reportAttributeAccessIssue]
 
 
 def add_section_header(
@@ -106,6 +107,8 @@ def add_section_header(
     # The order and stuff really matter for auto-height to work properly
     # No idea why, just be careful around here.
     header_cell = ws.cell(row=section_row, column=1)
+    if not isinstance(header_cell, Cell):
+        raise TypeError("Cannot add header to an already merged cell")
     header_cell.value = text
     ws.merge_cells(start_row=section_row, end_row=section_row, start_column=1, end_column=end_col)
 
@@ -146,7 +149,7 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
 
             cur_height = 0
             logger.debug("Row %s is a end-of-section (%s)", row, cur_height)
-        elif ws.cell(row, 2).value is None and (not ws.cell(row, 1).value.isdigit()):
+        elif ws.cell(row, 2).value is None and (not str(ws.cell(row, 1).value).isdigit()):
             # This is a position title -> height of 0.33"
             cur_height += 0.33
             pos_start_index = row
@@ -155,11 +158,11 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
             # This is a col label row
             cur_height += 0.22
             logger.debug("Row %s is col label (%s)", row, cur_height)
-        elif ws.cell(row, 1).value is None or ws.cell(row, 1).value.isdigit():
+        elif ws.cell(row, 1).value is None or str(ws.cell(row, 1).value).isdigit():
             # Channel row
             if ws.cell(row, 3).value is not None and (
-                len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
-                or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN
+                len(str(ws.cell(row, 3).value)) > TYPE_LINEBREAK_LEN
+                or len(str(ws.cell(row, 4).value)) > COLOR_LINEBREAK_LEN
             ):
                 # Double height
                 cur_height += 0.44

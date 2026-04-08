@@ -1,3 +1,4 @@
+# type: ignore[reportAttributeAccessIssue]
 """Tests for the ChannelHookup generator."""
 
 import logging

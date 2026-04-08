@@ -3,7 +3,7 @@
 
   <ExportFieldList>
     <AppStamp>Vectorworks</AppStamp>
-    <TimeStamp>20260403143619</TimeStamp>
+    <TimeStamp>20260411022959</TimeStamp>
     <Cost>Cost</Cost>
     <Time>Time</Time>
     <Breaker_ID>Breaker ID</Breaker_ID>
@@ -77,19 +77,19 @@
     <AutoRot2D>false</AutoRot2D>
     <UID_1001_1_1_0_1>
       <Action>Update</Action>
-      <TimeStamp>20260403151753</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1001.1.1.0.1</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 36deg 750 W</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.35 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -124,8 +124,8 @@
       <UniverseAddress>11/80</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 36.lit</Fixture_Mode>
       <Absolute_Address>5200</Absolute_Address>
       <Inst_Type>ETC Source 4 36deg 750 W</Inst_Type>
@@ -133,21 +133,21 @@
       <Template2>R77405</Template2>
       <Template>GAM 636-Construction B</Template>
       <Color>L201x2</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>37</Channel>
       <Position>3 Elec</Position>
       <Wattage>750 W</Wattage>
       <Purpose>Fronts</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-82.550000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -166,19 +166,19 @@
     </UID_1001_1_1_0_1>
     <UID_1003_1_1_0_1>
       <Action>Update</Action>
-      <TimeStamp>20260403151722</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1003.1.1.0.1</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 36deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.35 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -213,30 +213,30 @@
       <UniverseAddress>2/82</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 36.lit</Fixture_Mode>
       <Absolute_Address>594</Absolute_Address>
       <Inst_Type>ETC Source 4 36deg</Inst_Type>
       <Unit_Number>4</Unit_Number>
       <Template2>GAM 222-Small Breakup</Template2>
-      <Template/>
+      <Template></Template>
       <Color>Red</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>15</Channel>
       <Position>3 Elec</Position>
       <Wattage>575</Wattage>
       <Purpose>Fronts</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-539.750000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -255,19 +255,19 @@
     </UID_1003_1_1_0_1>
     <UID_1005_1_1_0_1>
       <Action>Update</Action>
-      <TimeStamp>20260403151722</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1005.1.1.0.1</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 26deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.35 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -302,30 +302,30 @@
       <UniverseAddress>1/74</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 26.lit</Fixture_Mode>
       <Absolute_Address>74</Absolute_Address>
       <Inst_Type>ETC Source 4 26deg</Inst_Type>
       <Unit_Number>5</Unit_Number>
-      <Template2/>
+      <Template2></Template2>
       <Template>GAM 673-Linear Breakup 2</Template>
       <Color>R42</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>74</Channel>
       <Position>3 Elec</Position>
       <Wattage>575W</Wattage>
       <Purpose>Fronts</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-996.950000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -333,23 +333,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1005_1_1_0_1>
     <UID_1005_1_1_1_1>
       <Action>Update</Action>
-      <TimeStamp>20260403151722</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1005.1.1.1.1</UID>
-      <Lightwright_ID/>
-      <Use_Legend/>
+      <Lightwright_ID></Lightwright_ID>
+      <Use_Legend></Use_Legend>
       <Device_Type>Accessory</Device_Type>
       <Symbol_Name>Rosco I-Cue</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>1.59 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -384,30 +384,30 @@
       <UniverseAddress>1/74</UniverseAddress>
       <Num_Channels>4</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 w I-cue 16bit.lit</Fixture_Mode>
       <Absolute_Address>74</Absolute_Address>
       <Inst_Type>I-Cue</Inst_Type>
-      <Unit_Number/>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Unit_Number></Unit_Number>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>74</Channel>
       <Position>3 Elec</Position>
       <Wattage>0 W</Wattage>
-      <Purpose/>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <Purpose></Purpose>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-996.950000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -418,19 +418,19 @@
     </UID_1005_1_1_1_1>
     <UID_1007_1_1_0_1>
       <Action>Update</Action>
-      <TimeStamp>20260403151722</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1007.1.1.0.1</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 19deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.35 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -465,30 +465,30 @@
       <UniverseAddress>1/74</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 19.lit</Fixture_Mode>
       <Absolute_Address>74</Absolute_Address>
       <Inst_Type>ETC Source 4 19deg</Inst_Type>
       <Unit_Number>6</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R42</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>74</Channel>
       <Position>3 Elec</Position>
       <Wattage>575 W</Wattage>
       <Purpose>Fronts</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-1454.150000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -496,23 +496,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1007_1_1_0_1>
     <UID_1007_1_1_1_1>
       <Action>Update</Action>
-      <TimeStamp>20260403151722</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1007.1.1.1.1</UID>
-      <Lightwright_ID/>
-      <Use_Legend/>
+      <Lightwright_ID></Lightwright_ID>
+      <Use_Legend></Use_Legend>
       <Device_Type>Accessory</Device_Type>
       <Symbol_Name>Rosco I-Cue</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>1.59 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -547,30 +547,30 @@
       <UniverseAddress>1/74</UniverseAddress>
       <Num_Channels>4</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 w I-cue 16bit.lit</Fixture_Mode>
       <Absolute_Address>74</Absolute_Address>
       <Inst_Type>I-Cue</Inst_Type>
-      <Unit_Number/>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Unit_Number></Unit_Number>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>74</Channel>
       <Position>3 Elec</Position>
       <Wattage>0 W</Wattage>
-      <Purpose/>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <Purpose></Purpose>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-1454.150000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -581,19 +581,19 @@
     </UID_1007_1_1_1_1>
     <UID_1009_1_1_0_2>
       <Action>Update</Action>
-      <TimeStamp>20260403151722</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1009.1.1.0.2</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 50deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.35 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -624,12 +624,12 @@
       <TemplateRot1>0°</TemplateRot1>
       <Frame_Size>6.25"</Frame_Size>
       <DMX_Address>0</DMX_Address>
-      <Universe/>
+      <Universe></Universe>
       <UniverseAddress>0/0</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 50.lit</Fixture_Mode>
       <Absolute_Address>0</Absolute_Address>
       <Inst_Type>ETC Source 4 50deg</Inst_Type>
@@ -637,21 +637,21 @@
       <Template2>GAM 636-Construction B</Template2>
       <Template>G635-Construction A</Template>
       <Color>R01+R119</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
-      <Channel/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
+      <Channel></Channel>
       <Position>3 Elec</Position>
       <Wattage>575 W</Wattage>
       <Purpose>Fronts</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>374.650000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -676,19 +676,19 @@
     </UID_1009_1_1_0_2>
     <UID_1011_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403151722</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1011.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 Fresnel</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.03 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -723,30 +723,30 @@
       <UniverseAddress>11/1</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 Fresnel.lit</Fixture_Mode>
       <Absolute_Address>5121</Absolute_Address>
       <Inst_Type>ETC Source4 Fresnel</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R119+G440</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>36</Channel>
       <Position>3 Elec</Position>
       <Wattage>750 W</Wattage>
       <Purpose>Fronts</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>1746.250000</X_Location_mm>
       <Y_Location_mm>1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -754,11 +754,11 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>-0.000000</Y_Rotation>
       <Z_Rotation>-180.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1011_1_1_0_0>
     <UID_1013_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260404035820</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1013.1.1.0.0</UID>
       <Lightwright_ID></Lightwright_ID>
@@ -840,7 +840,7 @@
     </UID_1013_1_1_0_0>
     <UID_1015_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260404035820</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1015.1.1.0.0</UID>
       <Lightwright_ID></Lightwright_ID>
@@ -922,7 +922,7 @@
     </UID_1015_1_1_0_0>
     <UID_1017_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260404035820</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1017.1.1.0.0</UID>
       <Lightwright_ID></Lightwright_ID>
@@ -1004,19 +1004,19 @@
     </UID_1017_1_1_0_0>
     <UID_1019_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1019.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting BMFL Followspot LT</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>35.02 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1045,36 +1045,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>221</DMX_Address>
       <Universe>2</Universe>
       <UniverseAddress>2/221</UniverseAddress>
       <Num_Channels>33</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
       <GDTF_Fixture_Name>Robin BMFL FollowSpot LT</GDTF_Fixture_Name>
-      <Fixture_Mode/>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>733</Absolute_Address>
       <Inst_Type>Robe Lighting BMFL Followspot LT</Inst_Type>
-      <Unit_Number/>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Unit_Number></Unit_Number>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>13</Channel>
-      <Position/>
+      <Position></Position>
       <Wattage>2000 W</Wattage>
       <Purpose>Followspot</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-1574.800000</X_Location_mm>
       <Y_Location_mm>-5816.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1082,23 +1082,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1019_1_1_0_0>
     <UID_1021_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1021.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting LEDBeam 150</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1127,36 +1127,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>180</DMX_Address>
       <Universe>5</Universe>
       <UniverseAddress>5/180</UniverseAddress>
       <Num_Channels>22</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>2228</Absolute_Address>
       <Inst_Type>Robe Lighting LEDBeam 150</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>207</Channel>
       <Position>Pipe 8</Position>
       <Wattage>0 W</Wattage>
       <Purpose>LED Wash</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>1746.250000</X_Location_mm>
       <Y_Location_mm>-3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1164,23 +1164,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1021_1_1_0_0>
     <UID_1023_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1023.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting LEDBeam 150</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1209,36 +1209,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>201</DMX_Address>
       <Universe>34</Universe>
       <UniverseAddress>34/201</UniverseAddress>
       <Num_Channels>22</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>17097</Absolute_Address>
       <Inst_Type>Robe Lighting LEDBeam 150</Inst_Type>
       <Unit_Number>2</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>206</Channel>
       <Position>Pipe 8</Position>
       <Wattage>0 W</Wattage>
       <Purpose>LED Wash</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>1289.050000</X_Location_mm>
       <Y_Location_mm>-3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1246,23 +1246,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1023_1_1_0_0>
     <UID_1025_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260404033031</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1025.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting LEDBeam 150</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1291,36 +1291,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>0</DMX_Address>
-      <Universe/>
+      <Universe></Universe>
       <UniverseAddress>0/0</UniverseAddress>
       <Num_Channels>22</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>0</Absolute_Address>
       <Inst_Type>Robe Lighting LEDBeam 150</Inst_Type>
       <Unit_Number>3</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>205</Channel>
       <Position>Pipe 8</Position>
-      <Wattage/>
+      <Wattage></Wattage>
       <Purpose>LED Wash</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>831.850000</X_Location_mm>
       <Y_Location_mm>-3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1328,23 +1328,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1025_1_1_0_0>
     <UID_1027_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260404033026</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1027.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting LEDBeam 150</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1373,36 +1373,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>0</DMX_Address>
-      <Universe/>
+      <Universe></Universe>
       <UniverseAddress>0/0</UniverseAddress>
       <Num_Channels>22</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>0</Absolute_Address>
       <Inst_Type>Robe Lighting LEDBeam 150</Inst_Type>
       <Unit_Number>3</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>204</Channel>
       <Position>Pipe 8</Position>
       <Wattage>     </Wattage>
       <Purpose>LED Wash</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>374.650000</X_Location_mm>
       <Y_Location_mm>-3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1410,23 +1410,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1027_1_1_0_0>
     <UID_1029_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1029.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting LEDBeam 150</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1455,36 +1455,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>1</DMX_Address>
       <Universe>34</Universe>
       <UniverseAddress>34/1</UniverseAddress>
       <Num_Channels>22</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>16897</Absolute_Address>
       <Inst_Type>Robe Lighting LEDBeam 150</Inst_Type>
       <Unit_Number>5</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>203</Channel>
       <Position>Pipe 8</Position>
       <Wattage>0</Wattage>
       <Purpose>LED Wash</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-82.550000</X_Location_mm>
       <Y_Location_mm>-3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1492,23 +1492,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1029_1_1_0_0>
     <UID_1031_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1031.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting LEDBeam 150</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1537,36 +1537,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>61</DMX_Address>
       <Universe>34</Universe>
       <UniverseAddress>34/61</UniverseAddress>
       <Num_Channels>22</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>16957</Absolute_Address>
       <Inst_Type>Robe Lighting LEDBeam 150</Inst_Type>
       <Unit_Number>6</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>202</Channel>
       <Position>Pipe 8</Position>
       <Wattage>0W</Wattage>
       <Purpose>LED Wash</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-539.750000</X_Location_mm>
       <Y_Location_mm>-3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1574,23 +1574,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1031_1_1_0_0>
     <UID_1033_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1033.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting LEDBeam 150</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1619,36 +1619,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>341</DMX_Address>
       <Universe>34</Universe>
       <UniverseAddress>34/341</UniverseAddress>
       <Num_Channels>22</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>17237</Absolute_Address>
       <Inst_Type>Robe Lighting LEDBeam 150</Inst_Type>
       <Unit_Number>7</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>201</Channel>
       <Position>Pipe 8</Position>
       <Wattage>0 W</Wattage>
       <Purpose>LED Wash</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-996.950000</X_Location_mm>
       <Y_Location_mm>-3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1656,23 +1656,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1033_1_1_0_0>
     <UID_1035_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1035.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Altman 18in Scoop</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>3.63 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1701,36 +1701,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>44</DMX_Address>
       <Universe>1</Universe>
       <UniverseAddress>1/44</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>Altman 18 Scoop.lit</Fixture_Mode>
       <Absolute_Address>44</Absolute_Address>
       <Inst_Type>Altman 18in Scoop</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R02</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>41</Channel>
       <Position>FOH 7</Position>
       <Wattage>1.5 kW</Wattage>
       <Purpose>House Light</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-996.950000</X_Location_mm>
       <Y_Location_mm>-2743.200000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1738,23 +1738,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1035_1_1_0_0>
     <UID_1037_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403150439</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1037.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>L&amp;E MiniStrip/MS 3-circuit</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>13.61 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1789,30 +1789,30 @@
       <UniverseAddress>1/74</UniverseAddress>
       <Num_Channels>3</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>MiniStrip3.lit</Fixture_Mode>
       <Absolute_Address>74</Absolute_Address>
       <Inst_Type>L&amp;E MiniStrip/MS 3-circuit</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>79</Channel>
       <Position>Cat 4</Position>
       <Wattage>750W</Wattage>
       <Purpose>Cyc Ground</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-539.750000</X_Location_mm>
       <Y_Location_mm>-1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1820,23 +1820,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1037_1_1_0_0>
     <UID_1039_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1039.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Strand 6x16 Float</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.80 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1871,30 +1871,30 @@
       <UniverseAddress>4/1</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>1537</Absolute_Address>
       <Inst_Type>Strand 6x16</Inst_Type>
-      <Unit_Number/>
-      <Template2/>
+      <Unit_Number></Unit_Number>
+      <Template2></Template2>
       <Template>R77405</Template>
       <Color>       </Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>23</Channel>
-      <Position/>
+      <Position></Position>
       <Wattage>1000</Wattage>
       <Purpose>Uplight</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>546.100000</X_Location_mm>
       <Y_Location_mm>-5791.200000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1902,23 +1902,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1039_1_1_0_0>
     <UID_1041_1_3_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1041.1.3.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Strand Iris 3</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>22.50 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -1953,30 +1953,30 @@
       <UniverseAddress>11/3</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>5123</Absolute_Address>
       <Inst_Type>Strand Iris 3</Inst_Type>
       <Unit_Number>A3</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R125</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>31</Channel>
       <Position>Cat 4</Position>
       <Wattage>625W</Wattage>
       <Purpose>Cyc</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>2203.450000</X_Location_mm>
       <Y_Location_mm>-1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -1984,23 +1984,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1041_1_3_0_0>
     <UID_1041_2_3_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1041.2.3.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Strand Iris 3</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>22.50 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2035,30 +2035,30 @@
       <UniverseAddress>11/2</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>5122</Absolute_Address>
       <Inst_Type>Strand Iris 3</Inst_Type>
       <Unit_Number>A2</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R126</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>32</Channel>
       <Position>Cat 4</Position>
       <Wattage>625W</Wattage>
       <Purpose>Cyc</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>2203.450000</X_Location_mm>
       <Y_Location_mm>-1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2066,23 +2066,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1041_2_3_0_0>
     <UID_1041_3_3_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1041.3.3.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Strand Iris 3</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>22.50 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2117,30 +2117,30 @@
       <UniverseAddress>11/4</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>5124</Absolute_Address>
       <Inst_Type>Strand Iris 3</Inst_Type>
       <Unit_Number>A1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R124</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>33</Channel>
       <Position>Cat 4</Position>
       <Wattage>625W</Wattage>
       <Purpose>Cyc</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>2203.450000</X_Location_mm>
       <Y_Location_mm>-1828.800000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2148,23 +2148,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1041_3_3_0_0>
     <UID_1043_1_1_0_1>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1043.1.1.0.1</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Strand 6x16</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.80 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2199,30 +2199,30 @@
       <UniverseAddress>11/5</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>5125</Absolute_Address>
       <Inst_Type>Strand 6x16     </Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>TK499</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>38</Channel>
       <Position>AP 1</Position>
       <Wattage>1000</Wattage>
       <Purpose>Dunno</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-1911.350000</X_Location_mm>
       <Y_Location_mm>-914.400000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2241,19 +2241,19 @@
     </UID_1043_1_1_0_1>
     <UID_1045_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1045.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Strand 6in Fresnelite</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>4.76 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2288,30 +2288,30 @@
       <UniverseAddress>1/1</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>1</Absolute_Address>
       <Inst_Type>Strand 6" Fresnelite</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>TBD</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>2</Channel>
       <Position>LX4</Position>
       <Wattage>750W</Wattage>
       <Purpose>Heat</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-82.550000</X_Location_mm>
       <Y_Location_mm>2743.200000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2319,23 +2319,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1045_1_1_0_0>
     <UID_1047_1_1_0_1>
       <Action>Update</Action>
-      <TimeStamp>20260403144153</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1047.1.1.0.1</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Fresnel 2K</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>0.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2364,36 +2364,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>1</DMX_Address>
       <Universe>2</Universe>
       <UniverseAddress>2/1</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>513</Absolute_Address>
       <Inst_Type>10" Fresnel</Inst_Type>
       <Unit_Number>3</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>22</Channel>
       <Position>LX 5</Position>
       <Wattage>2000w</Wattage>
       <Purpose>Heat</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-996.950000</X_Location_mm>
       <Y_Location_mm>3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2401,23 +2401,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1047_1_1_0_1>
     <UID_1047_1_1_1_1>
       <Action>Update</Action>
-      <TimeStamp>20260403144153</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1047.1.1.1.1</UID>
-      <Lightwright_ID/>
-      <Use_Legend/>
+      <Lightwright_ID></Lightwright_ID>
+      <Use_Legend></Use_Legend>
       <Device_Type>Accessory</Device_Type>
       <Symbol_Name>ChromaQ M2</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>2.31 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2446,36 +2446,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>7</DMX_Address>
       <Universe>2</Universe>
       <UniverseAddress>2/7</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>519</Absolute_Address>
       <Inst_Type>Chroma-Q M2</Inst_Type>
-      <Unit_Number/>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
-      <Channel/>
+      <Unit_Number></Unit_Number>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
+      <Channel></Channel>
       <Position>LX 5</Position>
       <Wattage>0 W</Wattage>
-      <Purpose/>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <Purpose></Purpose>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-996.950000</X_Location_mm>
       <Y_Location_mm>3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2486,19 +2486,19 @@
     </UID_1047_1_1_1_1>
     <UID_1049_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1049.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Accessory</Device_Type>
       <Symbol_Name>ChromaQ M2</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>2.31 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2527,36 +2527,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>5</DMX_Address>
       <Universe>4</Universe>
       <UniverseAddress>4/5</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>1541</Absolute_Address>
       <Inst_Type>Chroma-Q M2</Inst_Type>
       <Unit_Number>2</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>25</Channel>
       <Position>LX 5</Position>
       <Wattage>0 W</Wattage>
       <Purpose>Confusion</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-203.200000</X_Location_mm>
       <Y_Location_mm>3911.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2564,23 +2564,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1049_1_1_0_0>
     <UID_1051_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1051.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Accessory</Device_Type>
       <Symbol_Name>ChromaQ M2</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>2.31 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2609,36 +2609,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>4</DMX_Address>
       <Universe>4</Universe>
       <UniverseAddress>4/4</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>1540</Absolute_Address>
       <Inst_Type>Chroma-Q M2</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>26</Channel>
       <Position>LX 5</Position>
       <Wattage>0 W</Wattage>
       <Purpose>Confusion</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>374.650000</X_Location_mm>
       <Y_Location_mm>3657.600000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2646,23 +2646,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>-90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1051_1_1_0_0>
     <UID_1053_1_1_0_3>
       <Action>Update</Action>
-      <TimeStamp>20260403144502</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1053.1.1.0.3</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 19deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.35 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2697,30 +2697,30 @@
       <UniverseAddress>5/1</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 19.lit</Fixture_Mode>
       <Absolute_Address>2049</Absolute_Address>
       <Inst_Type>ETC Source 4 19deg</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>311</Channel>
       <Position>E6</Position>
       <Wattage>575 W</Wattage>
       <Purpose>Despair</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-539.750000</X_Location_mm>
       <Y_Location_mm>5486.400000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2739,19 +2739,19 @@
     </UID_1053_1_1_0_3>
     <UID_1053_1_1_1_3>
       <Action>Update</Action>
-      <TimeStamp>20260403144502</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1053.1.1.1.3</UID>
-      <Lightwright_ID/>
-      <Use_Legend/>
+      <Lightwright_ID></Lightwright_ID>
+      <Use_Legend></Use_Legend>
       <Device_Type>Accessory</Device_Type>
       <Symbol_Name>Rosco I-Cue</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>1.59 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2786,30 +2786,30 @@
       <UniverseAddress>1/1</UniverseAddress>
       <Num_Channels>4</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 w I-cue 16bit.lit</Fixture_Mode>
       <Absolute_Address>1</Absolute_Address>
       <Inst_Type>I-Cue</Inst_Type>
-      <Unit_Number/>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Unit_Number></Unit_Number>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>312</Channel>
       <Position>E6</Position>
       <Wattage>0 W</Wattage>
       <Purpose>Moving</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-539.750000</X_Location_mm>
       <Y_Location_mm>5486.400000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2820,19 +2820,19 @@
     </UID_1053_1_1_1_3>
     <UID_1053_1_1_3_3>
       <Action>Update</Action>
-      <TimeStamp>20260403144502</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1053.1.1.3.3</UID>
-      <Lightwright_ID/>
-      <Use_Legend/>
+      <Lightwright_ID></Lightwright_ID>
+      <Use_Legend></Use_Legend>
       <Device_Type>Accessory</Device_Type>
       <Symbol_Name>ChromaQ Chroma-Q</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>2.04 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2867,30 +2867,30 @@
       <UniverseAddress>1/1</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>1</Absolute_Address>
       <Inst_Type>ChromaQ Chroma-Q</Inst_Type>
-      <Unit_Number/>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Unit_Number></Unit_Number>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>313</Channel>
       <Position>E6</Position>
       <Wattage>0 W</Wattage>
       <Purpose>Coloring</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-539.750000</X_Location_mm>
       <Y_Location_mm>5486.400000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2901,19 +2901,19 @@
     </UID_1053_1_1_3_3>
     <UID_1055_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1055.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>High End Systems Technobeam-I</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>19.05 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -2948,30 +2948,30 @@
       <UniverseAddress>5/100</UniverseAddress>
       <Num_Channels>18</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>High End Technobeam-I ptswap.lit</Fixture_Mode>
       <Absolute_Address>2148</Absolute_Address>
       <Inst_Type>High End Systems Technobeam-I</Inst_Type>
       <Unit_Number>2</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>404</Channel>
       <Position>E6</Position>
       <Wattage>375 W</Wattage>
       <Purpose>Intimidation</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-82.550000</X_Location_mm>
       <Y_Location_mm>4572.000000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -2979,23 +2979,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1055_1_1_0_0>
     <UID_1057_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1057.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>Robe Lighting Robin Esprite</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>26.90 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3024,36 +3024,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>41</DMX_Address>
       <Universe>5</Universe>
       <UniverseAddress>5/41</UniverseAddress>
       <Num_Channels>49</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
       <GDTF_Fixture_Name>Robin Esprite</GDTF_Fixture_Name>
-      <Fixture_Mode/>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>2089</Absolute_Address>
       <Inst_Type>Robe Lighting Robin Esprite</Inst_Type>
       <Unit_Number>3</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>401</Channel>
       <Position>E6</Position>
       <Wattage>950 W</Wattage>
       <Purpose>Intimidation</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-2368.550000</X_Location_mm>
       <Y_Location_mm>4572.000000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3061,23 +3061,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1057_1_1_0_0>
     <UID_1059_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1059.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>ETC Revolution</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>33.57 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3112,30 +3112,30 @@
       <UniverseAddress>5/240</UniverseAddress>
       <Num_Channels>14</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Revolution BB.lit</Fixture_Mode>
       <Absolute_Address>2288</Absolute_Address>
       <Inst_Type>ETC Revolution</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>402</Channel>
       <Position>E6</Position>
       <Wattage>750 W</Wattage>
       <Purpose>Intimidation</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>2203.450000</X_Location_mm>
       <Y_Location_mm>4572.000000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3143,23 +3143,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1059_1_1_0_0>
     <UID_1060_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1060.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Strand 6x16</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>6.80 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3194,30 +3194,30 @@
       <UniverseAddress>1/1</UniverseAddress>
       <Num_Channels>0</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>1</Absolute_Address>
       <Inst_Type>Strand 6x16</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>AP2200 + R43+R119x2+R83+R383</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>9</Channel>
       <Position>SR Ladder 3</Position>
       <Wattage>1000</Wattage>
       <Purpose>C/C Side</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-5486.400000</X_Location_mm>
       <Y_Location_mm>-1746.250000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3225,23 +3225,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>-90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1060_1_1_0_0>
     <UID_1062_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1062.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 LED Series 3 Lustr X8 XDLT 26deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>12.81 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3276,30 +3276,30 @@
       <UniverseAddress>4/81</UniverseAddress>
       <Num_Channels>12</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>1617</Absolute_Address>
       <Inst_Type>ETC Source 4 LED Series 3 Lustr X8 XDLT 26°</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R119</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>27</Channel>
       <Position>SR Boom 2</Position>
       <Wattage>307 W</Wattage>
       <Purpose>C/C Side</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-6400.800000</X_Location_mm>
       <Y_Location_mm>2444.750000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3307,23 +3307,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>-90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1062_1_1_0_0>
     <UID_1064_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1064.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 LED2TS 50deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>10.61 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3358,30 +3358,30 @@
       <UniverseAddress>11/40</UniverseAddress>
       <Num_Channels>10</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 LED S2 Tung HD 50 (10ch).lit</Fixture_Mode>
       <Absolute_Address>5160</Absolute_Address>
       <Inst_Type>ETC Source4 LED2TS 50deg</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>N/C</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>29</Channel>
       <Position>SR Boom 1</Position>
       <Wattage>208 W</Wattage>
       <Purpose>C/C Side</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-7315.200000</X_Location_mm>
       <Y_Location_mm>1911.350000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3389,23 +3389,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>-90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1064_1_1_0_0>
     <UID_1066_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1066.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Moving Light</Device_Type>
       <Symbol_Name>GLP Impression X5 IP Maxx</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>30.00 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3434,36 +3434,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>341</DMX_Address>
       <Universe>2</Universe>
       <UniverseAddress>2/341</UniverseAddress>
       <Num_Channels>160</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
       <GDTF_Fixture_Name>impression X5 IP Maxx (RGB)</GDTF_Fixture_Name>
-      <Fixture_Mode/>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>853</Absolute_Address>
       <Inst_Type>GLP Impression X5 IP Maxx</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>17</Channel>
       <Position>SL Ladder 3</Position>
       <Wattage>1500 W</Wattage>
       <Purpose>Boom Sides</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>5486.400000</X_Location_mm>
       <Y_Location_mm>3282.950000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3471,23 +3471,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1066_1_1_0_0>
     <UID_1068_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1068.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>SFX</Device_Type>
       <Symbol_Name>UltratecFX Radiance Hazer</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>12.70 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3516,36 +3516,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>140</DMX_Address>
       <Universe>5</Universe>
       <UniverseAddress>5/140</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
-      <Fixture_Mode/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
+      <Fixture_Mode></Fixture_Mode>
       <Absolute_Address>2188</Absolute_Address>
       <Inst_Type>UltratecFX Radiance Hazer</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
-      <Color/>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Template2></Template2>
+      <Template></Template>
+      <Color></Color>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>640</Channel>
       <Position>DSL Box Boom</Position>
       <Wattage>500 W</Wattage>
       <Purpose>Hazeeeee</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>6400.800000</X_Location_mm>
       <Y_Location_mm>996.950000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3553,23 +3553,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1068_1_1_0_0>
     <UID_1070_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1070.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>ETC Source 4 Mini 26deg</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>1.22 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3604,30 +3604,30 @@
       <UniverseAddress>1/144</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>ETC Source 4 Mini 26.lit</Fixture_Mode>
       <Absolute_Address>144</Absolute_Address>
       <Inst_Type>ETC Source 4 Mini 26deg</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R02</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>1</Channel>
       <Position>DSL Box Boom 3</Position>
       <Wattage>50 W</Wattage>
       <Purpose>Boom Sides</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>7315.200000</X_Location_mm>
       <Y_Location_mm>-831.850000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3635,23 +3635,23 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>90.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1070_1_1_0_0>
     <UID_1072_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260403143619</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1072.1.1.0.0</UID>
-      <Lightwright_ID/>
+      <Lightwright_ID></Lightwright_ID>
       <Use_Legend>Default</Use_Legend>
       <Device_Type>Light</Device_Type>
       <Symbol_Name>Altman 18in Scoop</Symbol_Name>
-      <Focus/>
+      <Focus></Focus>
       <Class>None</Class>
       <Layer>LX - All</Layer>
       <Cost>0</Cost>
       <Time>0</Time>
-      <Breaker_ID/>
+      <Breaker_ID></Breaker_ID>
       <Voltage>0</Voltage>
       <Weight>3.63 kg</Weight>
       <Off_Axis_Angle>0°</Off_Axis_Angle>
@@ -3680,36 +3680,36 @@
       <Legend_View_3D>None</Legend_View_3D>
       <TemplateRot2>0°</TemplateRot2>
       <TemplateRot1>0°</TemplateRot1>
-      <Frame_Size/>
+      <Frame_Size></Frame_Size>
       <DMX_Address>44</DMX_Address>
       <Universe>1</Universe>
       <UniverseAddress>1/44</UniverseAddress>
       <Num_Channels>1</Num_Channels>
       <UseGDTFGeometry>false</UseGDTFGeometry>
-      <GDTF_Fixture_Mode/>
-      <GDTF_Fixture_Name/>
+      <GDTF_Fixture_Mode></GDTF_Fixture_Mode>
+      <GDTF_Fixture_Name></GDTF_Fixture_Name>
       <Fixture_Mode>Altman 18 Scoop.lit</Fixture_Mode>
       <Absolute_Address>44</Absolute_Address>
       <Inst_Type>Altman 18in Scoop</Inst_Type>
       <Unit_Number>1</Unit_Number>
-      <Template2/>
-      <Template/>
+      <Template2></Template2>
+      <Template></Template>
       <Color>R02</Color>
-      <Circuit_Name/>
-      <Circuit_Number/>
-      <Dimmer/>
+      <Circuit_Name></Circuit_Name>
+      <Circuit_Number></Circuit_Number>
+      <Dimmer></Dimmer>
       <Channel>42</Channel>
       <Position>FOH 7</Position>
       <Wattage>1.5kW</Wattage>
       <Purpose>House Light</Purpose>
-      <User_Field_1/>
-      <User_Field_2/>
-      <User_Field_3/>
-      <User_Field_4/>
-      <User_Field_5/>
-      <User_Field_6/>
+      <User_Field_1></User_Field_1>
+      <User_Field_2></User_Field_2>
+      <User_Field_3></User_Field_3>
+      <User_Field_4></User_Field_4>
+      <User_Field_5></User_Field_5>
+      <User_Field_6></User_Field_6>
       <System>A</System>
-      <Mark/>
+      <Mark></Mark>
       <X_Location_mm>-82.550000</X_Location_mm>
       <Y_Location_mm>-2743.200000</Y_Location_mm>
       <Z_Location_mm>0.000000</Z_Location_mm>
@@ -3717,11 +3717,11 @@
       <X_Rotation>0.000000</X_Rotation>
       <Y_Rotation>0.000000</Y_Rotation>
       <Z_Rotation>0.000000</Z_Rotation>
-      <Accessories/>
+      <Accessories></Accessories>
     </UID_1072_1_1_0_0>
     <UID_1073_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260404035820</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1073.1.1.0.0</UID>
       <Lightwright_ID></Lightwright_ID>
@@ -3803,7 +3803,7 @@
     </UID_1073_1_1_0_0>
     <UID_1074_1_1_0_0>
       <Action>Update</Action>
-      <TimeStamp>20260404035820</TimeStamp>
+      <TimeStamp>20260411022959</TimeStamp>
       <AppStamp>Vectorworks</AppStamp>
       <UID>1074.1.1.0.0</UID>
       <Lightwright_ID></Lightwright_ID>
@@ -3888,7 +3888,7 @@
   <UniverseSettings>
     <AppStamp>Vectorworks</AppStamp>
     <UniverseEnabled>True</UniverseEnabled>
-    <TimeStamp>20260403143619</TimeStamp>
+    <TimeStamp>20260411022959</TimeStamp>
     <VWVersion>3140</VWVersion>
     <VWBuild>854846</VWBuild>
     <SystemA>
@@ -11554,23 +11554,5 @@
       </Universe255>
     </SystemF>
   </UniverseSettings>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </SLData>

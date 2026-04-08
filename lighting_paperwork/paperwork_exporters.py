@@ -17,7 +17,7 @@ class PaperworkExporter(ABC):
 
     def __init__(self, file_slug: str, paperwork: list[PaperworkGenerator]) -> None:
         """Initialize filename and paperwork list."""
-        self.filename = Path(file_slug + "." + self.file_extension)
+        self.filename = Path.cwd() / (file_slug + "." + self.file_extension)
         self.paperwork = paperwork
         # TODO(eosti): verify file doesn't already exist
         # https://github.com/eosti/lighting-paperwork/issues/14
@@ -30,23 +30,19 @@ class PaperworkExporter(ABC):
 class ExportHTML(PaperworkExporter):
     """Class for HTML paperwork exports."""
 
-    file_extension = ".html"
+    file_extension = "html"
 
     def generate_html(self) -> list[str]:
-        """Generate HTML of each paperwork.
-
-        Includes HTML DOCTYPE and <html> tags so a valid webpage would be
-            simply all entries concatenated together.
-        """
-        html = ["<!DOCTYPE html>\n<html>\n"]
+        """Generate HTML of each paperwork."""
+        html = []
         html.extend(p.make_html() for p in self.paperwork)
-        html.append(["</html>"])
 
         return html
 
     def make(self) -> Path:
         """Make an HTML file with the provided paperwork."""
         html = self.generate_html()
+        html = ["<!DOCTYPE html>\n<html>\n", *html, "</html>"]
         with self.filename.open("w") as f:
             for h in html:
                 # Get rid of border-collapse for HTML (why?)
@@ -64,7 +60,7 @@ class ExportPDF(ExportHTML):
         by most webbrowsers; `weasyprint` is pretty good at them though.
     """
 
-    file_extension = ".pdf"
+    file_extension = "pdf"
 
     def make(self) -> Path:
         """Make a PDF with the provided paperwork."""
@@ -83,9 +79,9 @@ class ExportPDF(ExportHTML):
 class ExportExcel(PaperworkExporter):
     """Class for Excel paperwork exports."""
 
-    file_extension = ".xlsx"
+    file_extension = "xlsx"
 
-    def make(self) -> None:
+    def make(self) -> Path:
         """Make an Excel workbook with provided paperwork.
 
         Note that the read/write buffer is the file, so each additional write/edit
@@ -95,7 +91,7 @@ class ExportExcel(PaperworkExporter):
         wb.save(self.filename)
 
         for p in self.paperwork:
-            p.make_excel(self.filename)
+            p.make_excel(str(self.filename))
 
         # Get rid of default first sheet
         wb = openpyxl.load_workbook(self.filename)
