@@ -54,7 +54,7 @@ class PaperworkGenerator(ABC):
         self.show_data = ShowData(show_name=show_name, ld_name=ld_name, revision=revision)
 
     display_name: str
-    col_widths: list[int]
+    col_widths: tuple[int, ...]
     page_width: int = 100
     formatting_quirks = html_quirks
     no_color_text = "N/C"
@@ -93,7 +93,7 @@ class PaperworkGenerator(ABC):
         self.generate_df()
 
         styled = Styler.from_custom_template(
-            Path.parent(__file__) / "templates", "header_footer.tpl"
+            Path(__file__).parent / "templates", "header_footer.tpl"
         )(self.df)
         styled = styled.apply(
             type(self).style_data,
