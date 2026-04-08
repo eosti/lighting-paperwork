@@ -87,7 +87,7 @@ class ChannelHookup(PaperworkGenerator):
         border_weight: float,
         quirks: FormattingQuirks,
         chan_style: FontStyle = default_chan_style,
-    ) -> pd.Dataframe:
+    ) -> pd.DataFrame:
         border_style = f"{border_weight}px solid black"
         style_df = df.copy()
         # Set borders based on channel data
@@ -175,7 +175,7 @@ class ChannelHookup(PaperworkGenerator):
         self.generate_df()
 
         styled = Styler.from_custom_template(
-            Path.parent(__file__) / "templates", "header_footer.tpl"
+            Path(__file__).parent / "templates", "header_footer.tpl"
         )(self.df)
         styled = styled.apply(
             type(self).style_data,

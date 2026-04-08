@@ -13,7 +13,7 @@ from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
 from lighting_paperwork import excel_formatter
-from lighting_paperwork.helpers import FontStyle, FormattingQuirks, excel_quirks
+from lighting_paperwork.helpers import FontStyle, FormattingQuirks, excel_quirks, StyledContent
 from lighting_paperwork.paperwork import PaperworkGenerator
 from lighting_paperwork.style import default_position_style
 
@@ -149,8 +149,8 @@ class InstrumentSchedule(PaperworkGenerator):
         df: pd.DataFrame,
         body_style: FontStyle,
         col_width: list[int],
-        quirks: FormattingQuirks,
         border_weight: float,
+        quirks: FormattingQuirks,
     ) -> pd.DataFrame:
         chan_border_style = f"{border_weight}px dashed black"
         style_df = df.copy()
@@ -224,7 +224,7 @@ class InstrumentSchedule(PaperworkGenerator):
     ) -> tuple[str, pd.io.formats.style.Styler]:
         """Like _make_common, but operates only on one position's df."""
         styled = Styler.from_custom_template(
-            Path.parent(__file__) / "templates", "header_footer.tpl"
+            Path(__file__).parent / "templates", "header_footer.tpl"
         )(position[1])
         styled = styled.apply(
             type(self).style_data,
@@ -319,8 +319,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
             header_html = self.generate_header(
                 styled.uuid,
-                content_left=position_name,
-                style_left=self.position_style.to_css(),
+                left=StyledContent(position_name, self.position_style.to_css())
             )
 
             output_html += styled.to_html(
