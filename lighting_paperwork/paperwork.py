@@ -4,11 +4,12 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Self
+from typing import NotRequired, Self, TypedDict, Unpack
 
 import openpyxl
 import pandas as pd
 from pandas.io.formats.style import Styler
+from pandas.io.formats.style_render import CSSDict
 
 from lighting_paperwork import excel_formatter
 from lighting_paperwork.helpers import (
@@ -24,6 +25,24 @@ from lighting_paperwork.helpers import (
 from lighting_paperwork.style import BaseStyle, default_style
 
 logger = logging.getLogger(__name__)
+
+
+class StyleDataParams(TypedDict):
+    """**kwargs for style_data functions."""
+
+    body_style: FontStyle
+    col_width: list[int]
+    border_weight: float
+    quirks: FormattingQuirks
+    chan_style: NotRequired[FontStyle]
+
+
+class StyleFieldParams(TypedDict):
+    """**kwargs for style_field functions."""
+
+    header_style: FontStyle
+    col_width: list[int]
+    border_weight: float
 
 
 class PaperworkGenerator(ABC):
@@ -69,23 +88,12 @@ class PaperworkGenerator(ABC):
 
     @staticmethod
     @abstractmethod
-    def style_data(
-        df: pd.DataFrame,
-        body_style: FontStyle,
-        col_width: list[int],
-        border_weight: float,
-        quirks: FormattingQuirks,
-    ) -> pd.DataFrame:
+    def style_data(df: pd.DataFrame, /, **kwargs: Unpack[StyleDataParams]) -> pd.DataFrame:
         """Styles the data for a table."""
 
     @staticmethod
     @abstractmethod
-    def style_fields(
-        index: pd.Series,
-        header_style: FontStyle,
-        col_width: list[int],
-        border_weight: float,
-    ) -> list[str]:
+    def style_fields(index: pd.Series, /, **kwargs: Unpack[StyleFieldParams]) -> list[str]:
         """Style the fields (i.e. headers) for a table."""
 
     def _make_common(self) -> pd.io.formats.style.Styler:
@@ -93,7 +101,7 @@ class PaperworkGenerator(ABC):
         self.generate_df()
 
         styled = Styler.from_custom_template(
-            Path(__file__).parent / "templates", "header_footer.tpl"
+            str(Path(__file__).parent / "templates"), "header_footer.tpl"
         )(self.df)
         styled = styled.apply(
             type(self).style_data,
@@ -105,7 +113,7 @@ class PaperworkGenerator(ABC):
         )
         styled = styled.hide()
         styled = styled.apply_index(
-            type(self).style_fields,
+            type(self).style_fields,  # type: ignore[reportArgumentType]
             header_style=self.style.field,
             col_width=self.col_widths,
             border_weight=self.border_weight,
@@ -123,9 +131,11 @@ class PaperworkGenerator(ABC):
             self.default_table_style(width=self.page_width), overwrite=False
         )
 
-        header_html, footer_html = self.generate_header_footer(styled.uuid)
+        header_html, footer_html = self.generate_header_footer(styled.uuid)  # type: ignore[reportAttributeAccessIssue]
         page_style = self.generate_page_style(
-            styled.uuid, "bottom-right", self.style.marginals.to_css()
+            styled.uuid,  # type: ignore[reportAttributeAccessIssue]
+            "bottom-right",
+            self.style.marginals.to_css(),
         )
 
         logger.info("Generated %s.", self.display_name)
@@ -287,7 +297,7 @@ class PaperworkGenerator(ABC):
     def format_address_slash(self) -> Self:
         """Format an absolute address into a Universe/Address string."""
         for row in self.df.itertuples():
-            absaddr = int(self.df.loc[row.Index, "Absolute Address"])
+            absaddr = int(self.df.loc[row.Index, "Absolute Address"])  # type: ignore[reportCallIssue, reportArgumentType]
             if absaddr == 0:
                 # If no address set, replace it with a blank
                 self.df.loc[row.Index, "Absolute Address"] = self.formatting_quirks.empty_str
@@ -300,54 +310,52 @@ class PaperworkGenerator(ABC):
         self.df = slashed_df
         return self
 
-    def repeated_index_val(self, index_str: str, df_override: pd.DataFrame | None = None) -> Self:  # noqa: C901, PLR0912
-        """Format repeated channel numbers to use `"` to represent repeated data."""
+    def repeated_index_val(self, index_str: str, df_override: pd.DataFrame | None = None) -> Self:
+        """Format repeated channel numbers to use `"` to represent repeated data.
+
+        Arguments:
+            index_str: The string that represents the "main" column of the paperwork type
+                ex. for a Channel Hookup, index_str = 'Chan'
+            df_override: Override the use of self.df with a different dataframe
+
+        """
         df = df_override if df_override is not None else self.df
         repeated_idx = "-1"
 
-        prev_row = None
-        for _, data in df.iterrows():
+        prev_row: pd.Series | None = None
+        for df_index, data in df.iterrows():
             if prev_row is None:
                 # Initial case
                 prev_row = data
                 continue
 
             tmp_prev = None
-            if data[index_str] == repeated_idx:
-                # second and onward repeat
-                tmp_prev = data.copy()
-                data[index_str] = self.formatting_quirks.empty_str
-                for idx, val in data.items():
-                    if index_str == "Chan" and idx == "U#":
-                        # Do repeat U# to avoid confusion
-                        continue
-                    if val.strip() == "" or val == self.formatting_quirks.empty_str:
-                        # Don't "-ify empty fields
-                        continue
-                    if val == prev_row[idx]:
-                        data[idx] = '"'
+            if data[index_str] == repeated_idx or data[index_str] == prev_row[index_str]:
+                if data[index_str] == prev_row[index_str]:
+                    # first repeat case
+                    repeated_idx = data[index_str]
 
-            elif data[index_str] == prev_row[index_str]:
-                # First repeat
-                repeated_idx = data[index_str]
                 tmp_prev = data.copy()
-                data[index_str] = self.formatting_quirks.empty_str
                 for idx, val in data.items():
+                    if idx == index_str:
+                        # Don't "-ify the index string, just leave it blank
+                        df.loc[df_index, str(idx)] = self.formatting_quirks.empty_str
+                        continue
                     if index_str == "Chan" and idx == "U#":
                         # Do repeat U# to avoid confusion
                         continue
                     if val.strip() == "" or val == self.formatting_quirks.empty_str:
-                        # Don't "-ify empty fields
+                        # Don't "-ify already empty fields
                         continue
-                    if val == prev_row[idx]:
-                        data[idx] = '"'
+                    if val == prev_row[str(idx)]:
+                        df.loc[df_index, str(idx)] = '"'
             else:
                 tmp_prev = data
                 repeated_idx = "-1"
 
             prev_row = tmp_prev
 
-        return Self
+        return self
 
     def abbreviate_col_names(self) -> Self:
         """Abbreviate common column names."""
@@ -368,7 +376,7 @@ class PaperworkGenerator(ABC):
                 self.vw_export[field] = ""
 
     # Note: Firefox really doesn't like printing 1px borders with border-collapse: collapse
-    def default_table_style(self, width: int = 100) -> list[dict[str, str]]:
+    def default_table_style(self, width: int = 100) -> list[CSSDict]:
         """Return a Style dict with default table styling."""
         return [
             {
@@ -464,8 +472,8 @@ class PaperworkGenerator(ABC):
         The `span`s should semantically be divs probably but those break weasyprint.
         """
         left = StyledContent() if left is None else left
-        center = StyledContent() if left is None else center
-        right = StyledContent() if left is None else right
+        center = StyledContent() if center is None else center
+        right = StyledContent() if right is None else right
         return f"""
         <div id="header_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:auto;">
             <span class="top-left-{uuid}" id="header_left_{uuid}"
@@ -492,8 +500,8 @@ class PaperworkGenerator(ABC):
         The `span`s should semantically be divs probably but those break weasyprint.
         """
         left = StyledContent() if left is None else left
-        center = StyledContent() if left is None else center
-        right = StyledContent() if left is None else right
+        center = StyledContent() if center is None else center
+        right = StyledContent() if right is None else right
         return f"""
         <div id="footer_{uuid}" style="display:grid;grid-auto-flow:column;grid-auto-columns:1fr">
             <span class="bottom-left-{uuid}" id="bottom_left_{uuid}"

@@ -1,9 +1,10 @@
 """Tools for importing data from a Vectorworks Data Exchange XML file."""
 
 import logging
+from xml.etree import ElementTree as ET
 
 import pandas as pd
-from defusedxml.etree import ElementTree as ET  # noqa: N817
+from defusedxml.ElementTree import parse as defusedxml_parse
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +20,8 @@ class VWAccessory:
 
     def __init__(self, node: ET.Element) -> None:
         """Create an accessory from an Accessory-type XML node."""
-        self.node_uid = node.tag
-        self.props = {}
+        self.node_uid: str = node.tag
+        self.props: dict[str, str] = {}
         for element in node:
             if element.text:
                 # If value, store this
@@ -42,9 +43,9 @@ class VWInstrument:
 
     def __init__(self, node: ET.Element) -> None:
         """Create an instrument from an XML node."""
-        self.props = {}
-        self.node_uid = node.tag
-        self.accs = []
+        self.props: dict[str, str] = {}
+        self.node_uid: str = node.tag
+        self.accs: list[VWAccessory] = []
         for element in node:
             if element.text and element.text.strip():
                 # If value, store this
@@ -83,8 +84,11 @@ class VWExport:
         if ".xml" not in filename:
             raise ValueError(f"Invalid filetype for VW import (got {filename}, expected *.xml)")
 
-        tree = ET.parse(filename)
+        tree = defusedxml_parse(filename)
         root = tree.getroot()
+
+        if root is None:
+            raise RuntimeError("Failed to parse XML file")
 
         mapping_data = root.find("ExportFieldList")
         if mapping_data is None:
@@ -136,7 +140,7 @@ class VWExport:
                 self.instruments.append(new_instrument)
 
     def handle_accessories(
-        self, filterlist: tuple[str] = (), fuzzyfilterlist: tuple[str] = ("C-Clamp")
+        self, filterlist: tuple[str, ...] = (), fuzzyfilterlist: tuple[str, ...] = ("C-Clamp",)
     ) -> None:
         """Convert VW representation of accessories to one suited for paperwork.
 
@@ -170,7 +174,7 @@ class VWExport:
                 name = name.replace("Light Acc", "").strip()
                 if name in filterlist:
                     continue
-                if [1 for f in fuzzyfilterlist if f in name]:
+                if any(f in name for f in fuzzyfilterlist):
                     continue
                 acc_names.append(name)
 

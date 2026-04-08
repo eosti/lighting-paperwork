@@ -3,9 +3,9 @@
 import argparse
 import logging
 from importlib.metadata import version
+from pathlib import Path
 
 import pandas as pd
-from path import Path
 from rich.logging import RichHandler
 
 from lighting_paperwork.channel_hookup import ChannelHookup
@@ -21,13 +21,13 @@ logger = logging.getLogger(__name__)
 
 def is_file(path: str) -> str:
     """Determine if a path is a file or not."""
-    if not Path.is_file(path):
+    if not Path(path).is_file():
         raise argparse.ArgumentTypeError("Path is not a valid file")
 
     return path
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     """Run main CLI function."""
     parser = argparse.ArgumentParser()
     # TODO(eosti): add dtale support for editing
@@ -71,7 +71,7 @@ def main() -> None:
 
     parser.set_defaults(output_type="pdf")
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     logging.basicConfig(
         level=args.loglevel.upper(),
         format="%(message)s",
@@ -91,6 +91,9 @@ def main() -> None:
     elif "xml" in args.file:
         vw_export = VWExport(args.file).export_df()
 
+    else:
+        raise RuntimeError("Only supports csv and xml")
+
     paperwork_list = [
         ChannelHookup(vw_export, show_info),
         InstrumentSchedule(vw_export, show_info),
@@ -99,13 +102,13 @@ def main() -> None:
     ]
 
     if args.output_type == "html":
-        output_path = ExportHTML(show_info.generate_slug(), paperwork_list)
+        output_path = ExportHTML(show_info.generate_slug(), paperwork_list).make()
         logger.info("HTML published to %s", output_path)
     elif args.output_type == "pdf":
-        output_path = ExportPDF(show_info.generate_slug(), paperwork_list)
+        output_path = ExportPDF(show_info.generate_slug(), paperwork_list).make()
         logger.info("PDF published to %s", output_path)
     elif args.output_type == "excel":
-        output_path = ExportExcel(show_info.generate_slug(), paperwork_list)
+        output_path = ExportExcel(show_info.generate_slug(), paperwork_list).make()
         logger.info("Excel workbook published to %s", output_path)
     else:
         raise ValueError(f"Unknown output type {args.output_type}")
