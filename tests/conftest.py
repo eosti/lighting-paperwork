@@ -1,9 +1,12 @@
+# type: ignore[reportAttributeAccessIssue]
+"""Configure PyTest."""
+
 import pytest
 
 from lighting_paperwork.vectorworks_xml import VWExport
 
 
-def pytest_configure(config):
+def pytest_configure(config):  # noqa: ARG001
     pytest.NUM_INSTRUMENTS = 41
     pytest.NUM_DUMB_ACCS = 6
     pytest.NUM_SMART_ACCS = 5

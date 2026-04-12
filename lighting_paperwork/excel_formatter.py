@@ -1,15 +1,11 @@
-"""
-Formatters for Excel
-"""
+"""Formatters for Excel."""
 
 import logging
 from copy import copy
-from typing import List, Optional
 
-from openpyxl.styles import Alignment, Border, Font, Side
+from openpyxl.cell.cell import Cell
+from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
-from openpyxl.utils.dataframe import dataframe_to_rows
-from openpyxl.workbook import Workbook
 from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break
 from openpyxl.worksheet.worksheet import Worksheet
@@ -27,9 +23,7 @@ PAGE_HEIGHT_INCHES = 11
 
 
 def page_setup(ws: Worksheet, rows_to_repeat: int = 0) -> None:
-    """
-    Set the page size, margins, and default view.
-    """
+    """Set the page size, margins, and default view."""
     ws.page_setup.orientation = ws.ORIENTATION_PORTRAIT
     ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
     ws.print_options.horizontalCentered = True
@@ -50,10 +44,8 @@ def page_setup(ws: Worksheet, rows_to_repeat: int = 0) -> None:
         ws.print_title_rows = f"1:{rows_to_repeat}"
 
 
-def add_title(ws: Worksheet, name: str, show_info: Optional[ShowData] = None) -> None:
-    """
-    Add header and footer to worksheet
-    """
+def add_title(ws: Worksheet, name: str, show_info: ShowData | None = None) -> None:
+    """Add header and footer to worksheet."""
     if ws.oddHeader is None:
         raise RuntimeError("oddHeader is not writable!")
     if show_info is not None:
@@ -80,9 +72,8 @@ def add_title(ws: Worksheet, name: str, show_info: Optional[ShowData] = None) ->
     ws.oddFooter.right.size = 12
 
 
-def set_col_widths(ws: Worksheet, width: List[int], page_width: int) -> None:
-    """
-    Set the widths of a page in terms of % of a full page
+def set_col_widths(ws: Worksheet, width: tuple[int, ...], page_width: int) -> None:
+    """Set the widths of a page in terms of % of a full page.
 
     Widths are provided in terms of percentages, but excel expects px
     Assume page width is 610px (experimentally derived)
@@ -97,41 +88,37 @@ def set_col_widths(ws: Worksheet, width: List[int], page_width: int) -> None:
 
 
 def wrap_all_cells(ws: Worksheet) -> None:
-    """
-    Force all cells to wrap text instead of overflow.
-    """
+    """Force all cells to wrap text instead of overflow."""
     for row in ws.iter_rows():
         for cell in row:
             alignment = copy(cell.alignment)
             alignment.wrapText = True
-            cell.alignment = alignment
+            cell.alignment = alignment  # type: ignore[reportAttributeAccessIssue]
 
 
 def add_section_header(
-    ws: Worksheet, text: str, fmt: FontStyle, end_col: Optional[int] = None
+    ws: Worksheet, text: str, fmt: FontStyle, end_col: int | None = None
 ) -> None:
-    """Adds a section header to the bottom of the worksheet"""
-    if ws.max_row == 1:
-        section_row = 1
-    else:
-        section_row = ws.max_row + 1
+    """Add a section header to the bottom of the worksheet."""
+    section_row = 1 if ws.max_row == 1 else ws.max_row + 1
     if end_col is None:
         end_col = ws.max_column
 
     # The order and stuff really matter for auto-height to work properly
     # No idea why, just be careful around here.
     header_cell = ws.cell(row=section_row, column=1)
+    if not isinstance(header_cell, Cell):
+        raise TypeError("Cannot add header to an already merged cell")
     header_cell.value = text
-    ws.merge_cells(
-        start_row=section_row, end_row=section_row, start_column=1, end_column=end_col
-    )
+    ws.merge_cells(start_row=section_row, end_row=section_row, start_column=1, end_column=end_col)
 
     header_cell.font = fmt.excel()
     header_cell.alignment = Alignment(horizontal="left", vertical="center")
 
 
 def instr_schedule_pagebreaks(ws: Worksheet) -> None:
-    """
+    """Generate pagebreaks to prevent linebreaks from splitting a position.
+
     Goal: each position should fit on a page (or at least take up a full page otherwise)
     Assumes that the excel sheet is using the default formatting.
     This is ridiculously janky.
@@ -142,11 +129,12 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
     cur_height = 0.0
 
     # Note: all math here done in inches. it's hacky but also excel sucks so
-    PAGE_FUDGE = 0.7  # Adjust this if you have weird overflow issues.
-    PAGE_HEIGHT = (PAGE_HEIGHT_INCHES - (Y_PADDING * 2 + Y_PADDING_HEADER)) - PAGE_FUDGE
+    # Adjust PAGE_FUDGE if you have weird overlfow issues
+    PAGE_FUDGE = 0.7  # noqa: N806
+    PAGE_HEIGHT = (PAGE_HEIGHT_INCHES - (Y_PADDING * 2 + Y_PADDING_HEADER)) - PAGE_FUDGE  # noqa: N806
 
-    TYPE_LINEBREAK_LEN = 30
-    COLOR_LINEBREAK_LEN = 25
+    TYPE_LINEBREAK_LEN = 30  # noqa: N806
+    COLOR_LINEBREAK_LEN = 25  # noqa: N806
 
     for row in range(1, ws.max_row):
         # calculate how long this position is
@@ -161,7 +149,7 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
 
             cur_height = 0
             logger.debug("Row %s is a end-of-section (%s)", row, cur_height)
-        elif ws.cell(row, 2).value is None and (not ws.cell(row, 1).value.isdigit()):
+        elif ws.cell(row, 2).value is None and (not str(ws.cell(row, 1).value).isdigit()):
             # This is a position title -> height of 0.33"
             cur_height += 0.33
             pos_start_index = row
@@ -170,11 +158,11 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
             # This is a col label row
             cur_height += 0.22
             logger.debug("Row %s is col label (%s)", row, cur_height)
-        elif ws.cell(row, 1).value is None or ws.cell(row, 1).value.isdigit():
+        elif ws.cell(row, 1).value is None or str(ws.cell(row, 1).value).isdigit():
             # Channel row
             if ws.cell(row, 3).value is not None and (
-                len(ws.cell(row, 3).value) > TYPE_LINEBREAK_LEN
-                or len(ws.cell(row, 4).value) > COLOR_LINEBREAK_LEN
+                len(str(ws.cell(row, 3).value)) > TYPE_LINEBREAK_LEN
+                or len(str(ws.cell(row, 4).value)) > COLOR_LINEBREAK_LEN
             ):
                 # Double height
                 cur_height += 0.44

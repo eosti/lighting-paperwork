@@ -1,10 +1,10 @@
-"""Generator for an instrument hookup"""
+"""Generator for an instrument hookup."""
 
 import logging
 import re
 from copy import copy
-from os import path
-from typing import List, Self, Tuple
+from pathlib import Path
+from typing import Self, Unpack, override
 
 import numpy as np
 import openpyxl
@@ -12,33 +12,32 @@ import pandas as pd
 from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
-import lighting_paperwork.excel_formatter as excel_formatter
-from lighting_paperwork.helpers import (FontStyle, FormattingQuirks,
-                                        excel_quirks)
-from lighting_paperwork.paperwork import PaperworkGenerator
+from lighting_paperwork import excel_formatter
+from lighting_paperwork.helpers import FontStyle, StyledContent, excel_quirks
+from lighting_paperwork.paperwork import PaperworkGenerator, StyleDataParams, StyleFieldParams
 from lighting_paperwork.style import default_position_style
 
 logger = logging.getLogger(__name__)
 
 
 class InstrumentSchedule(PaperworkGenerator):
-    """
-    Generates an instrument schedules with U#, instrument type, color,
-        channel, address, etc per position.
-    TODO: Accessories don't show up.
+    """Generate an instrument schedule.
+
+    Seperates instruments by position and sorts by U#.
+    TODO(eosti): Accessories don't show up.
     """
 
-    def __init__(
-        self, *args, position_style: FontStyle = default_position_style, **kwargs
-    ):
+    @override
+    def __init__(self, *args, position_style: FontStyle = default_position_style, **kwargs) -> None:  # noqa: ANN002, ANN003
         super().__init__(*args, **kwargs)
         self.position_style = position_style
 
-    col_widths = [5, 17, 36, 28, 7, 7]
+    col_widths = (5, 17, 36, 28, 7, 7)
     display_name = "Instrument Schedule"
     # Order of these regexes defines the printed order
-    # TODO support appending letters like `A`
-    position_regexes = [
+    # TODO(eosti): support appending letters like `A`
+    # https://github.com/eosti/lighting-paperwork/issues/15
+    position_regexes = (
         r"\d*\s?Pipe\s?\d*$",
         r"^\d*\s?E\s?\d*$",
         r"^\d*\s?Elec\s?\d*$",
@@ -49,8 +48,9 @@ class InstrumentSchedule(PaperworkGenerator):
         r"^[DU]?S[RL]? Box Boom\s?\d*$",
         r"^[DU]?S[RL]? Boom\s?\d*$",
         r"^[DU]?S[RL]? Ladder\s?\d*$",
-    ]
+    )
 
+    @override
     def generate_df(self) -> Self:
         filter_fields = [
             "Position",
@@ -76,7 +76,8 @@ class InstrumentSchedule(PaperworkGenerator):
         self.combine_instrtype().format_address_slash().combine_gelgobo().abbreviate_col_names()
         self.df["Chan"] = self.df["Chan"].replace("", self.formatting_quirks.empty_str)
         self.df = self.df.sort_values(
-            by=["Position", "U#", "Accessory Flag", "Purpose"], key=natsort_keygen()
+            by=["Position", "U#", "Accessory Flag", "Purpose"],
+            key=natsort_keygen(),  # type: ignore[reportCallIssue, reportArgumentType]
         )
         self.df = self.df.reset_index(drop=True)
 
@@ -94,14 +95,19 @@ class InstrumentSchedule(PaperworkGenerator):
 
         return self
 
-    def split_by_position(self) -> List[Tuple[str, pd.DataFrame]]:
-        """
-        Split dataframe into multiple dataframes, one per position.
+    def split_by_position(self) -> list[tuple[str, pd.DataFrame]]:
+        """Split dataframe into multiple dataframes, one per position.
+
+        Returns:
+            List of tuples. Tuples are in the form of (position_name, dataframe) where
+                the dataframe only contains the instruments in that position.
+
         """
         # Step one: sort position names
         unique_vals = self.df["Position"].unique()
-        position_names = self.sort_positions(unique_vals, self.position_regexes)
-        # TODO: might be nice to force a linebreak between categories
+        position_names = self.sort_positions(unique_vals.tolist(), self.position_regexes)
+        # TODO(eosti): might be nice to force a linebreak between categories
+        # https://github.com/eosti/lighting-paperwork/issues/16
 
         # Step two: create unique dataframes by position name
         sorted_dfs = []
@@ -117,56 +123,58 @@ class InstrumentSchedule(PaperworkGenerator):
         return sorted_dfs
 
     @staticmethod
-    def sort_positions(positions: List[str], regexes: List[str]) -> List[str]:
+    def sort_positions(positions: list[str], regexes: tuple[str, ...]) -> list[str]:
+        """Sort position names according to a list of regexes.
+
+        Args:
+            positions: List of position names to sort.
+            regexes: List of position regexes to sort by. The order of the
+                regexes determines the order of the positions.
+
+        Returns:
+            A sorted list of positions.
+
+        """
         sorted_positions = []
         for r in regexes:
             pos = natsorted([x for x in positions if re.match(r, x)])
             sorted_positions += pos
 
         # Gather remaining positions
-        sorted_positions += natsorted(
-            [x for x in positions if x not in (sorted_positions)]
-        )
+        sorted_positions += natsorted([x for x in positions if x not in (sorted_positions)])
         return sorted_positions
 
+    @override
     @staticmethod
-    def style_data(
-        df: pd.DataFrame,
-        body_style: FontStyle,
-        col_width: List[int],
-        quirks: FormattingQuirks,
-        border_weight: float,
-    ) -> pd.DataFrame:
-        chan_border_style = f"{border_weight}px dashed black"
-        style_df = df.copy()
+    def style_data(df: pd.DataFrame, /, **kwargs: Unpack[StyleDataParams]) -> pd.DataFrame:
+        chan_border_style = f"{kwargs['border_weight']}px dashed black"
+        style_df = pd.DataFrame().reindex_like(df).astype(str)
         # Set borders based on channel data
-        prev_row = ("", "")
+        prev_row = (None, None)
         for index, data in df.iterrows():
-            style_df.loc[index, :] = ""
-            if prev_row[0] == "" and prev_row[1] == "":
-                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
+            style_df.loc[index, :] = ""  # type: ignore[reportCallIssue, reportArgumentType]
+            if prev_row == (None, None):
+                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "  # type: ignore[reportCallIssue, reportArgumentType]
                 prev_row = (index, data)
                 continue
 
-            if data["U#"] == quirks.empty_str:
+            if data["U#"] == kwargs["quirks"].empty_str:
                 # Same U#, remove dashed line
-                style_df.loc[prev_row[0], :] += "border-bottom: none; "
-                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
+                style_df.loc[prev_row[0], :] += "border-bottom: none; "  # type: ignore[reportCallIssue, reportArgumentType]
+                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "  # type: ignore[reportCallIssue, reportArgumentType]
             else:
-                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "
+                style_df.loc[index, :] += f"border-bottom: {chan_border_style}; "  # type: ignore[reportCallIssue, reportArgumentType]
 
             prev_row = (index, data)
 
         # Last row gets a solid bottom border
-        style_df.loc[
-            prev_row[0], :
-        ] += f"border-bottom: {border_weight}px solid black; "
+        style_df.loc[prev_row[0], :] += f"border-bottom: {kwargs['border_weight']}px solid black; "  # type: ignore[reportCallIssue, reportArgumentType]
 
         # Set font based on column
-        for col_name, _ in style_df.items():
+        for col_name in style_df:
             style_df[col_name] += (
-                f"{body_style.to_css()}; vertical-align: middle; "
-                f"width: {col_width[style_df.columns.get_loc(col_name)]}%; "
+                f"{kwargs['body_style'].to_css()}; vertical-align: middle; "
+                f"width: {kwargs['col_width'][style_df.columns.get_loc(col_name)]}%; "  # type: ignore[reportCallIssue, reportArgumentType]
             )
 
             if col_name in ["Chan", "U#", "Addr"]:
@@ -176,17 +184,14 @@ class InstrumentSchedule(PaperworkGenerator):
 
         return style_df
 
+    @override
     @staticmethod
-    def style_fields(
-        index: pd.Series,
-        header_style: FontStyle,
-        col_width: List[int],
-        border_weight: float,
-    ) -> List[str]:
-        PaperworkGenerator.verify_width(col_width)
+    def style_fields(index: pd.Series, /, **kwargs: Unpack[StyleFieldParams]) -> list[str]:
+        PaperworkGenerator.verify_width(kwargs["col_width"])
         style = [
-            f"{header_style.to_css()}; border-top: {border_weight}px solid black; "
-            f"border-bottom: {border_weight}px solid black; "
+            f"{kwargs['header_style'].to_css()}; "
+            f"border-top: {kwargs['border_weight']}px solid black; "
+            f"border-bottom: {kwargs['border_weight']}px solid black; "
             for _ in index
         ]
 
@@ -197,19 +202,21 @@ class InstrumentSchedule(PaperworkGenerator):
                 style[idx] += "text-align: left; "
 
         for idx, _ in enumerate(index):
-            style[idx] += f"width: {col_width[idx]}%; "
+            style[idx] += f"width: {kwargs['col_width'][idx]}%; "
 
         return style
 
-    def _make_common(self):
-        raise NotImplementedError("Use _style_position for instrument schedule")
+    @override
+    def _make_common(self) -> pd.io.formats.style.Styler:
+        raise NotImplementedError("Use _make_position for instrument schedule")
 
-    def _style_position(
+    def _make_position(
         self, position: tuple[str, pd.DataFrame]
     ) -> tuple[str, pd.io.formats.style.Styler]:
+        """Like _make_common, but operates only on one position's df."""
         styled = Styler.from_custom_template(
-            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
-        )(position[1])
+            str(Path(__file__).parent / "templates"), "header_footer.tpl"
+        )(position[1])  # type: ignore[reportCallIssue, reportArgumentType]
         styled = styled.apply(
             type(self).style_data,
             axis=None,
@@ -220,7 +227,7 @@ class InstrumentSchedule(PaperworkGenerator):
         )
         styled = styled.hide()
         styled = styled.apply_index(
-            type(self).style_fields,
+            type(self).style_fields,  # type: ignore[reportArgumentType]
             header_style=self.style.field,
             col_width=self.col_widths,
             border_weight=self.border_weight,
@@ -228,6 +235,7 @@ class InstrumentSchedule(PaperworkGenerator):
         )
         return (position[0], styled)
 
+    @override
     def make_excel(self, excel_path: str) -> None:
         self.formatting_quirks = excel_quirks
 
@@ -236,7 +244,7 @@ class InstrumentSchedule(PaperworkGenerator):
         sheet_names = []
 
         for idx, pos in enumerate(positions):
-            _, styled = self._style_position(pos)
+            _, styled = self._make_position(pos)
             sheet_names.append(f"inst_sch_tmp_{idx}")
             with pd.ExcelWriter(excel_path, engine="openpyxl", mode="a") as writer:
                 styled.to_excel(writer, sheet_name=sheet_names[-1])
@@ -260,7 +268,7 @@ class InstrumentSchedule(PaperworkGenerator):
                     dest_cell = ws.cell(row=cur_max + i, column=j)
                     dest_cell.value = sht.cell(row=i, column=j).value
                     if sht.cell(row=i, column=j).has_style:
-                        dest_cell._style = copy(sht.cell(row=i, column=j)._style)
+                        dest_cell._style = copy(sht.cell(row=i, column=j)._style)  # noqa: SLF001, # type: ignore[reportCallIssue, reportArgumentType]
 
                     # Wrap text here to avoid messing with the headers
                     alignment = copy(dest_cell.alignment)
@@ -278,6 +286,7 @@ class InstrumentSchedule(PaperworkGenerator):
         excel_formatter.instr_schedule_pagebreaks(ws)
         wb.save(excel_path)
 
+    @override
     def make_html(self) -> str:
         self.generate_df()
         positions = self.split_by_position()
@@ -291,20 +300,17 @@ class InstrumentSchedule(PaperworkGenerator):
         output_html += header_html
         output_html += "<div id='inst-schedule-container'>\n"
         for pos in positions:
-            position_name, styled = self._style_position(pos)
+            position_name, styled = self._make_position(pos)
             styled = styled.set_table_attributes('class="paperwork-table"')
-            styled = styled.set_table_styles(
-                self.default_table_style(), overwrite=False
-            )
+            styled = styled.set_table_styles(self.default_table_style(), overwrite=False)
             styled = styled.set_table_styles(
                 [{"selector": "", "props": "break-inside: avoid; margin-bottom: 5mm;"}],
                 overwrite=False,
             )
 
             header_html = self.generate_header(
-                styled.uuid,
-                content_left=position_name,
-                style_left=self.position_style.to_css(),
+                styled.uuid,  # type: ignore[reportAttributeAccessIssue]
+                left=StyledContent(position_name, self.position_style.to_css()),
             )
 
             output_html += styled.to_html(

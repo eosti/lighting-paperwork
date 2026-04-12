@@ -1,35 +1,37 @@
-"""Generator for a channel hookup"""
+"""Generator for a channel hookup."""
 
 import logging
-from os import path
-from typing import List, Self
+from pathlib import Path
+from typing import Self, Unpack, override
 
 import numpy as np
 import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from lighting_paperwork.helpers import FontStyle, FormattingQuirks
-from lighting_paperwork.paperwork import PaperworkGenerator
+from lighting_paperwork.helpers import FontStyle
+from lighting_paperwork.paperwork import PaperworkGenerator, StyleDataParams, StyleFieldParams
 from lighting_paperwork.style import default_chan_style
 
 logger = logging.getLogger(__name__)
 
 
 class ChannelHookup(PaperworkGenerator):
-    """
+    """Paperwork generator for a channel hookup.
+
     Generates a channel hookup with channel, address,
-        position, type, gobo, color, etc.
-    TODO: Accessories don't show up
+    position, type, gobo, color, etc, sorted by channel.
     """
 
-    def __init__(self, *args, chan_style: FontStyle = default_chan_style, **kwargs):
+    @override
+    def __init__(self, *args, chan_style: FontStyle = default_chan_style, **kwargs) -> None:  # noqa: ANN002, ANN003
         super().__init__(*args, **kwargs)
         self.chan_style = chan_style
 
-    col_widths = [10, 6, 13, 5, 13, 32, 21]
+    col_widths = (10, 6, 13, 5, 13, 32, 21)
     display_name = "Channel Hookup"
 
+    @override
     def generate_df(self) -> Self:
         # Format data
         filter_fields = [
@@ -58,7 +60,7 @@ class ChannelHookup(PaperworkGenerator):
         self.df = self.df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
         self.df = self.df.sort_values(
             by=["Chan", "Position", "U#", "Accessory Flag", "Addr"],
-            key=natsort_keygen(),
+            key=natsort_keygen(),  # type: ignore[reportArgumentType]
         )
         self.df = self.df.reset_index(drop=True)
         self.df = self.df[
@@ -76,43 +78,41 @@ class ChannelHookup(PaperworkGenerator):
         self.repeated_index_val("Chan")
         return self
 
+    @override
     @staticmethod
-    def style_data(
-        df: pd.DataFrame,
-        body_style: FontStyle,
-        col_width: List[int],
-        border_weight: float,
-        quirks: FormattingQuirks,
-        chan_style: FontStyle = default_chan_style,
-    ):
-        border_style = f"{border_weight}px solid black"
-        style_df = df.copy()
+    def style_data(df: pd.DataFrame, /, **kwargs: Unpack[StyleDataParams]) -> pd.DataFrame:
+        if "chan_style" not in kwargs:
+            kwargs["chan_style"] = default_chan_style
+
+        border_style = f"{kwargs['border_weight']}px solid black"
+        style_df = pd.DataFrame().reindex_like(df).astype(str)
         # Set borders based on channel data
         prev_row = (None, None)
         for index, data in df.iterrows():
-            style_df.loc[index, :] = ""
+            style_df.loc[index, :] = ""  # type: ignore[reportCallIssue, reportArgumentType]
             if prev_row == (None, None):
-                style_df.loc[index, :] += f"border-bottom: {border_style}; "
+                style_df.loc[index, :] += f"border-bottom: {border_style}; "  # type: ignore[reportCallIssue, reportArgumentType]
                 prev_row = (index, data)
                 continue
 
-            if data["Chan"] == quirks.empty_str:
-                style_df.loc[prev_row[0], :] += "border-bottom: none; "
-                style_df.loc[index, :] += f"border-bottom: {border_style}; "
+            if data["Chan"] == kwargs["quirks"].empty_str:
+                style_df.loc[prev_row[0], :] += "border-bottom: none; "  # type: ignore[reportCallIssue, reportArgumentType]
+                style_df.loc[index, :] += f"border-bottom: {border_style}; "  # type: ignore[reportCallIssue, reportArgumentType]
             else:
-                style_df.loc[index, :] += f"border-bottom: {border_style}; "
+                style_df.loc[index, :] += f"border-bottom: {border_style}; "  # type: ignore[reportCallIssue, reportArgumentType]
 
             prev_row = (index, data)
 
         # Set font based on column
-        for col_name, _ in style_df.items():
-            style_df[
-                col_name
-            ] += f"vertical-align: middle; width: {col_width[style_df.columns.get_loc(col_name)]}%;"
+        for col_name in style_df:
+            style_df[col_name] += (
+                "vertical-align: middle; width: "
+                f"{kwargs['col_width'][style_df.columns.get_loc(col_name)]}%;"  # type: ignore[reportCallIssue, reportArgumentType]
+            )
             if col_name == "Chan":
-                style_df[col_name] += f"{chan_style.to_css()}; "
+                style_df[col_name] += f"{kwargs['chan_style'].to_css()}; "
             else:
-                style_df[col_name] += f"{body_style.to_css()}; "
+                style_df[col_name] += f"{kwargs['body_style'].to_css()}; "
 
             if col_name in ["Chan", "U#", "Addr"]:
                 style_df[col_name] += "text-align: center; "
@@ -121,17 +121,14 @@ class ChannelHookup(PaperworkGenerator):
 
         return style_df
 
+    @override
     @staticmethod
-    def style_fields(
-        index: pd.Series,
-        header_style: FontStyle,
-        col_width: List[int],
-        border_weight: float,
-    ) -> List[str]:
-        PaperworkGenerator.verify_width(col_width)
+    def style_fields(index: pd.Series, /, **kwargs: Unpack[StyleFieldParams]) -> list[str]:
+        PaperworkGenerator.verify_width(kwargs["col_width"])
         style = [
-            f"{header_style.to_css()}; border-top: {border_weight}px solid black;"
-            f"border-bottom: {border_weight}px solid black; "
+            f"{kwargs['header_style'].to_css()}; "
+            f"border-top: {kwargs['border_weight']}px solid black;"
+            f"border-bottom: {kwargs['border_weight']}px solid black;"
             for _ in index
         ]
 
@@ -142,37 +139,36 @@ class ChannelHookup(PaperworkGenerator):
                 style[idx] += "text-align: left; "
 
         for idx, _ in enumerate(index):
-            style[idx] += f"width: {col_width[idx]}%; "
+            style[idx] += f"width: {kwargs['col_width'][idx]}%; "
 
         return style
 
-    def pagebreak_style(self) -> List[dict]:
-        """
-        Disallow pagebreaks between channels with the same number.
+    def pagebreak_style(self) -> list[dict]:
+        """Disallow pagebreaks between channels with the same number.
+
         TODO: this doesn't actually do much
         https://stackoverflow.com/questions/20481039/applying-page-break-before-to-a-table-row-tr
         """
         idxs = np.where(self.df["Chan"] == self.formatting_quirks.empty_str)
 
         selector_list = []
-
-        for i in np.transpose(*idxs):
-            # We want to select the row before a repeated channel,
-            # but CSS selectors index from 1. These cancel out.
-            selector_list.append(f"tr:nth-child({i - 1 + 1})")
+        # We want to select the row before a repeated channel,
+        # but CSS selectors index from 1. These cancel out.
+        selector_list.extend(f"tr:nth-child({i - 1 + 1})" for i in np.transpose(*idxs))
 
         style_list = []
-
-        for i in selector_list:
-            style_list.append({"selector": i, "props": [("break-after", "avoid-page")]})
+        style_list.extend(
+            {"selector": i, "props": [("break-after", "avoid-page")]} for i in selector_list
+        )
 
         return style_list
 
+    @override
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
 
         styled = Styler.from_custom_template(
-            path.join(path.dirname(__file__), "templates"), "header_footer.tpl"
+            str(Path(__file__).parent / "templates"), "header_footer.tpl"
         )(self.df)
         styled = styled.apply(
             type(self).style_data,
@@ -185,35 +181,11 @@ class ChannelHookup(PaperworkGenerator):
         )
         styled = styled.hide()
         styled = styled.apply_index(
-            type(self).style_fields,
+            type(self).style_fields,  # type: ignore[reportArgumentType]
             header_style=self.style.field,
             col_width=self.col_widths,
             border_weight=self.border_weight,
             axis=1,
         )
 
-        return styled
-
-    def make_html(self) -> str:
-        styled = self._make_common()
-
-        styled = styled.set_table_attributes('class="paperwork-table"')
-        styled = styled.set_table_styles(self.default_table_style(), overwrite=False)
-        styled = styled.set_table_styles(self.pagebreak_style(), overwrite=False)
-
-        header_html, footer_html = self.generate_header_footer(styled.uuid)
-        page_style = self.generate_page_style(
-            styled.uuid, "bottom-right", self.style.marginals.to_css()
-        )
-
-        html = styled.to_html(
-            generated_header=header_html,
-            generated_footer=footer_html,
-            generated_page_style=page_style,
-        )
-
-        html = self.wrap_table(html)
-
-        logger.info("Generated channel hookup.")
-
-        return html
+        return styled  # noqa: RET504

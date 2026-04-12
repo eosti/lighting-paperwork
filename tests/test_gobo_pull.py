@@ -1,4 +1,4 @@
-import pytest
+"""Tests for the gobo pull generator."""
 
 from lighting_paperwork.gobo_pull import GoboPullList
 

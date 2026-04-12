@@ -3,11 +3,11 @@
 import datetime
 import logging
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal
-from typing import List, Optional, Self, Union
+from typing import Self
 
-import openpyxl
+import openpyxl.styles as openpyxl_styles
 
 logger = logging.getLogger(__name__)
 
@@ -16,38 +16,43 @@ logger = logging.getLogger(__name__)
 class ShowData:
     """Dataclass for storing information about the show."""
 
-    show_name: Optional[str] = None
-    ld_name: Optional[str] = None
-    revision: Optional[str] = None
-    date: datetime.datetime = datetime.datetime.now()
+    show_name: str | None = None
+    ld_name: str | None = None
+    revision: str | None = None
+    rev_date: datetime.datetime = field(default_factory=lambda: datetime.datetime.now(datetime.UTC))
 
     def print_date(self) -> str:
-        """Returns the date in YYYY/MM/DD form"""
-        return self.date.strftime("%Y/%m/%d")
+        """Return the stored date in YYYY/MM/DD form."""
+        return self.rev_date.astimezone().strftime("%Y/%m/%d")
 
     def generate_slug(self, title: str = "Paperwork") -> str:
-        """Generate a filename slug from the show information"""
+        """Generate a filename slug from the show information."""
         if self.show_name is None or self.revision is None:
-            logger.info(
-                "Not enough show data to make a nice output filename, using default"
-            )
+            logger.info("Not enough show data to make a nice output filename, using default")
             return title
-        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(
-            r"\W+", "", self.revision
-        )
+        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(r"\W+", "", self.revision)
 
 
 @dataclass
 class InstrumentPower:
-    """Dataclass for instrument power and formatting"""
+    """Dataclass for instrument power and formatting.
+
+    Attributes:
+        POWER_REGEX: A regex that looks for power strings within strings.
+            ex. matches `INSTR 300W` or `INSTR 300 kW` but not `INSTR 300`.
+        power: Numeric representation of the instrument's power.
 
     """
-    Looks for power strings within strings.
-    ex. `INSTR 300W` or `INSTR 300 kW` but not `INSTR 300`
-    """
+
     POWER_REGEX = r"\d+\.?\d*\s*[kMGm]?W"
 
-    def __init__(self, input_string: Union[str | int | float | None]):
+    def __init__(self, input_string: str | float | None) -> None:
+        """Initialize class with unformatted data.
+
+        Args:
+            input_string: A string or number that somewhat resembles a valid power.
+
+        """
         if input_string is None:
             self.power: Decimal = Decimal(0)
         elif isinstance(input_string, (float, int)):
@@ -67,7 +72,8 @@ class InstrumentPower:
         if self.power < 0:
             raise ValueError(f"Light sucker detected ({self.power} < 0W)")
 
-    def format(self):
+    def format(self) -> str:
+        """Print power in a consistent format as XX[.X]W."""
         # Remove sigfigs but prints more "cleanly"
         powerval = (
             self.power.quantize(Decimal(1))
@@ -81,21 +87,32 @@ class InstrumentPower:
 
 @dataclass
 class DMXAddress:
-    """Dataclass for DMX address and formatting"""
+    """Dataclass for DMX address and formatting.
 
-    def __init__(self, input_string: Union[str | int]):
+    Attributes:
+        absolute_address: The absolute DMX address, 1-indexed.
+
+    """
+
+    def __init__(self, input_string: str | int) -> None:
+        """Initialize class with address.
+
+        Args:
+            input_string: The DMX address as a string or number.
+                May be an absolute address or slash/colon-formatted.
+
+        Raises:
+            ValueError: The input_string does not resemble a valid DMX address.
+
+        """
         if isinstance(input_string, int):
             # Assume absolute address
             if input_string <= 0:
-                raise ValueError(
-                    f"Absolute address cannot be less than 1 (got {input_string})"
-                )
+                raise ValueError(f"Absolute address cannot be less than 1 (got {input_string})")
             self.absolute_address: int = input_string
         elif input_string.isdigit():
             if int(input_string) <= 0:
-                raise ValueError(
-                    f"Absolute address cannot be less than 1 (got {input_string})"
-                )
+                raise ValueError(f"Absolute address cannot be less than 1 (got {input_string})")
             self.absolute_address: int = int(input_string)
         elif "/" in input_string or ":" in input_string:
             # universe : or / relative address
@@ -111,9 +128,7 @@ class DMXAddress:
             if universe_int <= 0:
                 raise ValueError(f"Universe cannot be less than 1 (got {universe_int})")
             if rel_addr_int <= 0:
-                raise ValueError(
-                    f"Relative address cannot be less than 1 (got {rel_addr_int})"
-                )
+                raise ValueError(f"Relative address cannot be less than 1 (got {rel_addr_int})")
             if rel_addr_int > 512:
                 raise ValueError(
                     f"Relative address cannot be greater than 512 (got {rel_addr_int})"
@@ -124,19 +139,23 @@ class DMXAddress:
             raise ValueError(f"Unclear address {input_string}")
 
     def get_universe(self) -> int:
+        """Determine the universe that the address belongs in."""
         return int(((self.absolute_address - 1) / 512) + 1)
 
     def get_relative_address(self) -> int:
+        """Determine the relative address within the universe."""
         return int(((self.absolute_address - 1) % 512) + 1)
 
     def format_slash(self) -> str:
+        """Return a string in the form of universe/rel_address."""
         return f"{self.get_universe()}/{self.get_relative_address()}"
 
     def format_colon(self) -> str:
+        """Return a string in the form of universe:rel_address."""
         return f"{self.get_universe()}:{self.get_relative_address()}"
 
     def format_slash_conditional(self) -> str:
-        """If first universe, don't add slash"""
+        """Like format_slash, but if in the first universe don't add the `1/`."""
         if self.absolute_address < 513:
             return f"{self.absolute_address}"
         return self.format_slash()
@@ -144,17 +163,31 @@ class DMXAddress:
 
 @dataclass
 class Gel:
-    """Dataclass for storing information about a gel."""
+    """Dataclass for storing information about a gel.
+
+    Attributes:
+        name: The name code for a gel (ex. R34 or AP4400)
+        name_sort: typically the same as `name` but may be slightly altered for better sorting
+            ex. for Rosco 300-series gels, name_sort will be a .3 value (R334 -> R34.3)
+        company: The name of the manufacturer of the gel.
+
+    """
 
     name: str
     name_sort: str
     company: str
 
-    # TODO: add nice name from lighting_filters
+    # TODO(eosti): add nice name from lighting_filters
+    # https://github.com/eosti/lighting-paperwork/issues/9
 
     @classmethod
-    def parse_name(cls, gel: str) -> Self:
-        """Returns a Gel from a common name (ex. R355 or L201)."""
+    def _parse_name(cls, gel: str) -> Self:
+        """Return a Gel from a common name.
+
+        Args:
+            gel: name code for a gel (ex. R355 or L201).
+
+        """
         gel = gel.strip()
         if re.search(r"^AP\d+$", gel, re.IGNORECASE):
             company = "Apollo"
@@ -180,8 +213,17 @@ class Gel:
         return cls(gel, gelsort, company)
 
     @classmethod
-    def parse_gel_string(cls, gel: str) -> List[Self]:
-        """Parses a complex gel string (ex. L202x2 + R119 + R26)"""
+    def parse_gel(cls, gel: str) -> list[Self]:
+        """Parse a complex gel string into a list of gels.
+
+        Args:
+            gel: a complex gel string (ex. 'L202x2 + R119 + R26')
+
+        Returns:
+            A list of Gels, one entry per physical gel.
+                ex. 'L202x2 + R119 + R26' would return [Gel(L202), Gel(L202), Gel(R119), Gel(R26)].
+
+        """
         gel = gel.strip()
         if gel is None or gel == "":
             return [cls("", "", "")]
@@ -189,27 +231,38 @@ class Gel:
         gel_list = []
         # Only supports + as a separator for now
         for i in gel.split("+"):
-            i = i.strip()
-            if len(i.split("x")) > 1:
+            gel_name = i.strip()
+            if len(gel_name.split("x")) > 1:
                 # Repeat gel situation (ex. L201x2)
-                g, count = i.split("x")
-                for _ in range(0, int(count)):
-                    gel_list.append(cls.parse_name(g))
+                g = gel_name.split("x")
+                gel_list.extend(cls._parse_name(g[0]) for x in range(int(g[1])))
             else:
-                gel_list.append(cls.parse_name(i))
+                gel_list.append(cls._parse_name(gel_name))
 
         return gel_list
 
 
 def parse_frame_size(frame_str: str) -> str:
-    """Parses a frame size."""
-    # TODO: make this generic with a unit conversion program
+    """Parse a frame size.
+
+    Args:
+        frame_str: a string with a single or two dimensions. Assumes inches unless otherwise stated.
+            Valid units: " or in for inches, ' for feet, cm for centimeters.
+            Ex. `6.25"`, `12"x14"`, `7.5`
+
+    Returns:
+        Consistently formatted dimension string.
+        Imperial units will be converted to inches and formatted as XX"
+
+    """
+    # TODO(eosti): make this generic with a unit conversion program
+    # https://github.com/eosti/lighting-paperwork/issues/10
+
     frame_str = frame_str.strip()
     if len(frame_str.lower().split("x")) > 1:
         # rectangular frame!
         lengths = []
-        for i in frame_str.lower().split("x"):
-            lengths.append(parse_frame_size(i))
+        lengths.extend(parse_frame_size(x) for x in frame_str.lower().split("x"))
 
         ret_string = ""
         for idx, val in enumerate(lengths):
@@ -241,51 +294,73 @@ def parse_frame_size(frame_str: str) -> str:
 
 @dataclass
 class FontStyle:
-    """Dataclass for storing CSS font style information."""
+    """Dataclass for storing CSS font style information.
+
+    Attributes:
+        font_family: The PostScript name of a font family installed locally
+        font_weight: The CSS weight of the font (100-900). May also use relative values.
+        font_size: The size of the font, in pt.
+
+    """
 
     font_family: str
     font_weight: str
     font_size: int
 
     def to_css(self) -> str:
-        """Returns a CSS string with the font information."""
+        """Return a CSS string with the font information."""
         return (
             f"font-family: {self.font_family}; "
             f"font-weight: {self.font_weight}; font-size: {self.font_size}pt; "
         )
 
     def span(self, body: str, style: str = "") -> str:
-        """Returns a `span` element formatted with the font information."""
+        """Return a `span` element formatted with the font information."""
         return f"<span style='{self.to_css()}{style}'>{body}</span>"
 
     def p(self, body: str, style: str = "") -> str:
-        """Returns a `p` element formatted with the font information."""
+        """Return a `p` element formatted with the font information."""
         return f"<p style='{self.to_css()}{style}'>{body}</p>"
 
-    def excel(self) -> openpyxl.styles.Font:
+    def excel(self) -> openpyxl_styles.Font:
+        """Return an openpyxl Style with the selected font.
+
+        Note that only `normal` and `bold` font weights are permitted.
+        """
         if self.font_weight == "bold":
-            return openpyxl.styles.Font(
-                name=self.font_family, size=self.font_size, bold=True
-            )
+            return openpyxl_styles.Font(name=self.font_family, size=self.font_size, bold=True)
 
         if self.font_weight == "normal":
-            return openpyxl.styles.Font(
-                name=self.font_family, size=self.font_size, bold=False
-            )
+            return openpyxl_styles.Font(name=self.font_family, size=self.font_size, bold=False)
 
         raise ValueError(f"Unsupported weight {self.font_weight}")
 
 
 @dataclass
-class FormattingQuirks:
-    """
-    Collection of formatting differences between the
-    various export formats.
+class StyledContent:
+    """Dataclass for storing content/style pairs.
+
+    Attributes:
+        content: An HTML string
+        style: A CSS string to format `content`
+
     """
 
-    """What string to represent an empty cell"""
+    content: str = ""
+    style: str = ""
+
+
+@dataclass
+class FormattingQuirks:
+    """Collection of formatting differences between the various export formats.
+
+    Attributes:
+        empty_str: What string to represent an empty cell
+        hidden_fmt: What CSS "color" should something be in order to be hidden?
+
+    """
+
     empty_str: str
-    """What argument to CSS `color:` to hide text"""
     hidden_fmt: str
 
 

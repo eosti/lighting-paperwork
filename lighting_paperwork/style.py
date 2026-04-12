@@ -1,4 +1,4 @@
-"""Styling information for paperwork"""
+"""Styling information for paperwork."""
 
 from dataclasses import dataclass
 
@@ -7,7 +7,7 @@ from lighting_paperwork.helpers import FontStyle
 
 @dataclass
 class BaseStyle:
-    """Class to store font style for paperwork"""
+    """Class to store font style for paperwork."""
 
     title: FontStyle
     field: FontStyle
