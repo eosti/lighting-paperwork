@@ -1,13 +1,25 @@
 """Paperwork exporters to various filetypes."""
 
+import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 
 import openpyxl
-import weasyprint
 from openpyxl.workbook import Workbook
 
 from lighting_paperwork.paperwork import PaperworkGenerator
+
+logger = logging.getLogger(__name__)
+
+try:
+    import weasyprint
+except OSError:
+    # ref: https://github.com/astral-sh/uv/issues/6971
+    logger.warning("weasyprint failed to import, attempting DYLD shim...")
+    from ctypes.macholib import dyld
+
+    dyld.DEFAULT_LIBRARY_FALLBACK.append("/opt/homebrew/lib")  # type: ignore[reportAttributeAccessIssue]
+    import weasyprint
 
 
 class PaperworkExporter(ABC):
