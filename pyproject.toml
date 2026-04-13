@@ -83,6 +83,8 @@ main.ignore = [ ".venv" ]
 
 [tool.pyright]
 typeCheckingMode = "standard" # Someday we'll make it strict
+venvPath = "."
+venv = ".venv"
 
 [tool.pytest]
 # check_untyped_defs = true

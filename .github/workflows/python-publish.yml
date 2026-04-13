@@ -18,7 +18,7 @@ on:
 jobs:
   release-build:
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: pypi
     permissions:
       contents: read
