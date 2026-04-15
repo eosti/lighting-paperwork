@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class InstrumentSchedule(PaperworkGenerator):
     """Generate an instrument schedule.
 
-    Seperates instruments by position and sorts by U#.
+    Separates instruments by position and sorts by U#.
     TODO(eosti): Accessories don't show up.
     """
 

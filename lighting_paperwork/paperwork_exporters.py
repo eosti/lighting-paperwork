@@ -1,6 +1,7 @@
 """Paperwork exporters to various filetypes."""
 
 import logging
+import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -19,7 +20,13 @@ except OSError:
     from ctypes.macholib import dyld
 
     dyld.DEFAULT_LIBRARY_FALLBACK.append("/opt/homebrew/lib")  # type: ignore[reportAttributeAccessIssue]
-    import weasyprint
+    try:
+        import weasyprint
+
+        logger.info("DYLD shim succeeded!")
+    except OSError:
+        logger.warning("weasyprint failed to import, did you install the dependencies?")
+        logger.exception("PDF export is not available due to WeasyPrint failing to import.")
 
 
 class PaperworkExporter(ABC):
@@ -76,9 +83,13 @@ class ExportPDF(ExportHTML):
 
     def make(self) -> Path:
         """Make a PDF with the provided paperwork."""
+        if "weasyprint" not in sys.modules:
+            logger.critical("WeasyPrint was unable to be imported, PDF export is not possible.")
+            raise RuntimeError("WeasyPrint not available")
+
         html = self.generate_html()
         documents = []
-        documents.extend(weasyprint.HTML(string=h).render() for h in html)
+        documents.extend(weasyprint.HTML(string=h).render() for h in html)  # type: ignore[reportPossiblyUnboundVariable]
 
         # This method generates each report individually and collates them
         # Means that page numbers reset per report

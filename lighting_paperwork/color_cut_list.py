@@ -28,7 +28,7 @@ class ColorCutList(PaperworkGenerator):
         self.verify_filter_fields(filter_fields)
         self.df = pd.DataFrame(self.vw_export[filter_fields], columns=filter_fields)
 
-        # Seperate colors and diffusion into dict list
+        # Separate colors and diffusion into dict list
         color_dict: list[dict] = []
         for _, row in self.df.iterrows():
             framesize = parse_frame_size(row["Frame Size"])

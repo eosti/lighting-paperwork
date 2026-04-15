@@ -259,9 +259,9 @@ def test_power_formatting_assertion():
     ],
 )
 def test_power_regex(input_str, output_str):
-    ans = re.search(InstrumentPower.POWER_REGEX, input_str)
+    pwr = re.search(InstrumentPower.POWER_REGEX, input_str)
 
-    if ans is None:
+    if pwr is None:
         assert output_str == ""
     else:
-        assert ans.group() == output_str
+        assert pwr.group() == output_str

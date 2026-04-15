@@ -145,14 +145,14 @@ class VWExport:
         """Convert VW representation of accessories to one suited for paperwork.
 
         Adds accessories to a AccessoryString, and if the accessory is smart, make
-            a seperate "special" instrument with AccessoryFlag prop set.
+            a separate "special" instrument with AccessoryFlag prop set.
 
         Mutates the existing instruments list to add these accessories
 
         Args:
             filterlist: a list of exact matches for accessories that should be omitted.
             fuzzyfilterlist: a list of strings that if found in an accessory name,
-                will ommit that accessory.
+                will omit that accessory.
 
         Returns:
             None

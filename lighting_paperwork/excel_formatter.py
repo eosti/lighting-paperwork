@@ -129,7 +129,7 @@ def instr_schedule_pagebreaks(ws: Worksheet) -> None:
     cur_height = 0.0
 
     # Note: all math here done in inches. it's hacky but also excel sucks so
-    # Adjust PAGE_FUDGE if you have weird overlfow issues
+    # Adjust PAGE_FUDGE if you have weird overflow issues
     PAGE_FUDGE = 0.7  # noqa: N806
     PAGE_HEIGHT = (PAGE_HEIGHT_INCHES - (Y_PADDING * 2 + Y_PADDING_HEADER)) - PAGE_FUDGE  # noqa: N806
 

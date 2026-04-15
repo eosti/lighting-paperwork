@@ -81,8 +81,11 @@ lint.per-file-ignores."tests/*.py" = [
 [tool.pylint]
 main.ignore = [ ".venv" ]
 
+[tool.codespell]
+skip = "*.xml"
+
 [tool.pyright]
-typeCheckingMode = "standard" # Someday we'll make it strict
+typeCheckingMode = "standard"  # Someday we'll make it strict
 venvPath = "."
 venv = ".venv"
 

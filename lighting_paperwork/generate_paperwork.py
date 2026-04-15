@@ -82,7 +82,7 @@ def main(argv: list[str] | None = None) -> None:
     show_info = ShowData(args.show, args.ld, args.rev)
 
     if "csv" in args.file:
-        # Converter is to supress the warning when I set addr=0 to empty string
+        # Converter is to suppress the warning when I set addr=0 to empty string
         vw_export = pd.read_csv(args.file, sep="\t", header=0, converters={"Absolute Address": str})
 
         # Clear VW's default "None" character
