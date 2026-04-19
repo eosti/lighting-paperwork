@@ -117,7 +117,7 @@ class InstrumentSchedule(PaperworkGenerator):
             pos_df = self.df.loc[self.df["Position"] == i].copy()
             pos_df = pos_df.drop(["Position"], axis=1)
             pos_df = pos_df.sort_values(
-                by=["U#", "Accessory Flag", "Purpose"],
+                by=["U#", "Accessory Flag", "Chan", "Purpose"],
                 key=natsort_keygen(),  # type: ignore[reportArgumentType]
             )
             pos_df = pos_df.drop("Accessory Flag", axis=1)  # It served its purpose o7

@@ -15,18 +15,18 @@ def test_parse_instrument_schedule(caplog, vwx_export):
 
     assert paperwork.df is not None
 
+    positions = paperwork.split_by_position()
+
     # Verify U#s increment within positions
-    prev_u_val = -1
-    this_position = ""
-    for _, row in paperwork.df.iterrows():
-        if row["Position"] != this_position:
-            this_position = row["Position"]
-            prev_u_val = -1
-            continue
-        assert row["U#"] != ""
-        u_num = re.sub("[^0-9]", "", row["U#"])
-        assert int(u_num) >= prev_u_val
-        prev_u_val = int(u_num)
+    for _, df in positions:
+        prev_u_val = -1
+        for _, row in df.iterrows():
+            assert row["U#"] != ""
+            if row["U#"] == "&nbsp;":
+                continue
+            u_num = re.sub("[^0-9]", "", row["U#"])
+            assert int(u_num) >= prev_u_val
+            prev_u_val = int(u_num)
 
 
 def test_position_sorting():
@@ -111,10 +111,11 @@ def test_split_by_position(caplog, vwx_export):
     assert pipe_eight.iloc[0]["U#"] == "1"
     assert pipe_eight.iloc[2]["U#"] == "3"
     assert pipe_eight.iloc[2]["Addr"] == "&nbsp;"
+    assert pipe_eight.iloc[2]["Chan"] == "204"
     assert pipe_eight.iloc[3]["U#"] == "&nbsp;"
     assert pipe_eight.iloc[3]["Instr Type & Load & Acc"] == '"'
     assert pipe_eight.iloc[3]["Color & Gobo"] == '"'
-    assert pipe_eight.iloc[3]["Chan"] == "204"
+    assert pipe_eight.iloc[3]["Chan"] == "205"
     assert pipe_eight.iloc[3]["Addr"] == "&nbsp;"
 
     assert dfs[2][0] == "3 Elec"
