@@ -30,6 +30,7 @@ class ChannelHookup(PaperworkGenerator):
 
     col_widths = (10, 6, 13, 5, 13, 32, 21)
     display_name = "Channel Hookup"
+    primary_col_name = "Chan"
 
     @override
     def generate_df(self) -> Self:
@@ -75,7 +76,7 @@ class ChannelHookup(PaperworkGenerator):
             ]
         ]
 
-        self.repeated_index_val("Chan")
+        self.repeated_index_val()
         return self
 
     @override
@@ -168,6 +169,6 @@ class ChannelHookup(PaperworkGenerator):
             axis=1,
         )
 
-        styled = styled.set_table_styles(self.pagebreak_repeated_index("Chan"), overwrite=False)
+        styled = styled.set_table_styles(self.pagebreak_repeated_index(), overwrite=False)
 
         return styled  # noqa: RET504

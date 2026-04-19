@@ -74,6 +74,7 @@ class PaperworkGenerator(ABC):
         self.show_data = ShowData(show_name=show_name, ld_name=ld_name, revision=revision)
 
     display_name: str
+    primary_col_name: str
     col_widths: tuple[int, ...]
     page_width: int = 100
     formatting_quirks = html_quirks
@@ -311,12 +312,10 @@ class PaperworkGenerator(ABC):
         self.df = slashed_df
         return self
 
-    def repeated_index_val(self, index_str: str, df_override: pd.DataFrame | None = None) -> Self:
+    def repeated_index_val(self, df_override: pd.DataFrame | None = None) -> Self:
         """Format repeated channel numbers to use `"` to represent repeated data.
 
         Arguments:
-            index_str: The string that represents the "main" column of the paperwork type
-                ex. for a Channel Hookup, index_str = 'Chan'
             df_override: Override the use of self.df with a different dataframe
 
         """
@@ -331,18 +330,21 @@ class PaperworkGenerator(ABC):
                 continue
 
             tmp_prev = None
-            if data[index_str] == repeated_idx or data[index_str] == prev_row[index_str]:
-                if data[index_str] == prev_row[index_str]:
+            if (
+                data[self.primary_col_name] == repeated_idx
+                or data[self.primary_col_name] == prev_row[self.primary_col_name]
+            ):
+                if data[self.primary_col_name] == prev_row[self.primary_col_name]:
                     # first repeat case
-                    repeated_idx = data[index_str]
+                    repeated_idx = data[self.primary_col_name]
 
                 tmp_prev = data.copy()
                 for idx, val in data.items():
-                    if idx == index_str:
+                    if idx == self.primary_col_name:
                         # Don't "-ify the index string, just leave it blank
                         df.loc[df_index, str(idx)] = self.formatting_quirks.empty_str
                         continue
-                    if index_str == "Chan" and idx == "U#":
+                    if self.primary_col_name == "Chan" and idx == "U#":
                         # Do repeat U# to avoid confusion
                         continue
                     if val.strip() == "" or val == self.formatting_quirks.empty_str:
@@ -361,7 +363,13 @@ class PaperworkGenerator(ABC):
     def abbreviate_col_names(self) -> Self:
         """Abbreviate common column names."""
         self.df = self.df.rename(
-            columns={"Channel": "Chan", "Unit Number": "U#", "Address": "Addr"}
+            columns={
+                "Channel": "Chan",
+                "Unit Number": "U#",
+                "Address": "Addr",
+                "Circuit": "Ckt",
+                "Dimmer": "Dm",
+            }
         )
         return self
 
@@ -397,15 +405,9 @@ class PaperworkGenerator(ABC):
             },
         ]
 
-    def pagebreak_repeated_index(self, index_name: str) -> list[CSSDict]:
-        """Disallow pagebreaks between index fields with the same number.
-
-        Arguments:
-            index_name: Field of the dataframe that is considered the index for this paperwork type
-                ex. for a channel hookup, this would be "Chan"
-
-        """
-        idxs = np.where(self.df[index_name] == self.formatting_quirks.empty_str)
+    def pagebreak_repeated_index(self) -> list[CSSDict]:
+        """Disallow pagebreaks between index fields with the same number."""
+        idxs = np.where(self.df[self.primary_col_name] == self.formatting_quirks.empty_str)
 
         selector_list = []
         # We want to select the row before a repeated channel,

@@ -34,6 +34,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
     col_widths = (5, 17, 36, 28, 7, 7)
     display_name = "Instrument Schedule"
+    primary_col_name = "U#"
     # Order of these regexes defines the printed order
     # TODO(eosti): support appending letters like `A`
     # https://github.com/eosti/lighting-paperwork/issues/15
@@ -115,13 +116,13 @@ class InstrumentSchedule(PaperworkGenerator):
         for i in position_names:
             pos_df = self.df.loc[self.df["Position"] == i].copy()
             pos_df = pos_df.drop(["Position"], axis=1)
-            pos_df = pos_df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
             pos_df = pos_df.sort_values(
-                by=["U#", "Accessory Flag", "Purpose"], key=natsort_keygen()
+                by=["U#", "Accessory Flag", "Purpose"],
+                key=natsort_keygen(),  # type: ignore[reportArgumentType]
             )
             pos_df = pos_df.drop("Accessory Flag", axis=1)  # It served its purpose o7
             pos_df = pos_df.reset_index(drop=True)
-            self.repeated_index_val("U#", pos_df)
+            self.repeated_index_val(pos_df)
             sorted_dfs.append((i, pos_df))
 
         return sorted_dfs
@@ -237,6 +238,7 @@ class InstrumentSchedule(PaperworkGenerator):
             border_weight=self.border_weight,
             axis=1,
         )
+        styled = styled.set_table_styles(self.pagebreak_repeated_index(), overwrite=False)
         return (position[0], styled)
 
     @override
