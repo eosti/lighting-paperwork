@@ -76,7 +76,7 @@ class InstrumentSchedule(PaperworkGenerator):
         self.combine_instrtype().format_address_slash().combine_gelgobo().abbreviate_col_names()
         self.df["Chan"] = self.df["Chan"].replace("", self.formatting_quirks.empty_str)
         self.df = self.df.sort_values(
-            by=["Position", "U#", "Accessory Flag", "Purpose"],
+            by=["Position"],
             key=natsort_keygen(),  # type: ignore[reportCallIssue, reportArgumentType]
         )
         self.df = self.df.reset_index(drop=True)
@@ -85,6 +85,7 @@ class InstrumentSchedule(PaperworkGenerator):
             [
                 "Position",
                 "U#",
+                "Accessory Flag",
                 "Purpose",
                 "Instr Type & Load & Acc",
                 "Color & Gobo",
@@ -115,7 +116,10 @@ class InstrumentSchedule(PaperworkGenerator):
             pos_df = self.df.loc[self.df["Position"] == i].copy()
             pos_df = pos_df.drop(["Position"], axis=1)
             pos_df = pos_df.rename(columns={"Channel": "Chan", "Unit Number": "U#"})
-            pos_df = pos_df.sort_values(by=["U#"], key=natsort_keygen())
+            pos_df = pos_df.sort_values(
+                by=["U#", "Accessory Flag", "Purpose"], key=natsort_keygen()
+            )
+            pos_df = pos_df.drop("Accessory Flag", axis=1)  # It served its purpose o7
             pos_df = pos_df.reset_index(drop=True)
             self.repeated_index_val("U#", pos_df)
             sorted_dfs.append((i, pos_df))
