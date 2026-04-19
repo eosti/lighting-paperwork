@@ -143,26 +143,6 @@ class ChannelHookup(PaperworkGenerator):
 
         return style
 
-    def pagebreak_style(self) -> list[dict]:
-        """Disallow pagebreaks between channels with the same number.
-
-        TODO: this doesn't actually do much
-        https://stackoverflow.com/questions/20481039/applying-page-break-before-to-a-table-row-tr
-        """
-        idxs = np.where(self.df["Chan"] == self.formatting_quirks.empty_str)
-
-        selector_list = []
-        # We want to select the row before a repeated channel,
-        # but CSS selectors index from 1. These cancel out.
-        selector_list.extend(f"tr:nth-child({i - 1 + 1})" for i in np.transpose(*idxs))
-
-        style_list = []
-        style_list.extend(
-            {"selector": i, "props": [("break-after", "avoid-page")]} for i in selector_list
-        )
-
-        return style_list
-
     @override
     def _make_common(self) -> pd.io.formats.style.Styler:
         self.generate_df()
@@ -187,5 +167,7 @@ class ChannelHookup(PaperworkGenerator):
             border_weight=self.border_weight,
             axis=1,
         )
+
+        styled = styled.set_table_styles(self.pagebreak_repeated_index("Chan"), overwrite=False)
 
         return styled  # noqa: RET504

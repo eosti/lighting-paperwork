@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import NotRequired, Self, TypedDict, Unpack
 
+import numpy as np
 import openpyxl
 import pandas as pd
 from pandas.io.formats.style import Styler
@@ -384,8 +385,8 @@ class PaperworkGenerator(ABC):
                 "props": "border-spacing: 0px; border-collapse: collapse; "
                 "line-height: 1.2; break-inside: auto; width: 100%;",
             },
-            {"selector": "tr", "props": "break-inside: avoid; break-after: auto; "},
-            {"selector": "td", "props": "padding: 1px;"},
+            {"selector": "tr", "props": "break-after: auto; "},
+            {"selector": "td", "props": "padding: 1px; "},
             {
                 "selector": "tbody",
                 "props": f"display: table; width: {width}%; margin: 0 auto;",
@@ -395,6 +396,26 @@ class PaperworkGenerator(ABC):
                 "props": f"display: table; width: {width}%; margin: 0 auto;",
             },
         ]
+
+    def pagebreak_repeated_index(self, index_name: str) -> list[CSSDict]:
+        """Disallow pagebreaks between index fields with the same number.
+
+        Arguments:
+            index_name: Field of the dataframe that is considered the index for this paperwork type
+                ex. for a channel hookup, this would be "Chan"
+
+        """
+        idxs = np.where(self.df[index_name] == self.formatting_quirks.empty_str)
+
+        selector_list = []
+        # We want to select the row before a repeated channel,
+        # but CSS selectors index from 1. These cancel out.
+        selector_list.extend(f"tr:nth-child({i - 1 + 1})" for i in np.transpose(*idxs))
+
+        style_list = []
+        style_list.extend({"selector": i, "props": "break-after: avoid;"} for i in selector_list)
+
+        return style_list
 
     def generate_metadata(self) -> str:
         """Generate HTML metadata from show data."""
