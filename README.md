@@ -1,6 +1,8 @@
 # Lighting Paperwork
 Pretty lighting paperwork generation from Vectorworks to PDF or Excel!
 
+![Example of a lighting-paperwork PDF](./examples/LightingPaperwork.jpg)
+
 Using a Vectorworks Spotlight Data Exchange XML file or a Vectorworks lighting export, this program will generate a channel hookup, instrument schedule, color cut list, and gobo pull list.
 This can either be exported as a PDF, HTML file, or Excel spreadsheet, all of which are neatly formatted for your viewing and printing convenience.
 
