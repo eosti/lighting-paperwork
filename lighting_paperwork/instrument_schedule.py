@@ -13,8 +13,9 @@ from natsort import natsort_keygen, natsorted
 from pandas.io.formats.style import Styler
 
 from lighting_paperwork import excel_formatter
-from lighting_paperwork.helpers import FontStyle, StyledContent, excel_quirks
+from lighting_paperwork.helpers import StyledContent, excel_quirks
 from lighting_paperwork.paperwork import PaperworkGenerator, StyleDataParams, StyleFieldParams
+from lighting_paperwork.paperwork_settings import FontStyle
 from lighting_paperwork.style import default_position_style
 
 logger = logging.getLogger(__name__)

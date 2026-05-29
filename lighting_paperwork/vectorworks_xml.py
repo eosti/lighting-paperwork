@@ -1,6 +1,7 @@
 """Tools for importing data from a Vectorworks Data Exchange XML file."""
 
 import logging
+from pathlib import Path
 from xml.etree import ElementTree as ET
 
 import pandas as pd
@@ -71,7 +72,7 @@ class VWExport:
 
     """
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: Path) -> None:
         """Parse an VW XML export into Python objects.
 
         Args:
@@ -81,7 +82,7 @@ class VWExport:
         self.instruments: list[VWInstrument] = []
         self.field_mapping = {}
 
-        if ".xml" not in filename:
+        if filename.suffix != ".xml":
             raise ValueError(f"Invalid filetype for VW import (got {filename}, expected *.xml)")
 
         tree = defusedxml_parse(filename)

@@ -2,6 +2,7 @@
 """Tests for the Vectorworks ingester."""
 
 import logging
+from pathlib import Path
 
 import pytest
 
@@ -10,10 +11,10 @@ from lighting_paperwork.vectorworks_xml import VWExport
 
 def test_opening_files(vwx_export_file):
     with pytest.raises(ValueError):
-        VWExport("notafile.asdf")
+        VWExport(Path("notafile.asdf"))
 
     with pytest.raises(FileNotFoundError):
-        VWExport("notafile.xml")
+        VWExport(Path("notafile.xml"))
 
     VWExport(vwx_export_file)
 

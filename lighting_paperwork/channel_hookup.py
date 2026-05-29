@@ -9,8 +9,8 @@ import pandas as pd
 from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
-from lighting_paperwork.helpers import FontStyle
 from lighting_paperwork.paperwork import PaperworkGenerator, StyleDataParams, StyleFieldParams
+from lighting_paperwork.paperwork_settings import FontStyle
 from lighting_paperwork.style import default_chan_style
 
 logger = logging.getLogger(__name__)

@@ -23,6 +23,7 @@ dependencies = [
   "numpy>=2.2.6",
   "openpyxl>=3.1.5",
   "pandas>=2.3.3",
+  "pydantic-settings>=2.14.1",
   "rich>=15",
   "weasyprint>=68",
 ]
@@ -33,7 +34,7 @@ scripts.lighting-paperwork = "lighting_paperwork.generate_paperwork:main"
 dev = [
   "mypy>=1.19.1",
   "pandas-stubs>=3.0.0.260204",
-  "pyright>=1.1.408",
+  "pyright>=1.1.409",
   "pytest>=9.0.2",
   "pytest-cov>=7",
   "ruff>=0.15.9",

@@ -15,14 +15,13 @@ from pandas.io.formats.style_render import CSSDict
 from lighting_paperwork import excel_formatter
 from lighting_paperwork.helpers import (
     DMXAddress,
-    FontStyle,
     FormattingQuirks,
     InstrumentPower,
-    ShowData,
     StyledContent,
     excel_quirks,
     html_quirks,
 )
+from lighting_paperwork.paperwork_settings import FontStyle, ShowData
 from lighting_paperwork.style import BaseStyle, default_style
 
 logger = logging.getLogger(__name__)
