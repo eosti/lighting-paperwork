@@ -229,6 +229,7 @@ def test_slash_conditional_address(input_addr, output_str):
         (None, "0W"),
         ("", "0W"),
         ("0kW", "0W"),
+        ("TBD", "0W"),
     ],
 )
 def test_power_formatting(input_power, output_str):

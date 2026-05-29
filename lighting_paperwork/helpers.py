@@ -62,11 +62,15 @@ class InstrumentPower:
                 self.power: Decimal = Decimal(0)
             else:
                 # Remove non-numeric/decimal values
-                self.power: Decimal = Decimal(re.sub(r"[^\d\.\-]", "", input_string))
-                if "k" in input_string:
-                    self.power *= 1000
-                if "M" in input_string:
-                    self.power *= 1000 * 1000
+                input_number = re.sub(r"[^\d\.\-]", "", input_string)
+                if input_number == "":
+                    self.power = Decimal(0)
+                else:
+                    self.power: Decimal = Decimal(input_number)
+                    if "k" in input_string:
+                        self.power *= 1000
+                    if "M" in input_string:
+                        self.power *= 1000 * 1000
 
         self.power = self.power.normalize()
         if self.power < 0:
