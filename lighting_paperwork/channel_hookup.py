@@ -10,8 +10,6 @@ from natsort import natsort_keygen
 from pandas.io.formats.style import Styler
 
 from lighting_paperwork.paperwork import PaperworkGenerator, StyleDataParams, StyleFieldParams
-from lighting_paperwork.paperwork_settings import FontStyle
-from lighting_paperwork.style import default_chan_style
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +22,9 @@ class ChannelHookup(PaperworkGenerator):
     """
 
     @override
-    def __init__(self, *args, chan_style: FontStyle = default_chan_style, **kwargs) -> None:  # noqa: ANN002, ANN003
+    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         super().__init__(*args, **kwargs)
-        self.chan_style = chan_style
+        self.style = self.settings.channel_hookup_style
 
     col_widths = (10, 6, 13, 5, 13, 32, 21)
     display_name = "Channel Hookup"
@@ -82,9 +80,6 @@ class ChannelHookup(PaperworkGenerator):
     @override
     @staticmethod
     def style_data(df: pd.DataFrame, /, **kwargs: Unpack[StyleDataParams]) -> pd.DataFrame:
-        if "chan_style" not in kwargs:
-            kwargs["chan_style"] = default_chan_style
-
         border_style = f"{kwargs['border_weight']}px solid black"
         style_df = pd.DataFrame().reindex_like(df).astype(str)
         # Set borders based on channel data
@@ -154,18 +149,18 @@ class ChannelHookup(PaperworkGenerator):
         styled = styled.apply(
             type(self).style_data,
             axis=None,
-            chan_style=self.chan_style,
+            chan_style=self.style.chan_style,
             body_style=self.style.body,
             col_width=self.col_widths,
             quirks=self.formatting_quirks,
-            border_weight=self.border_weight,
+            border_weight=self.style.border_weight,
         )
         styled = styled.hide()
         styled = styled.apply_index(
             type(self).style_fields,  # type: ignore[reportArgumentType]
             header_style=self.style.field,
             col_width=self.col_widths,
-            border_weight=self.border_weight,
+            border_weight=self.style.border_weight,
             axis=1,
         )
 

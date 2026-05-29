@@ -81,23 +81,54 @@ class FontStyle:
         raise ValueError(f"Unsupported weight {self.font_weight}")
 
 
-class PaperworkSettings(BaseSettings):
-    """Top level settings schema."""
+class PaperworkStyle(BaseModel):
+    """Generic styles for paperwork."""
+
+    title: FontStyle = FontStyle("Calibri", "bold", 22)
+    field: FontStyle = FontStyle("Calibri", "bold", 12)
+    body: FontStyle = FontStyle("Calibri", "normal", 11)
+    marginals: FontStyle = FontStyle("Calibri", "normal", 12)
+    # 1px doesn't render right on Firefox, use 1.5px min to workaround.
+    border_weight: float = 1.0
+
+
+class ChannelHookupStyle(PaperworkStyle):
+    """Additional channel hookup-specific styles."""
+
+    chan_style: FontStyle = FontStyle("Calibri", "bold", 18)
+
+
+class InstrumentScheduleStyle(PaperworkStyle):
+    """Additional instrument schedule-specific styles."""
+
+    position_style: FontStyle = FontStyle("Calibri", "bold", 18)
+
+
+class PaperworkSettings(BaseModel):
+    """Schema for paperwork generation information."""
+
+    show_info: ShowData = ShowData()
+    paperwork_style: PaperworkStyle = PaperworkStyle()
+    channel_hookup_style: ChannelHookupStyle = ChannelHookupStyle()
+    instrument_hookup_style: InstrumentScheduleStyle = InstrumentScheduleStyle()
+
+
+class CLISettings(BaseSettings):
+    """Top level settings schema for CLI operations."""
 
     model_config = SettingsConfigDict(
         cli_parse_args=True,
         cli_avoid_json=True,
         cli_hide_none_type=True,
         cli_shortcuts={
-            "show_info.show_name": "show",
-            "show_info.ld_name": "ld",
-            "show_info.revision": "rev",
+            "paperwork.show_info.show_name": "show",
+            "paperwork.show_info.ld_name": "ld",
+            "paperwork.show_info.revision": "rev",
         },
     )
     input_file: CliPositionalArg[FilePath] = Field(
         validation_alias=AliasChoices("file"), description="CSV or XML from Vectorworks"
     )
-    show_info: ShowData = ShowData()
     log_level: Annotated[
         Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], StringConstraints(to_upper=True)
     ] = Field(
@@ -110,3 +141,4 @@ class PaperworkSettings(BaseSettings):
         validation_alias=AliasChoices("out"),
         description="Choose the output file type",
     )
+    paperwork: PaperworkSettings = PaperworkSettings()

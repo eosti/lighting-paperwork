@@ -21,8 +21,7 @@ from lighting_paperwork.helpers import (
     excel_quirks,
     html_quirks,
 )
-from lighting_paperwork.paperwork_settings import FontStyle, ShowData
-from lighting_paperwork.style import BaseStyle, default_style
+from lighting_paperwork.paperwork_settings import FontStyle, PaperworkSettings
 
 logger = logging.getLogger(__name__)
 
@@ -53,24 +52,15 @@ class PaperworkGenerator(ABC):
 
     """
 
-    def __init__(
-        self,
-        vw_export: pd.DataFrame,
-        show_data: ShowData | None = None,
-        style: BaseStyle = default_style,
-        border_weight: float = 1.0,
-    ) -> None:
+    def __init__(self, vw_export: pd.DataFrame, settings: PaperworkSettings | None = None) -> None:
         """Set class vars for data and style."""
         self.vw_export = vw_export
         self.df = self.vw_export.copy()
-        self.show_data = show_data
-        self.style = style
-        # 1px doesn't render right on Firefox, use 1.5px min to workaround.
-        self.border_weight = border_weight
-
-    def set_show_data(self, show_name: str, ld_name: str, revision: str) -> None:
-        """Save show data for later use."""
-        self.show_data = ShowData(show_name=show_name, ld_name=ld_name, revision=revision)
+        if settings is None:
+            self.settings = PaperworkSettings()
+        else:
+            self.settings = settings
+        self.style = self.settings.paperwork_style
 
     display_name: str
     primary_col_name: str
@@ -109,7 +99,7 @@ class PaperworkGenerator(ABC):
             axis=None,
             body_style=self.style.body,
             col_width=self.col_widths,
-            border_weight=self.border_weight,
+            border_weight=self.style.border_weight,
             quirks=self.formatting_quirks,
         )
         styled = styled.hide()
@@ -117,7 +107,7 @@ class PaperworkGenerator(ABC):
             type(self).style_fields,  # type: ignore[reportArgumentType]
             header_style=self.style.field,
             col_width=self.col_widths,
-            border_weight=self.border_weight,
+            border_weight=self.style.border_weight,
             axis=1,
         )
 
@@ -165,7 +155,7 @@ class PaperworkGenerator(ABC):
         ws.delete_cols(idx=1)
 
         # Standard formatting
-        excel_formatter.add_title(ws, self.display_name, self.show_data)
+        excel_formatter.add_title(ws, self.display_name, self.settings.show_info)
         excel_formatter.page_setup(ws, 1)
         excel_formatter.set_col_widths(ws, self.col_widths, self.page_width)
         excel_formatter.wrap_all_cells(ws)
@@ -421,7 +411,7 @@ class PaperworkGenerator(ABC):
 
     def generate_metadata(self) -> str:
         """Generate HTML metadata from show data."""
-        if self.show_data is None:
+        if self.settings.show_info is None:
             return f"""
             <head>
                 <meta charset="utf-8">
@@ -436,9 +426,9 @@ class PaperworkGenerator(ABC):
             <meta charset="utf-8">
             <title>{self.display_name}</title>
             <meta name="description" content="{self.display_name}">
-            <meta name="author" content="{self.show_data.ld_name}">
+            <meta name="author" content="{self.settings.show_info.ld_name}">
             <meta name="generator" content="Lighting Paperwork">
-            <meta name="dcterms.created" content="{self.show_data.print_date()}"
+            <meta name="dcterms.created" content="{self.settings.show_info.print_date()}"
         </head>
         """
 
@@ -454,7 +444,7 @@ class PaperworkGenerator(ABC):
 
     def generate_header_footer(self, uuid: str) -> tuple[str, str]:
         """Generate a header and footer from show data."""
-        if self.show_data is None:
+        if self.settings.show_info is None:
             header_html = self.generate_header(
                 uuid, center=StyledContent(self.display_name, f"{self.style.title.to_css()}")
             )
@@ -465,12 +455,14 @@ class PaperworkGenerator(ABC):
             header_html = self.generate_header(
                 uuid,
                 right=StyledContent(
-                    f"{self.show_data.show_name or ''}<br>{self.show_data.ld_name or ''}",
+                    f"{self.settings.show_info.show_name or ''}<br>"
+                    f"{self.settings.show_info.ld_name or ''}",
                     self.style.marginals.to_css() + "margin-bottom: 5%; ",
                 ),
                 center=StyledContent(self.display_name, f"{self.style.title.to_css()}"),
                 left=StyledContent(
-                    f"{self.show_data.print_date()}<br>{self.show_data.revision or ''}",
+                    f"{self.settings.show_info.print_date()}<br>"
+                    f"{self.settings.show_info.revision or ''}",
                     self.style.marginals.to_css() + "margin-bottom: 5%; ",
                 ),
             )

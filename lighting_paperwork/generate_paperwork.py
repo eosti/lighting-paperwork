@@ -10,7 +10,7 @@ from lighting_paperwork.color_cut_list import ColorCutList
 from lighting_paperwork.gobo_pull import GoboPullList
 from lighting_paperwork.instrument_schedule import InstrumentSchedule
 from lighting_paperwork.paperwork_exporters import ExportExcel, ExportHTML, ExportPDF
-from lighting_paperwork.paperwork_settings import PaperworkSettings
+from lighting_paperwork.paperwork_settings import CLISettings
 from lighting_paperwork.vectorworks_xml import VWExport
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ def main() -> None:
     # TODO(eosti): add dtale support for editing
     # https://github.com/eosti/lighting-paperwork/issues/12
 
-    settings = PaperworkSettings()
+    settings = CLISettings()
 
     logging.basicConfig(
         level=settings.log_level.upper(),
@@ -48,20 +48,24 @@ def main() -> None:
         raise RuntimeError("Only supports csv and xml")
 
     paperwork_list = [
-        ChannelHookup(vw_export, settings.show_info),
-        InstrumentSchedule(vw_export, settings.show_info),
-        ColorCutList(vw_export, settings.show_info),
-        GoboPullList(vw_export, settings.show_info),
+        ChannelHookup(vw_export, settings.paperwork),
+        InstrumentSchedule(vw_export, settings.paperwork),
+        ColorCutList(vw_export, settings.paperwork),
+        GoboPullList(vw_export, settings.paperwork),
     ]
 
     if settings.output_type == "html":
-        output_path = ExportHTML(settings.show_info.generate_slug(), paperwork_list).make()
+        output_path = ExportHTML(
+            settings.paperwork.show_info.generate_slug(), paperwork_list
+        ).make()
         logger.info("HTML published to %s", output_path)
     elif settings.output_type == "pdf":
-        output_path = ExportPDF(settings.show_info.generate_slug(), paperwork_list).make()
+        output_path = ExportPDF(settings.paperwork.show_info.generate_slug(), paperwork_list).make()
         logger.info("PDF published to %s", output_path)
     elif settings.output_type == "excel":
-        output_path = ExportExcel(settings.show_info.generate_slug(), paperwork_list).make()
+        output_path = ExportExcel(
+            settings.paperwork.show_info.generate_slug(), paperwork_list
+        ).make()
         logger.info("Excel workbook published to %s", output_path)
     else:
         raise AssertionError

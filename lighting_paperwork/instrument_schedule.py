@@ -15,8 +15,6 @@ from pandas.io.formats.style import Styler
 from lighting_paperwork import excel_formatter
 from lighting_paperwork.helpers import StyledContent, excel_quirks
 from lighting_paperwork.paperwork import PaperworkGenerator, StyleDataParams, StyleFieldParams
-from lighting_paperwork.paperwork_settings import FontStyle
-from lighting_paperwork.style import default_position_style
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +27,9 @@ class InstrumentSchedule(PaperworkGenerator):
     """
 
     @override
-    def __init__(self, *args, position_style: FontStyle = default_position_style, **kwargs) -> None:  # noqa: ANN002, ANN003
+    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         super().__init__(*args, **kwargs)
-        self.position_style = position_style
+        self.style = self.settings.instrument_hookup_style
 
     col_widths = (5, 17, 36, 28, 7, 7)
     display_name = "Instrument Schedule"
@@ -229,14 +227,14 @@ class InstrumentSchedule(PaperworkGenerator):
             body_style=self.style.body,
             col_width=self.col_widths,
             quirks=self.formatting_quirks,
-            border_weight=self.border_weight,
+            border_weight=self.style.border_weight,
         )
         styled = styled.hide()
         styled = styled.apply_index(
             type(self).style_fields,  # type: ignore[reportArgumentType]
             header_style=self.style.field,
             col_width=self.col_widths,
-            border_weight=self.border_weight,
+            border_weight=self.style.border_weight,
             axis=1,
         )
         styled = styled.set_table_styles(self.pagebreak_repeated_index(), overwrite=False)
@@ -261,7 +259,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
         for idx, sht_name in enumerate(sheet_names):
             excel_formatter.add_section_header(
-                ws, positions[idx][0], self.position_style, len(self.df.columns) - 1
+                ws, positions[idx][0], self.style.position_style, len(self.df.columns) - 1
             )
             sht = wb[sht_name]
             cur_max = ws.max_row
@@ -317,7 +315,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
             header_html = self.generate_header(
                 styled.uuid,  # type: ignore[reportAttributeAccessIssue]
-                left=StyledContent(position_name, self.position_style.to_css()),
+                left=StyledContent(position_name, self.style.position_style.to_css()),
             )
 
             output_html += styled.to_html(
