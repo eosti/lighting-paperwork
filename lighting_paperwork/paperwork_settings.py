@@ -7,7 +7,15 @@ from dataclasses import dataclass
 from typing import Annotated, Literal, Self
 
 import openpyxl.styles as openpyxl_styles
-from pydantic import AliasChoices, BaseModel, Field, FilePath, StringConstraints, model_validator
+from pydantic import (
+    AliasChoices,
+    BaseModel,
+    DirectoryPath,
+    Field,
+    FilePath,
+    StringConstraints,
+    model_validator,
+)
 from pydantic_settings import (
     BaseSettings,
     CliPositionalArg,
@@ -160,6 +168,9 @@ class CLISettings(BaseSettings):
         default="pdf",
         validation_alias=AliasChoices("out"),
         description="Choose the output file type",
+    )
+    output_dir: DirectoryPath | None = Field(
+        default=None, description="Output directory for generated files"
     )
     paperwork: PaperworkSettings = PaperworkSettings()
 

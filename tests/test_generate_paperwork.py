@@ -36,9 +36,10 @@ def test_csv_input():
 
 def test_yaml_input(tmp_path):
     """Test if YAML parsing isn't broken."""
-    settings = """
+    settings = f"""
 log_level: DEBUG
 data_file: "tests/TestFile.xml"
+output_dir: {tmp_path}
 paperwork:
   show_info:
     show_name: "Showy the Showsicle"
@@ -57,16 +58,17 @@ paperwork:
 
 
 def test_invalid_yaml_nonexistent_data(tmp_path):
-    settings = """
+    settings = f"""
 log_level: DEBUG
 data_file: "tests/nothere.xml"
+output_dir: {tmp_path}
 paperwork:
   show_info:
     show_name: "Showy the Showsicle"
     ld_name: "eosti"
     revision: "Rev. Z"
     """
-    settings_file = tmp_path / "settings.yaml"
+    settings_file = tmp_path / "settings_invalid_yaml.yaml"
     settings_file.write_text(settings)
 
     testargs = ["testing.py", str(settings_file)]
@@ -81,12 +83,13 @@ def test_nonexistent_yaml():
 
 
 def test_pdf_output(tmp_path):
-    settings = """
+    settings = f"""
 log_level: DEBUG
-data_file: "tests/nothere.xml"
+data_file: "tests/TestFile.xml"
 output_type: pdf
+output_dir: {tmp_path}
     """
-    settings_file = tmp_path / "settings.yaml"
+    settings_file = tmp_path / "settings_pdf.yaml"
     settings_file.write_text(settings)
 
     testargs = ["testing.py", str(settings_file)]
@@ -95,15 +98,19 @@ output_type: pdf
             main()
 
         assert e.value.code == 0
+
+    output_file = tmp_path / "Paperwork.pdf"
+    assert output_file.exists()
 
 
 def test_html_output(tmp_path):
-    settings = """
+    settings = f"""
 log_level: DEBUG
-data_file: "tests/nothere.xml"
+data_file: "tests/TestFile.xml"
 output_type: html
+output_dir: {tmp_path}
     """
-    settings_file = tmp_path / "settings.yaml"
+    settings_file = tmp_path / "settings_html.yaml"
     settings_file.write_text(settings)
 
     testargs = ["testing.py", str(settings_file)]
@@ -112,15 +119,19 @@ output_type: html
             main()
 
         assert e.value.code == 0
+
+    output_file = tmp_path / "Paperwork.html"
+    assert output_file.exists()
 
 
 def test_excel_output(tmp_path):
-    settings = """
+    settings = f"""
 log_level: DEBUG
-data_file: "tests/nothere.xml"
+data_file: "tests/TestFile.xml"
 output_type: excel
+output_dir: {tmp_path}
     """
-    settings_file = tmp_path / "settings.yaml"
+    settings_file = tmp_path / "settings_excel.yaml"
     settings_file.write_text(settings)
 
     testargs = ["testing.py", str(settings_file)]
@@ -129,3 +140,6 @@ output_type: excel
             main()
 
         assert e.value.code == 0
+
+    output_file = tmp_path / "Paperwork.xlsx"
+    assert output_file.exists()

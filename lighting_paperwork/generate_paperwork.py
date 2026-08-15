@@ -2,6 +2,7 @@
 
 import logging
 import sys
+from pathlib import Path
 
 import pandas as pd
 from rich.logging import RichHandler
@@ -23,6 +24,7 @@ def main() -> None:
     # https://github.com/eosti/lighting-paperwork/issues/12
 
     settings = CLISettings()
+    logger.debug(settings.model_dump_json())
 
     logging.basicConfig(
         level=settings.log_level.upper(),
@@ -61,17 +63,21 @@ def main() -> None:
         GoboPullList(vw_export, settings.paperwork),
     ]
 
+    output_dir = Path.cwd() if settings.output_dir is None else Path(settings.output_dir)
+
     if settings.output_type == "html":
         output_path = ExportHTML(
-            settings.paperwork.show_info.generate_slug(), paperwork_list
+            output_dir, settings.paperwork.show_info.generate_slug(), paperwork_list
         ).make()
         logger.info("HTML published to %s", output_path)
     elif settings.output_type == "pdf":
-        output_path = ExportPDF(settings.paperwork.show_info.generate_slug(), paperwork_list).make()
+        output_path = ExportPDF(
+            output_dir, settings.paperwork.show_info.generate_slug(), paperwork_list
+        ).make()
         logger.info("PDF published to %s", output_path)
     elif settings.output_type == "excel":
         output_path = ExportExcel(
-            settings.paperwork.show_info.generate_slug(), paperwork_list
+            output_dir, settings.paperwork.show_info.generate_slug(), paperwork_list
         ).make()
         logger.info("Excel workbook published to %s", output_path)
     else:
