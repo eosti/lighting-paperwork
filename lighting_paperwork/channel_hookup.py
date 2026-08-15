@@ -24,7 +24,8 @@ class ChannelHookup(PaperworkGenerator):
     @override
     def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         super().__init__(*args, **kwargs)
-        self.style = self.settings.channel_hookup_style
+        self.style = self.settings.paperwork_style
+        self.style_additional = self.settings.channel_hookup_style
 
     col_widths = (10, 6, 13, 5, 13, 32, 21)
     display_name = "Channel Hookup"
@@ -80,6 +81,9 @@ class ChannelHookup(PaperworkGenerator):
     @override
     @staticmethod
     def style_data(df: pd.DataFrame, /, **kwargs: Unpack[StyleDataParams]) -> pd.DataFrame:
+        if "chan_style" not in kwargs:
+            raise RuntimeError("Missing channel style")
+
         border_style = f"{kwargs['border_weight']}px solid black"
         style_df = pd.DataFrame().reindex_like(df).astype(str)
         # Set borders based on channel data
@@ -149,7 +153,7 @@ class ChannelHookup(PaperworkGenerator):
         styled = styled.apply(
             type(self).style_data,
             axis=None,
-            chan_style=self.style.chan_style,
+            chan_style=self.style_additional.chan_style,
             body_style=self.style.body,
             col_width=self.col_widths,
             quirks=self.formatting_quirks,

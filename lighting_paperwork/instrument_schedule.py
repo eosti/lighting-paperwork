@@ -29,7 +29,8 @@ class InstrumentSchedule(PaperworkGenerator):
     @override
     def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         super().__init__(*args, **kwargs)
-        self.style = self.settings.instrument_hookup_style
+        self.style = self.settings.paperwork_style
+        self.style_additional = self.settings.instrument_hookup_style
 
     col_widths = (5, 17, 36, 28, 7, 7)
     display_name = "Instrument Schedule"
@@ -259,7 +260,10 @@ class InstrumentSchedule(PaperworkGenerator):
 
         for idx, sht_name in enumerate(sheet_names):
             excel_formatter.add_section_header(
-                ws, positions[idx][0], self.style.position_style, len(self.df.columns) - 1
+                ws,
+                positions[idx][0],
+                self.style_additional.position_style,
+                len(self.df.columns) - 1,
             )
             sht = wb[sht_name]
             cur_max = ws.max_row
@@ -285,7 +289,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
             del wb[sht_name]
 
-        excel_formatter.add_title(ws, self.display_name, self.show_data)
+        excel_formatter.add_title(ws, self.display_name, self.settings.show_info)
         excel_formatter.page_setup(ws, 0)
         excel_formatter.set_col_widths(ws, self.col_widths, self.page_width)
         excel_formatter.instr_schedule_pagebreaks(ws)
@@ -315,7 +319,7 @@ class InstrumentSchedule(PaperworkGenerator):
 
             header_html = self.generate_header(
                 styled.uuid,  # type: ignore[reportAttributeAccessIssue]
-                left=StyledContent(position_name, self.style.position_style.to_css()),
+                left=StyledContent(position_name, self.style_additional.position_style.to_css()),
             )
 
             output_html += styled.to_html(

@@ -1,6 +1,7 @@
 """CLI tool for generating lighting paperwork."""
 
 import logging
+import sys
 
 import pandas as pd
 from rich.logging import RichHandler
@@ -30,19 +31,26 @@ def main() -> None:
         handlers=[RichHandler()],
     )
 
-    # add default PDF logic
+    if settings.input_file is not None and settings.input_file.suffix == ".yaml":
+        logger.info("Using settings file %s", settings.input_file)
+        settings.model_config["yaml_file"] = str(settings.input_file)
+        settings.__init__()
 
-    if settings.input_file.suffix == ".csv":
+    if settings.data_file is None:
+        logger.critical("Must provide an input data file.")
+        sys.exit(1)
+
+    if settings.data_file.suffix == ".csv":
         # Converter is to suppress the warning when I set addr=0 to empty string
         vw_export = pd.read_csv(
-            settings.input_file, sep="\t", header=0, converters={"Absolute Address": str}
+            settings.data_file, sep="\t", header=0, converters={"Absolute Address": str}
         )
 
         # Clear VW's default "None" character
         vw_export = vw_export.replace("-", "")
 
-    elif settings.input_file.suffix == ".xml":
-        vw_export = VWExport(settings.input_file).export_df()
+    elif settings.data_file.suffix == ".xml":
+        vw_export = VWExport(settings.data_file).export_df()
 
     else:
         raise RuntimeError("Only supports csv and xml")
@@ -69,6 +77,8 @@ def main() -> None:
         logger.info("Excel workbook published to %s", output_path)
     else:
         raise AssertionError
+
+    sys.exit(0)
 
 
 if __name__ == "__main__":

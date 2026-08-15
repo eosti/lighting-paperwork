@@ -1,0 +1,30 @@
+# VW data source
+data_file: "myshow.xml"
+
+# Output type can be pdf, html, excel
+output_type: "pdf"
+
+log_level: INFO
+paperwork:
+  show_info:
+    show_name: "My Amazing Show"
+    ld_name: "John. D"
+    revision: "Rev. A"
+
+  # Each font entry must have family, size, and weight
+  # This example makes for some ugly paperwork, please don't do this.
+  paperwork_style:
+    title:
+      font_family: "Comic Sans MS"
+      font_size: 24
+      font_weight: "bold"
+  channel_hookup_style:
+    chan_style:
+      font_family: "Calibri"
+      font_size: 12
+      font_weight: "normal"
+  instrument_hookup_style:
+    position_style:
+      font_family: "Comic Sans MS"
+      font_size: 18
+      font_weight: "bold"

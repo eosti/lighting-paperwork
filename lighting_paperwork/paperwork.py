@@ -382,7 +382,6 @@ class PaperworkGenerator(ABC):
                 "props": "border-spacing: 0px; border-collapse: collapse; "
                 "line-height: 1.2; break-inside: auto; width: 100%;",
             },
-            # TODO: Verify this change
             {"selector": "tr", "props": "break-after: auto; break-inside: avoid; "},
             {"selector": "td", "props": "padding: 1px; "},
             {

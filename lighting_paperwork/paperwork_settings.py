@@ -4,14 +4,16 @@ import datetime
 import logging
 import re
 from dataclasses import dataclass
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Self
 
 import openpyxl.styles as openpyxl_styles
-from pydantic import AliasChoices, BaseModel, Field, FilePath, StringConstraints
+from pydantic import AliasChoices, BaseModel, Field, FilePath, StringConstraints, model_validator
 from pydantic_settings import (
     BaseSettings,
     CliPositionalArg,
+    PydanticBaseSettingsSource,
     SettingsConfigDict,
+    YamlConfigSettingsSource,
 )
 
 logger = logging.getLogger(__name__)
@@ -92,13 +94,13 @@ class PaperworkStyle(BaseModel):
     border_weight: float = 1.0
 
 
-class ChannelHookupStyle(PaperworkStyle):
+class ChannelHookupStyle(BaseModel):
     """Additional channel hookup-specific styles."""
 
     chan_style: FontStyle = FontStyle("Calibri", "bold", 18)
 
 
-class InstrumentScheduleStyle(PaperworkStyle):
+class InstrumentScheduleStyle(BaseModel):
     """Additional instrument schedule-specific styles."""
 
     position_style: FontStyle = FontStyle("Calibri", "bold", 18)
@@ -125,10 +127,28 @@ class CLISettings(BaseSettings):
             "paperwork.show_info.ld_name": "ld",
             "paperwork.show_info.revision": "rev",
         },
+        yaml_file=["paperwork.yaml"],
+        validate_by_name=True,
+        validate_by_alias=True,
     )
-    input_file: CliPositionalArg[FilePath] = Field(
-        validation_alias=AliasChoices("file"), description="CSV or XML from Vectorworks"
+    input_file: CliPositionalArg[FilePath | None] = Field(
+        default=None,
+        validation_alias=AliasChoices("file"),
+        description="CLI input file, either data or settings.",
     )
+    data_file: FilePath | None = Field(default=None, description="CSV or XML from Vectorworks")
+
+    @model_validator(mode="after")
+    def set_data_file(self) -> Self:
+        """Check if the input file is a data file or a settings file."""
+        if (
+            self.input_file is not None
+            and self.input_file.suffix != ".yaml"
+            and self.data_file is None
+        ):
+            self.data_file = self.input_file
+        return self
+
     log_level: Annotated[
         Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], StringConstraints(to_upper=True)
     ] = Field(
@@ -136,9 +156,27 @@ class CLISettings(BaseSettings):
         validation_alias=AliasChoices("loglevel"),
         description="Change the log level",
     )
-    output_type: Literal["pdf", "html", "csv"] = Field(
+    output_type: Literal["pdf", "html", "excel"] = Field(
         default="pdf",
         validation_alias=AliasChoices("out"),
         description="Choose the output file type",
     )
     paperwork: PaperworkSettings = PaperworkSettings()
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        """Customize Pydantic model sources to include YAML files."""
+        return (
+            YamlConfigSettingsSource(settings_cls),
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            file_secret_settings,
+        )
