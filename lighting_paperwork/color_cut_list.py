@@ -45,6 +45,11 @@ class ColorCutList(PaperworkGenerator):
                     }
                 )
 
+        if len(color_dict) == 0:
+            logger.warning("No colors parsed; color cut list will be empty.")
+            self.df = pd.DataFrame(columns=["Color", "Frame Size", "Company"])
+            return self
+
         colors = pd.DataFrame.from_records(color_dict)
         colors = (
             colors.groupby(["Color", "Frame Size", "Sort"])["Color"]
