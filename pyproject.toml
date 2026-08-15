@@ -83,7 +83,7 @@ lint.per-file-ignores."tests/*.py" = [
 main.ignore = [ ".venv" ]
 
 [tool.codespell]
-skip = "*.xml"
+skip = "*.xml, *.csv"
 
 [tool.pyright]
 typeCheckingMode = "standard"  # Someday we'll make it strict

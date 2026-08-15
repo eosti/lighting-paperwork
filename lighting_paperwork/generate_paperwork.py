@@ -41,9 +41,8 @@ def main() -> None:
         sys.exit(1)
 
     if settings.data_file.suffix.lower() == ".csv":
-        # Converter is to suppress the warning when I set addr=0 to empty string
         vw_export = pd.read_csv(
-            settings.data_file, sep="\t", header=0, converters={"Absolute Address": str}
+            settings.data_file, sep="\t", header=0, dtype=str, keep_default_na=False
         )
 
         # Clear VW's default "None" character

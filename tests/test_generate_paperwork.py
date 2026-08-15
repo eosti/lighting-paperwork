@@ -8,12 +8,25 @@ from pydantic import ValidationError
 from lighting_paperwork.generate_paperwork import main
 
 
-def test_smoke_test():
+def test_xml_input():
     """Basic smoke test.
 
     Does the program run at all?
     """
     testargs = ["testing.py", "tests/TestFile.xml"]
+    with patch("sys.argv", testargs):
+        with pytest.raises(SystemExit) as e:
+            main()
+
+        assert e.value.code == 0
+
+
+def test_csv_input():
+    """Basic smoke test.
+
+    Does the program run at all?
+    """
+    testargs = ["testing.py", "tests/TestFile.csv"]
     with patch("sys.argv", testargs):
         with pytest.raises(SystemExit) as e:
             main()
@@ -44,7 +57,6 @@ paperwork:
 
 
 def test_invalid_yaml_nonexistent_data(tmp_path):
-    """Test for non-existent data file."""
     settings = """
 log_level: DEBUG
 data_file: "tests/nothere.xml"
@@ -63,7 +75,57 @@ paperwork:
 
 
 def test_nonexistent_yaml():
-    """Test for non-existent YAML."""
     testargs = ["testing.py", "notaconfig.yaml"]
     with patch("sys.argv", testargs), pytest.raises(ValidationError):
         main()
+
+
+def test_pdf_output(tmp_path):
+    settings = """
+log_level: DEBUG
+data_file: "tests/nothere.xml"
+output_type: pdf
+    """
+    settings_file = tmp_path / "settings.yaml"
+    settings_file.write_text(settings)
+
+    testargs = ["testing.py", str(settings_file)]
+    with patch("sys.argv", testargs):
+        with pytest.raises(SystemExit) as e:
+            main()
+
+        assert e.value.code == 0
+
+
+def test_html_output(tmp_path):
+    settings = """
+log_level: DEBUG
+data_file: "tests/nothere.xml"
+output_type: html
+    """
+    settings_file = tmp_path / "settings.yaml"
+    settings_file.write_text(settings)
+
+    testargs = ["testing.py", str(settings_file)]
+    with patch("sys.argv", testargs):
+        with pytest.raises(SystemExit) as e:
+            main()
+
+        assert e.value.code == 0
+
+
+def test_excel_output(tmp_path):
+    settings = """
+log_level: DEBUG
+data_file: "tests/nothere.xml"
+output_type: excel
+    """
+    settings_file = tmp_path / "settings.yaml"
+    settings_file.write_text(settings)
+
+    testargs = ["testing.py", str(settings_file)]
+    with patch("sys.argv", testargs):
+        with pytest.raises(SystemExit) as e:
+            main()
+
+        assert e.value.code == 0
