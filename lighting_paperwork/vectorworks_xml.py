@@ -131,7 +131,12 @@ class VWExport:
                 # more on UIDs to do this cleanly later:
                 # https://forum.vectorworks.net/index.php?/topic/
                 #   24673-why-do-my-uids-keep-changing/&do=findComment&comment=117429
-                if new_instrument.node_uid.split("_")[1] in self.instruments[-1].node_uid:
+                uid_parts = new_instrument.node_uid.split("_")
+                if (
+                    len(self.instruments) > 0
+                    and len(uid_parts) > 1
+                    and uid_parts[1] in self.instruments[-1].node_uid
+                ):
                     # If major UID numbers match, then that's good enough lol
                     self.instruments[-1].accs.append(VWAccessory(instr))
                 else:
