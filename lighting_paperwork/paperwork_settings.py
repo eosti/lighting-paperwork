@@ -126,6 +126,14 @@ class PaperworkSettings(BaseModel):
 class CLISettings(BaseSettings):
     """Top level settings schema for CLI operations."""
 
+    def __init__(self, yaml_source: FilePath | None = None) -> None:
+        """Override YAML config source if provided."""
+        if yaml_source is not None:
+            self.model_config["yaml_file"] = yaml_source
+        else:
+            self.model_config["yaml_file"] = ["paperwork.yaml"]
+        super().__init__()
+
     model_config = SettingsConfigDict(
         cli_parse_args=True,
         cli_avoid_json=True,
@@ -135,7 +143,6 @@ class CLISettings(BaseSettings):
             "paperwork.show_info.ld_name": "ld",
             "paperwork.show_info.revision": "rev",
         },
-        yaml_file=["paperwork.yaml"],
         validate_by_name=True,
         validate_by_alias=True,
     )

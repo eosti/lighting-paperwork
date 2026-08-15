@@ -35,8 +35,7 @@ def main() -> None:
 
     if settings.input_file is not None and settings.input_file.suffix.lower() == ".yaml":
         logger.info("Using settings file %s", settings.input_file)
-        settings.model_config["yaml_file"] = str(settings.input_file)
-        settings.__init__()
+        settings.__init__(yaml_source=settings.input_file)
 
     if settings.data_file is None:
         logger.critical("Must provide an input data file.")
