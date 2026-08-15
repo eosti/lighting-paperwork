@@ -22,11 +22,22 @@ There are currently two options to generate this:
   - Accessories will not export using this method
 
 To generate paperwork, run `lighting-paperwork my-show.xml` to generate a PDF.
-To add show customization and change the export type, use `lighting-paperwork -h`
+The `--show`, `--ld`, and `--revision` flags are quick ways to add show metadata from the command line, ex. `lighting-paperwork my-show.xml --show "My Amazing Show" --ld "ME" --revision "Rev. C"`.
+
+## Configuration
+To see all valid configurations options, use `lighting-paperwork --help`.
+
+While all options can be passed as command-line arguments, a configuration file may be useful to avoid repeated data entry.
+A `paperwork.yaml` file can be created alongside the `.xml` file which contains reused configuration options.
+Command-line arguments will override `paperwork.yaml` settings if ad-hoc adjustments are required.
+
+When using `paperwork.yaml`, no arguments are required to `lighting-paperwork`.
+If a different settings file name is desired, that can be passed as a positional argument, ex. `lighting-paperwork settings.yaml`
+An example `paperwork.yaml` is provided as [settings.yaml](./settings.yaml) for reference; however for a full list of customization options refer to the help function.
 
 ## Customization
 Much of what this program does is fairly opinionated to my own use case and my sense of what looks nice on paperwork.
-That said, there are some customization options available through the `paperwork.yaml` configuration file. (to be implemented)
+That said, there are some customization options available through the `paperwork.yaml` configuration file.
 
 If you want to customize the paperwork in a way that hasn't been exposed yet, please file a bug report and we'll see what can be done.
 

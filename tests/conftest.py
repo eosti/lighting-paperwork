@@ -1,6 +1,8 @@
 # type: ignore[reportAttributeAccessIssue]
 """Configure PyTest."""
 
+from pathlib import Path
+
 import pytest
 
 from lighting_paperwork.vectorworks_xml import VWExport
@@ -15,7 +17,7 @@ def pytest_configure(config):  # noqa: ARG001
 
 @pytest.fixture
 def vwx_export_file():
-    return "./tests/TestFile.xml"
+    return Path("./tests/TestFile.xml")
 
 
 @pytest.fixture

@@ -1,36 +1,12 @@
 """Useful helpers and dataclasses for paperwork generation."""
 
-import datetime
 import logging
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from decimal import Decimal
 from typing import Self
 
-import openpyxl.styles as openpyxl_styles
-
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class ShowData:
-    """Dataclass for storing information about the show."""
-
-    show_name: str | None = None
-    ld_name: str | None = None
-    revision: str | None = None
-    rev_date: datetime.datetime = field(default_factory=lambda: datetime.datetime.now(datetime.UTC))
-
-    def print_date(self) -> str:
-        """Return the stored date in YYYY/MM/DD form."""
-        return self.rev_date.astimezone().strftime("%Y/%m/%d")
-
-    def generate_slug(self, title: str = "Paperwork") -> str:
-        """Generate a filename slug from the show information."""
-        if self.show_name is None or self.revision is None:
-            logger.info("Not enough show data to make a nice output filename, using default")
-            return title
-        return f"{self.show_name.replace(' ', '')}_{title}_" + re.sub(r"\W+", "", self.revision)
 
 
 @dataclass
@@ -297,49 +273,6 @@ def parse_frame_size(frame_str: str) -> str:
 
 
 @dataclass
-class FontStyle:
-    """Dataclass for storing CSS font style information.
-
-    Attributes:
-        font_family: The PostScript name of a font family installed locally
-        font_weight: The CSS weight of the font (100-900). May also use relative values.
-        font_size: The size of the font, in pt.
-
-    """
-
-    font_family: str
-    font_weight: str
-    font_size: int
-
-    def to_css(self) -> str:
-        """Return a CSS string with the font information."""
-        return (
-            f"font-family: {self.font_family}; "
-            f"font-weight: {self.font_weight}; font-size: {self.font_size}pt; "
-        )
-
-    def span(self, body: str, style: str = "") -> str:
-        """Return a `span` element formatted with the font information."""
-        return f"<span style='{self.to_css()}{style}'>{body}</span>"
-
-    def p(self, body: str, style: str = "") -> str:
-        """Return a `p` element formatted with the font information."""
-        return f"<p style='{self.to_css()}{style}'>{body}</p>"
-
-    def excel(self) -> openpyxl_styles.Font:
-        """Return an openpyxl Style with the selected font.
-
-        Note that only `normal` and `bold` font weights are permitted.
-        """
-        if self.font_weight == "bold":
-            return openpyxl_styles.Font(name=self.font_family, size=self.font_size, bold=True)
-
-        if self.font_weight == "normal":
-            return openpyxl_styles.Font(name=self.font_family, size=self.font_size, bold=False)
-
-        raise ValueError(f"Unsupported weight {self.font_weight}")
-
-
 @dataclass
 class StyledContent:
     """Dataclass for storing content/style pairs.

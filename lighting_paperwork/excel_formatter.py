@@ -10,7 +10,7 @@ from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break
 from openpyxl.worksheet.worksheet import Worksheet
 
-from lighting_paperwork.helpers import FontStyle, ShowData
+from lighting_paperwork.paperwork_settings import FontStyle, ShowData
 
 logger = logging.getLogger(__name__)
 
