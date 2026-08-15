@@ -88,7 +88,7 @@ class ColorCutList(PaperworkGenerator):
                 f"width: {kwargs['col_width'][width_idx]}%; "  # type: ignore[reportCallIssue, reportArgumentType]
             )
 
-            if col_name == ["Color"]:
+            if col_name == "Color":
                 style_df[col_name] += "text-align: center; "
             else:
                 style_df[col_name] += "text-align: left; "
@@ -106,7 +106,7 @@ class ColorCutList(PaperworkGenerator):
         ]
 
         for idx, val in enumerate(index):
-            if val == ["Color"]:
+            if val == "Color":
                 style[idx] += "text-align: center; "
             else:
                 style[idx] += "text-align: left; "

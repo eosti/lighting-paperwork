@@ -72,7 +72,7 @@ class GoboPullList(PaperworkGenerator):
         ]
 
         for idx, val in enumerate(index):
-            if val == ["Gobo Name"]:
+            if val == "Gobo Name":
                 style[idx] += "text-align: center; "
             else:
                 style[idx] += "text-align: left; "
