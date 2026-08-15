@@ -394,9 +394,10 @@ class PaperworkGenerator(ABC):
             },
         ]
 
-    def pagebreak_repeated_index(self) -> list[CSSDict]:
+    def pagebreak_repeated_index(self, df_override: pd.DataFrame | None = None) -> list[CSSDict]:
         """Disallow pagebreaks between index fields with the same number."""
-        idxs = np.where(self.df[self.primary_col_name] == self.formatting_quirks.empty_str)
+        df = self.df if df_override is None else df_override
+        idxs = np.where(df[self.primary_col_name] == self.formatting_quirks.empty_str)
 
         selector_list = []
         # We want to select the row before a repeated channel,

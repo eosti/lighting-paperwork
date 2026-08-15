@@ -238,7 +238,9 @@ class InstrumentSchedule(PaperworkGenerator):
             border_weight=self.style.border_weight,
             axis=1,
         )
-        styled = styled.set_table_styles(self.pagebreak_repeated_index(), overwrite=False)
+        styled = styled.set_table_styles(
+            self.pagebreak_repeated_index(position[1]), overwrite=False
+        )
         return (position[0], styled)
 
     @override
