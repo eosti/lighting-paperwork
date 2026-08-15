@@ -143,7 +143,7 @@ class CLISettings(BaseSettings):
         """Check if the input file is a data file or a settings file."""
         if (
             self.input_file is not None
-            and self.input_file.suffix != ".yaml"
+            and self.input_file.suffix.lower() != ".yaml"
             and self.data_file is None
         ):
             self.data_file = self.input_file

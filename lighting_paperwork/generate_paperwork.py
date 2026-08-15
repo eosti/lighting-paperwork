@@ -31,7 +31,7 @@ def main() -> None:
         handlers=[RichHandler()],
     )
 
-    if settings.input_file is not None and settings.input_file.suffix == ".yaml":
+    if settings.input_file is not None and settings.input_file.suffix.lower() == ".yaml":
         logger.info("Using settings file %s", settings.input_file)
         settings.model_config["yaml_file"] = str(settings.input_file)
         settings.__init__()
@@ -40,7 +40,7 @@ def main() -> None:
         logger.critical("Must provide an input data file.")
         sys.exit(1)
 
-    if settings.data_file.suffix == ".csv":
+    if settings.data_file.suffix.lower() == ".csv":
         # Converter is to suppress the warning when I set addr=0 to empty string
         vw_export = pd.read_csv(
             settings.data_file, sep="\t", header=0, converters={"Absolute Address": str}
@@ -49,7 +49,7 @@ def main() -> None:
         # Clear VW's default "None" character
         vw_export = vw_export.replace("-", "")
 
-    elif settings.data_file.suffix == ".xml":
+    elif settings.data_file.suffix.lower() == ".xml":
         vw_export = VWExport(settings.data_file).export_df()
 
     else:
