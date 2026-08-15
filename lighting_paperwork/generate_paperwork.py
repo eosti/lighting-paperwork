@@ -2,6 +2,7 @@
 
 import logging
 import sys
+from pathlib import Path
 
 import pandas as pd
 from rich.logging import RichHandler
@@ -23,6 +24,7 @@ def main() -> None:
     # https://github.com/eosti/lighting-paperwork/issues/12
 
     settings = CLISettings()
+    logger.debug(settings.model_dump_json())
 
     logging.basicConfig(
         level=settings.log_level.upper(),
@@ -33,17 +35,15 @@ def main() -> None:
 
     if settings.input_file is not None and settings.input_file.suffix.lower() == ".yaml":
         logger.info("Using settings file %s", settings.input_file)
-        settings.model_config["yaml_file"] = str(settings.input_file)
-        settings.__init__()
+        settings.__init__(yaml_source=settings.input_file)
 
     if settings.data_file is None:
         logger.critical("Must provide an input data file.")
         sys.exit(1)
 
     if settings.data_file.suffix.lower() == ".csv":
-        # Converter is to suppress the warning when I set addr=0 to empty string
         vw_export = pd.read_csv(
-            settings.data_file, sep="\t", header=0, converters={"Absolute Address": str}
+            settings.data_file, sep="\t", header=0, dtype=str, keep_default_na=False
         )
 
         # Clear VW's default "None" character
@@ -62,17 +62,21 @@ def main() -> None:
         GoboPullList(vw_export, settings.paperwork),
     ]
 
+    output_dir = Path.cwd() if settings.output_dir is None else Path(settings.output_dir)
+
     if settings.output_type == "html":
         output_path = ExportHTML(
-            settings.paperwork.show_info.generate_slug(), paperwork_list
+            output_dir, settings.paperwork.show_info.generate_slug(), paperwork_list
         ).make()
         logger.info("HTML published to %s", output_path)
     elif settings.output_type == "pdf":
-        output_path = ExportPDF(settings.paperwork.show_info.generate_slug(), paperwork_list).make()
+        output_path = ExportPDF(
+            output_dir, settings.paperwork.show_info.generate_slug(), paperwork_list
+        ).make()
         logger.info("PDF published to %s", output_path)
     elif settings.output_type == "excel":
         output_path = ExportExcel(
-            settings.paperwork.show_info.generate_slug(), paperwork_list
+            output_dir, settings.paperwork.show_info.generate_slug(), paperwork_list
         ).make()
         logger.info("Excel workbook published to %s", output_path)
     else:

@@ -131,7 +131,12 @@ class VWExport:
                 # more on UIDs to do this cleanly later:
                 # https://forum.vectorworks.net/index.php?/topic/
                 #   24673-why-do-my-uids-keep-changing/&do=findComment&comment=117429
-                if new_instrument.node_uid.split("_")[1] in self.instruments[-1].node_uid:
+                uid_parts = new_instrument.node_uid.split("_")
+                if (
+                    len(self.instruments) > 0
+                    and len(uid_parts) > 1
+                    and uid_parts[1] in self.instruments[-1].node_uid
+                ):
                     # If major UID numbers match, then that's good enough lol
                     self.instruments[-1].accs.append(VWAccessory(instr))
                 else:
@@ -142,7 +147,7 @@ class VWExport:
 
     def handle_accessories(
         self, filterlist: tuple[str, ...] = (), fuzzyfilterlist: tuple[str, ...] = ("C-Clamp",)
-    ) -> None:
+    ) -> list[VWInstrument]:
         """Convert VW representation of accessories to one suited for paperwork.
 
         Adds accessories to a AccessoryString, and if the accessory is smart, make
@@ -156,15 +161,14 @@ class VWExport:
                 will omit that accessory.
 
         Returns:
-            None
+            List of instruments and accessories
 
         """
-        # TODO(eosti): self.instruments really shouldn't be mutable
-        # https://github.com/eosti/lighting-paperwork/issues/11
         self.field_mapping["AccessoryString"] = "Accessory String"
         self.field_mapping["AccessoryFlag"] = "Accessory Flag"
         additional_accs = []
-        for instr in self.instruments:
+        instr_list = self.instruments.copy()
+        for instr in instr_list:
             if instr.accs == []:
                 instr.props["AccessoryString"] = ""
                 instr.props["AccessoryFlag"] = "0"
@@ -200,7 +204,9 @@ class VWExport:
             instr.props["AccessoryString"] = namestr
 
         # do this last to prevent recursive conversion
-        self.instruments += additional_accs
+        instr_list += additional_accs
+
+        return instr_list
 
     def export_df(self) -> pd.DataFrame:
         """Convert ingested data into a DataFrame.
@@ -209,12 +215,12 @@ class VWExport:
             DataFrame with all props listed as rows with their "pretty" name
 
         """
-        self.handle_accessories()
+        instr_list = self.handle_accessories()
         header = ["Node Tag"]
         header.extend(str(v) for v in self.field_mapping.values())
 
         all_instr = []
-        for instr in self.instruments:
+        for instr in instr_list:
             if instr.props["Action"] == "Delete":
                 # Don't export deleted instruments
                 continue

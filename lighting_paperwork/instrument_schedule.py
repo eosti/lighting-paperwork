@@ -265,7 +265,7 @@ class InstrumentSchedule(PaperworkGenerator):
                 ws,
                 positions[idx][0],
                 self.style_additional.position_style,
-                len(self.df.columns) - 1,
+                len(positions[idx][1].columns),
             )
             sht = wb[sht_name]
             cur_max = ws.max_row

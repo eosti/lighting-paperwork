@@ -34,9 +34,9 @@ class PaperworkExporter(ABC):
 
     file_extension = ""
 
-    def __init__(self, file_slug: str, paperwork: list[PaperworkGenerator]) -> None:
+    def __init__(self, dir_path: Path, file_slug: str, paperwork: list[PaperworkGenerator]) -> None:
         """Initialize filename and paperwork list."""
-        self.filename = Path.cwd() / (file_slug + "." + self.file_extension)
+        self.filename = dir_path / (file_slug + "." + self.file_extension)
         self.paperwork = paperwork
         # TODO(eosti): verify file doesn't already exist
         # https://github.com/eosti/lighting-paperwork/issues/14

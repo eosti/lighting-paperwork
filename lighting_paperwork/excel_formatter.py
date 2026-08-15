@@ -80,6 +80,11 @@ def set_col_widths(ws: Worksheet, width: tuple[int, ...], page_width: int) -> No
     I think it's 96 ppi so 96 * usable page width?
     https://www.reddit.com/r/excel/comments/l9k99z/why_does_excel_use_different_units_of_measurement/
     """
+    if ws.max_column != len(width):
+        raise ValueError(
+            f"Worksheet has {ws.max_column} cols but {len(width)} widths were provided"
+        )
+
     width_px = [w * 0.01 * 610 * (page_width / 100) for w in width]
 
     for i in range(1, ws.max_column + 1):

@@ -4,7 +4,7 @@ requires = [ "setuptools>=61" ]
 
 [project]
 name = "lighting-paperwork"
-version = "0.1.6"
+version = "0.2.0"
 description = "Generate lighting paperwork from Vectorworks XML"
 readme = "README.md"
 license = "GPL-3.0-only"
@@ -83,7 +83,7 @@ lint.per-file-ignores."tests/*.py" = [
 main.ignore = [ ".venv" ]
 
 [tool.codespell]
-skip = "*.xml"
+skip = "*.xml, *.csv"
 
 [tool.pyright]
 typeCheckingMode = "standard"  # Someday we'll make it strict
